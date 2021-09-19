@@ -1,5 +1,8 @@
 This folder may contain some files .DS_something which are specific to mac?? 
 not really sure. This is the implementation that works on my mac though
+
+run using command: python3 tv-training-code.py
+
 -THOMAS
 
 
