@@ -112,7 +112,7 @@ def get_transform(train):
 def main():
     # train on the GPU or on the CPU, if a GPU is not available
     device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-
+    
     # our dataset has two classes only - background and person
     num_classes = 2
     # use our dataset and defined transformations
