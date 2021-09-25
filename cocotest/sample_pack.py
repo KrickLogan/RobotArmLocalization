@@ -63,10 +63,10 @@ def main(file_name):
     masks = output[0]['masks']
     composite_mask = get_mask_layer(masks)
     show_img_masks(img, composite_mask)
-    scores = output[0]['scores']
-    print(boxes)
-    rectangles = get_rectangles(boxes)
-    show_img_boxes(img, rectangles)
+    # scores = output[0]['scores']
+    # print(boxes)
+    # rectangles = get_rectangles(boxes)
+    # show_img_boxes(img, rectangles)
     
 
 
