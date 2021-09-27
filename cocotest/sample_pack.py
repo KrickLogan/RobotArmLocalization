@@ -11,10 +11,6 @@ from torchvision.transforms import functional as F
 
 PRECISION = .5
 
-def funk():
-    return numpy.ones(1, bool)
-
-
 def load_model():
     model = torch.load('model.pt', map_location=torch.device('cpu'))
     return model
@@ -28,11 +24,10 @@ def get_rectangles(boxes):
 
 def get_bool_masks(masks):   
     bool_masks = masks > PRECISION 
+    bool_masks = bool_masks.squeeze(1)
     return bool_masks
 
 def get_mask_layer(bool_masks):
-
-    bool_masks = bool_masks.squeeze(1)
 
     composite_mask = numpy.zeros((bool_masks[0].size()), bool)
     for mask in bool_masks:
@@ -87,37 +82,32 @@ def size_img_tensor(tens):
     return tens
 
 def main(file_name):
+    
+    
     model = load_model()
     img = get_img(file_name)
     img_tens = F.to_tensor(img)
     img_tens = size_img_tensor(img_tens)
     output = model([img_tens])
+    
     boxes = output[0]['boxes']
     labels = output[0]['labels']
     masks = output[0]['masks']
-    show_all_masks(img, masks)
     scores = output[0]['scores']
-    print(boxes)
+
     rectangles = get_rectangles(boxes)
     show_img_boxes(img, rectangles)
+
+    show_all_masks(img, masks)
+
     size = img_tens[0].size()
     depth_arr = get_rand_depth_array(size)
     avg_depths = []
     bool_masks = get_bool_masks(masks)
     for bmask in bool_masks: 
         avg_depths.append(get_depth_of_seg(depth_arr, bmask))
+
     
-    print("bool_masks")
-    print(bool_masks)
-    print("bool_maskssize")
-    print(bool_masks.size())
-    bool_masks = bool_masks.squeeze(1)
-    print("bool_masks")
-    print(bool_masks)
-    print("bool_maskssize")
-    print(bool_masks.size())
-    print("depths: ")
-    print(avg_depths)
     for bmask, depth in zip(bool_masks, avg_depths):
         show_mask_with_depth(img, bmask, depth) 
 
