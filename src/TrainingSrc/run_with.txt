@@ -1,0 +1,1 @@
+python3 sample_pack.py 00pedxing01-superJumbo.png
