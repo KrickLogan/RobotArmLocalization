@@ -38,11 +38,11 @@ class ClawObjectDataset(object):
         img_path = os.path.join(self.root, "PNGImages", self.imgs[idx])
         mask_path = os.path.join(self.root, "PNGMasks", self.masks[idx])
         
-        print(img_path)
-        print(mask_path)
+        # print(img_path)
+        # print(mask_path)
 
-        for i in range(len(self.imgs)):
-            print(f"{self.imgs[i]},{self.masks[i]}")
+        # for i in range(len(self.imgs)):
+        #     print(f"{self.imgs[i]},{self.masks[i]}")
         img = Image.open(img_path).convert("RGB")
         # note that we haven't converted the mask to RGB,
         # because each color corresponds to a different instance
@@ -50,15 +50,20 @@ class ClawObjectDataset(object):
         mask = Image.open(mask_path)
 
         mask = np.array(mask)
-        show(mask, mask_path)
+
+        # show(mask, mask_path)
+
         # instances are encoded as different colors
         obj_ids = np.unique(mask)
-        print("np.unique(mask)")
-        print(np.unique(mask))
+
+        # print("np.unique(mask)")
+        # print(np.unique(mask))
+
         # first id is the background, so remove it
         obj_ids = obj_ids[1:]
-        print("obj id's[]")
-        print(obj_ids)
+
+        # print("obj id's[]")
+        # print(obj_ids)
 
         # split the color-encoded mask into a set
         # of binary masks
@@ -80,6 +85,16 @@ class ClawObjectDataset(object):
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         # there is only one class
         labels = torch.as_tensor((num_objs,), dtype=torch.int64)
+
+
+        # print(labels)
+        # final_labels = []
+        # for value in labels:
+        #     # print(value.item())
+        #     final_labels.append(value.item())
+        # labels = torch.tensor(final_labels, dtype=torch.int64)
+
+
         masks = torch.as_tensor(masks, dtype=torch.uint8)
 
         image_id = torch.tensor([idx])
@@ -143,14 +158,16 @@ def main():
 
     # split the dataset in train and test set HERE
     indices = torch.randperm(len(dataset)).tolist()
-    print(indices)
-    print(indices[:-7])
-    print(indices[-7:])
+    # print(indices)
+    # print(indices[:-7])
+    # print(indices[-7:])
     dataset = torch.utils.data.Subset(dataset, indices[-7:]) #changed from [:-50]
     dataset_test = torch.utils.data.Subset(dataset_test, indices[:-7]) #changed from [-50:]
 
     # define training and validation data loaders
-    print(dataset.__len__())
+
+    # print(dataset.__len__())
+
     data_loader = torch.utils.data.DataLoader(
         dataset, batch_size=1, shuffle=True, num_workers=4,
         collate_fn=utils.collate_fn)
