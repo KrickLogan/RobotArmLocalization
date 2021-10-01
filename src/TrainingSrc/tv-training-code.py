@@ -50,12 +50,21 @@ class ClawObjectDataset(object):
         mask = Image.open(mask_path)
 
         mask = np.array(mask)
-
+        
         # show(mask, mask_path)
 
         # instances are encoded as different colors
         obj_ids = np.unique(mask)
 
+        # print(mask.shape)
+        for i in range(len(obj_ids)):
+            mask = np.where(mask == obj_ids[i], i, mask)
+        
+        for i in range(len(obj_ids)):
+            obj_ids[i] = i
+        print(mask.shape)
+
+        # show(mask)
         # print("np.unique(mask)")
         # print(np.unique(mask))
 
@@ -68,7 +77,10 @@ class ClawObjectDataset(object):
         # split the color-encoded mask into a set
         # of binary masks
         masks = mask == obj_ids[:, None, None]
-
+        
+        
+        print(masks.shape)
+        
         # get bounding box coordinates for each mask
         num_objs = len(obj_ids)
         boxes = []
@@ -84,10 +96,12 @@ class ClawObjectDataset(object):
 
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
         # there is only one class
-        labels = torch.as_tensor((num_objs,), dtype=torch.int64)
+        # labels = torch.ones((num_objs,), dtype=torch.int64)
 
+        labels = torch.as_tensor(obj_ids, dtype=torch.int64)
 
-        # print(labels)
+        print("labels")
+        print(labels)
         # final_labels = []
         # for value in labels:
         #     # print(value.item())
