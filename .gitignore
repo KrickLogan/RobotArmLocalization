@@ -131,3 +131,9 @@ dmypy.json
 # mac files
 .DS_Store
 /.DS_store
+
+# Image files
+*.png
+
+# Model
+model.pt
