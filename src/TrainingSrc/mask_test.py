@@ -20,6 +20,8 @@ for mask_d,img_d in zip(np_masks, np_imgs):
     mask_name = mask_d[1]
     img_name = img_d[1]
 
+    print('')
+    print(f'Mask: {mask_name}')
     dimension = mask.shape == img.shape[:-1]
     num_unique_values = len(np.unique(mask))
     print(f"mask shape = {mask.shape}, img shape = {img.shape} dimension equivalent: {dimension}")
