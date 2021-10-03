@@ -62,7 +62,7 @@ class ClawObjectDataset(object):
         
         for i in range(len(obj_ids)):
             obj_ids[i] = i
-        print(mask.shape)
+        # print(mask.shape)
 
         # show(mask)
         # print("np.unique(mask)")
@@ -79,7 +79,7 @@ class ClawObjectDataset(object):
         masks = mask == obj_ids[:, None, None]
         
         
-        print(masks.shape)
+        # print(masks.shape)
         
         # get bounding box coordinates for each mask
         num_objs = len(obj_ids)
@@ -100,8 +100,8 @@ class ClawObjectDataset(object):
 
         labels = torch.as_tensor(obj_ids, dtype=torch.int64)
 
-        print("labels")
-        print(labels)
+        # print("labels")
+        # print(labels)
         # final_labels = []
         # for value in labels:
         #     # print(value.item())
@@ -159,6 +159,11 @@ def get_transform(train):
         transforms.append(T.RandomHorizontalFlip(0.5))
     return T.Compose(transforms)
 
+# saves the model
+def save_model(model):
+    print('Saving Model...')
+    torch.save(model, 'model.pt')
+    print('Model Saved!')
 
 def main():
     # train on the GPU or on the CPU, if a GPU is not available
@@ -175,19 +180,19 @@ def main():
     # print(indices)
     # print(indices[:-7])
     # print(indices[-7:])
-    dataset = torch.utils.data.Subset(dataset, indices[-7:]) #changed from [:-50]
-    dataset_test = torch.utils.data.Subset(dataset_test, indices[:-7]) #changed from [-50:]
+    dataset = torch.utils.data.Subset(dataset, indices[-29:]) #changed from [:-50]
+    dataset_test = torch.utils.data.Subset(dataset_test, indices[:-10]) #changed from [-50:]
 
     # define training and validation data loaders
 
     # print(dataset.__len__())
 
     data_loader = torch.utils.data.DataLoader(
-        dataset, batch_size=1, shuffle=True, num_workers=4,
+        dataset, batch_size=1, shuffle=True, num_workers=2,
         collate_fn=utils.collate_fn)
 
     data_loader_test = torch.utils.data.DataLoader(
-        dataset_test, batch_size=1, shuffle=False, num_workers=4,
+        dataset_test, batch_size=1, shuffle=False, num_workers=2,
         collate_fn=utils.collate_fn)
 
     # get the model using our helper function
@@ -206,7 +211,7 @@ def main():
                                                    gamma=0.1)
 
     # let's train it for 10 epochs
-    num_epochs = 5
+    num_epochs = 25
 
     for epoch in range(num_epochs):
         # train for one epoch, printing every 10 iterations
@@ -216,6 +221,7 @@ def main():
         # evaluate on the test dataset
         evaluate(model, data_loader_test, device=device)
 
+    save_model(model)
     print("That's it!")
     
 if __name__ == "__main__":
