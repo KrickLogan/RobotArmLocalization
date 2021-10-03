@@ -9,7 +9,7 @@ import sys
 
 from torchvision.transforms import functional as F
 
-PRECISION = .5
+PRECISION = 0.75
 
 def load_model():
     model = torch.load('model.pt', map_location=torch.device('cpu'))
@@ -31,7 +31,7 @@ def get_mask_layer(bool_masks):
 
     composite_mask = numpy.zeros((bool_masks[0].size()), bool)
     for mask in bool_masks:
-        print(mask.size())
+        # print(mask.size())
         m = mask.numpy()
         composite_mask = numpy.logical_or(composite_mask, m)
     return composite_mask
@@ -54,9 +54,16 @@ def show_mask_with_depth(img, bmask, depth):
     plt.title('Depth: ' + str(depth))
     plt.show()
 
+def show_mask_with_score_label(img, bmask, score, label):
+    
+    plt.imshow(img)
+    plt.imshow(bmask.numpy(), cmap='ocean', alpha=.5)
+    plt.title(f'Score: {score}, Label: {label}')
+    plt.show()
+
 
 def get_img(fname):
-    img_path = 'Images/' + fname
+    img_path = fname
     img = mpimg.imread(img_path)
     return img
 
@@ -107,9 +114,16 @@ def main(file_name):
     for bmask in bool_masks: 
         avg_depths.append(get_depth_of_seg(depth_arr, bmask))
 
-    
-    for bmask, depth in zip(bool_masks, avg_depths):
-        show_mask_with_depth(img, bmask, depth) 
+    print(labels)
+    print(scores)
+
+    for i in range(len(masks)):
+        if scores[i] >= 0.90:
+            show_mask_with_score_label(img, bool_masks[i], scores[i], labels[i])
+
+
+    # for bmask, depth in zip(bool_masks, avg_depths):
+    #     show_mask_with_depth(img, bmask, depth) 
 
 
 if __name__ == "__main__":
