@@ -133,7 +133,7 @@ dmypy.json
 /.DS_store
 
 # Image files
-*.png
+#*.png
 
 # Model
 model.pt
