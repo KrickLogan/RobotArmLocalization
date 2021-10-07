@@ -10,9 +10,9 @@ import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 
-from engine import train_one_epoch, evaluate
-import utils
-import transforms as T
+from Utilities.engine import train_one_epoch, evaluate
+import Utilities.utils as utils
+import Utilities.transforms as T
 
 from matplotlib import pyplot as plt
 import matplotlib.image as mpimg
@@ -30,19 +30,13 @@ class ClawObjectDataset(object):
         # ensure that they are aligned
         self.imgs = list(sorted(os.listdir(os.path.join(root, "PNGImages"))))
         self.masks = list(sorted(os.listdir(os.path.join(root, "PNGMasks"))))
-        # print(1)
-        # print(self.masks)
 
     def __getitem__(self, idx):
         # load images and masks
         img_path = os.path.join(self.root, "PNGImages", self.imgs[idx])
         mask_path = os.path.join(self.root, "PNGMasks", self.masks[idx])
-        
-        # print(img_path)
-        # print(mask_path)
+        # add check for same img reference
 
-        # for i in range(len(self.imgs)):
-        #     print(f"{self.imgs[i]},{self.masks[i]}")
         img = Image.open(img_path).convert("RGB")
         # note that we haven't converted the mask to RGB,
         # because each color corresponds to a different instance
@@ -50,36 +44,24 @@ class ClawObjectDataset(object):
         mask = Image.open(mask_path)
 
         mask = np.array(mask)
-        
-        # show(mask, mask_path)
 
         # instances are encoded as different colors
         obj_ids = np.unique(mask)
 
-        # print(mask.shape)
+        # convert grayscale values to contiguous integer values from 0 to number of classes
         for i in range(len(obj_ids)):
             mask = np.where(mask == obj_ids[i], i, mask)
         
+        # normalize classification values to contiguous integer values from 0 to number of classes
         for i in range(len(obj_ids)):
             obj_ids[i] = i
-        # print(mask.shape)
-
-        # show(mask)
-        # print("np.unique(mask)")
-        # print(np.unique(mask))
+        #obj_ids = range(len(obj_ids))?
 
         # first id is the background, so remove it
         obj_ids = obj_ids[1:]
 
-        # print("obj id's[]")
-        # print(obj_ids)
-
-        # split the color-encoded mask into a set
-        # of binary masks
+        # split the color-encoded mask into a set of binary masks
         masks = mask == obj_ids[:, None, None]
-        
-        
-        # print(masks.shape)
         
         # get bounding box coordinates for each mask
         num_objs = len(obj_ids)
@@ -91,24 +73,9 @@ class ClawObjectDataset(object):
             ymin = np.min(pos[0])
             ymax = np.max(pos[0])
             boxes.append([xmin, ymin, xmax, ymax])
-            # if xmin - xmax < 1 :
-            #     show(mask[i])
 
         boxes = torch.as_tensor(boxes, dtype=torch.float32)
-        # there is only one class
-        # labels = torch.ones((num_objs,), dtype=torch.int64)
-
         labels = torch.as_tensor(obj_ids, dtype=torch.int64)
-
-        # print("labels")
-        # print(labels)
-        # final_labels = []
-        # for value in labels:
-        #     # print(value.item())
-        #     final_labels.append(value.item())
-        # labels = torch.tensor(final_labels, dtype=torch.int64)
-
-
         masks = torch.as_tensor(masks, dtype=torch.uint8)
 
         image_id = torch.tensor([idx])
@@ -167,32 +134,28 @@ def save_model(model):
 
 def main():
     # train on the GPU or on the CPU, if a GPU is not available
-    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    #device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    device = torch.device('cpu')
     
-    # our dataset has two(Changed to 3) classes only - background and person
-    num_classes = 3
+    # our dataset has four classes
+    num_classes = 4
     # use our dataset and defined transformations
-    dataset = ClawObjectDataset('Data', get_transform(train=True))
-    dataset_test = ClawObjectDataset('Data', get_transform(train=False))
+    dataset = ClawObjectDataset('src/TrainingSrc/Data', get_transform(train=True))
+    dataset_test = ClawObjectDataset('src/TrainingSrc/Data', get_transform(train=False))
 
     # split the dataset in train and test set HERE
     indices = torch.randperm(len(dataset)).tolist()
-    # print(indices)
-    # print(indices[:-7])
-    # print(indices[-7:])
-    dataset = torch.utils.data.Subset(dataset, indices[-29:]) #changed from [:-50]
-    dataset_test = torch.utils.data.Subset(dataset_test, indices[:-10]) #changed from [-50:]
+    dataset = torch.utils.data.Subset(dataset, indices[:]) #changed from [:-50]
+    dataset_test = torch.utils.data.Subset(dataset_test, indices[:]) #changed from [-50:]
 
     # define training and validation data loaders
 
-    # print(dataset.__len__())
-
     data_loader = torch.utils.data.DataLoader(
-        dataset, batch_size=1, shuffle=True, num_workers=2,
+        dataset, batch_size=1, shuffle=True, num_workers=2, #num_workers=4 is default
         collate_fn=utils.collate_fn)
 
     data_loader_test = torch.utils.data.DataLoader(
-        dataset_test, batch_size=1, shuffle=False, num_workers=2,
+        dataset_test, batch_size=1, shuffle=False, num_workers=2, #num_workers=4 is default
         collate_fn=utils.collate_fn)
 
     # get the model using our helper function
@@ -211,7 +174,7 @@ def main():
                                                    gamma=0.1)
 
     # let's train it for 10 epochs
-    num_epochs = 25
+    num_epochs = 2
 
     for epoch in range(num_epochs):
         # train for one epoch, printing every 10 iterations

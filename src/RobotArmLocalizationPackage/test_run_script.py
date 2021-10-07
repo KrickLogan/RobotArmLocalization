@@ -35,7 +35,6 @@ def get_mask_layer(bool_masks):
         composite_mask = numpy.logical_or(composite_mask, m)
     return composite_mask
     
-
 def show_img_mask(img, mask):
     plt.imshow(img)
     plt.imshow(mask, cmap='ocean', alpha=.5)
@@ -57,7 +56,6 @@ def show_mask_with_score_label(img, bmask, score, label):
     plt.imshow(bmask.numpy(), cmap='ocean', alpha=.5)
     plt.title(f'Score: {score}, Label: {label}')
     plt.show()
-
 
 def get_img(fname):
     img_path = fname
@@ -115,11 +113,10 @@ def main(file_name):
         if scores[i] >= 0.90:
             show_mask_with_score_label(img, bool_masks[i], scores[i], labels[i])
 
-
     # for bmask, depth in zip(bool_masks, avg_depths):
     #     show_mask_with_depth(img, bmask, depth) 
-
 
 if __name__ == "__main__":
     file_name = sys.argv[1]
     main(file_name)
+    
