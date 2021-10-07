@@ -6,7 +6,7 @@ masks = list(sorted(os.listdir("Data/PNGMasks")))
 images = list(sorted(os.listdir("Data/PNGImages")))
 np_masks = []
 np_imgs = []
-correct_unique_values = [0,127,255]
+correct_unique_values = [0,64,127,255]
 rework_masks = []
 rework_masks_colors = []
 
@@ -28,10 +28,10 @@ for mask_d,img_d in zip(np_masks, np_imgs):
     dimension = mask.shape == img.shape[:-1]
     num_unique_values = len(np.unique(mask))
     print(f"mask shape = {mask.shape}, img shape = {img.shape} dimension equivalent: {dimension}")
-    print(f"unique values mask data: {np.unique(mask)} {num_unique_values == 3}")
+    print(f"unique values mask data: {np.unique(mask)} {num_unique_values == 4}")
     
     # Check for incorrect dimension or number of unique values
-    if not dimension or num_unique_values != 3:
+    if not dimension or num_unique_values != 4:
         print(f'!!! Rework Required: {mask_name}')
         rework_masks.append(mask_name)
 
