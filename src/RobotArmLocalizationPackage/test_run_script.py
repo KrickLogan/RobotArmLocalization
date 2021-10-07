@@ -28,7 +28,6 @@ def get_bool_masks(masks):
     return bool_masks
 
 def get_mask_layer(bool_masks):
-
     composite_mask = numpy.zeros((bool_masks[0].size()), bool)
     for mask in bool_masks:
         # print(mask.size())
@@ -48,14 +47,12 @@ def show_all_masks(img, masks):
     show_img_mask(img, composite_mask)
 
 def show_mask_with_depth(img, bmask, depth):
-    
     plt.imshow(img)
     plt.imshow(bmask.numpy(), cmap='ocean', alpha=.5)
     plt.title('Depth: ' + str(depth))
     plt.show()
 
 def show_mask_with_score_label(img, bmask, score, label):
-    
     plt.imshow(img)
     plt.imshow(bmask.numpy(), cmap='ocean', alpha=.5)
     plt.title(f'Score: {score}, Label: {label}')
@@ -68,7 +65,6 @@ def get_img(fname):
     return img
 
 def show_img_boxes(img, rectangles):
-    
     plt.imshow(img)
     for rect in rectangles:
         plt.gca().add_patch(rect)
@@ -89,8 +85,6 @@ def size_img_tensor(tens):
     return tens
 
 def main(file_name):
-    
-    
     model = load_model()
     img = get_img(file_name)
     img_tens = F.to_tensor(img)
