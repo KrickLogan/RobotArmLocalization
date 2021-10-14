@@ -1,4 +1,4 @@
-# Sample code from the TorchVision 0.3 Object Detection Finetuning Tutorial
+# Sample code was obtained from the TorchVision 0.3 Object Detection Finetuning Tutorial
 # http://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
 
 import os
@@ -134,10 +134,10 @@ def save_model(model):
 
 def main():
     # train on the GPU or on the CPU, if a GPU is not available
-    #device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
-    device = torch.device('cpu')
+    device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
+    #device = torch.device('cpu')
     
-    # our dataset has four classes
+    # our dataset has four classes (background, robot_arm_base, robot_arm_claw, cotton_object)
     num_classes = 4
     # use our dataset and defined transformations
     dataset = ClawObjectDataset('src/TrainingSrc/Data', get_transform(train=True))
@@ -145,17 +145,18 @@ def main():
 
     # split the dataset in train and test set HERE
     indices = torch.randperm(len(dataset)).tolist()
-    dataset = torch.utils.data.Subset(dataset, indices[:]) #changed from [:-50]
-    dataset_test = torch.utils.data.Subset(dataset_test, indices[:]) #changed from [-50:]
+    # training dataset = [:-10] which means everything except the last 10 items of the array
+    dataset = torch.utils.data.Subset(dataset, indices[:-10])
+    # testing dataset = [-10:] which means only the last 10 items of the array
+    dataset_test = torch.utils.data.Subset(dataset_test, indices[-10:])
 
     # define training and validation data loaders
-
     data_loader = torch.utils.data.DataLoader(
-        dataset, batch_size=1, shuffle=True, num_workers=2, #num_workers=4 is default
+        dataset, batch_size=1, shuffle=True, num_workers=2, #num_workers=4 is default, lowered to reduce resource cost
         collate_fn=utils.collate_fn)
 
     data_loader_test = torch.utils.data.DataLoader(
-        dataset_test, batch_size=1, shuffle=False, num_workers=2, #num_workers=4 is default
+        dataset_test, batch_size=1, shuffle=False, num_workers=2, #num_workers=4 is default, lowered to reduce resource cost
         collate_fn=utils.collate_fn)
 
     # get the model using our helper function
@@ -173,8 +174,8 @@ def main():
                                                    step_size=3,
                                                    gamma=0.1)
 
-    # let's train it for 10 epochs
-    num_epochs = 2
+    # The number of epochs to train for
+    num_epochs = 15
 
     for epoch in range(num_epochs):
         # train for one epoch, printing every 10 iterations
