@@ -9,7 +9,9 @@ def get_filename_prefixes(mask_file_names):
     
     return prefixes
 
-def 
+def load_images(prefixes):
+    for prefix in prefixes:
+        img_path = glob.glob
 masks = list(sorted(os.listdir("src/TrainingSrc/Data/PNGMasks")))
 images = list(sorted(os.listdir("src/TrainingSrc/Data/PNGImages")))
 np_masks = []
