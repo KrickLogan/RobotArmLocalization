@@ -2,6 +2,14 @@ import os
 import numpy as np
 from PIL import Image
 
+def get_filename_prefixes(mask_file_names):
+    prefixes = []
+    for fname in mask_file_names:
+        prefixes.append(fname.split('mask')[0])
+    
+    return prefixes
+
+def 
 masks = list(sorted(os.listdir("src/TrainingSrc/Data/PNGMasks")))
 images = list(sorted(os.listdir("src/TrainingSrc/Data/PNGImages")))
 np_masks = []
