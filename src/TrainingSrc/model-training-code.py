@@ -9,7 +9,7 @@ from PIL import Image
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
-from Utilities.custom_utils import get_image_fnames, remove_unmatched_fnames
+from Utilities.custom_utils import get_image_fnames, remove_unmatched_fnames, remove_unwanted_files
 
 from Utilities.engine import train_one_epoch, evaluate
 import Utilities.utils as utils
@@ -25,7 +25,9 @@ class ClawObjectDataset(object):
         # ensure that they are aligned
         # self.imgs = list(sorted(os.listdir(os.path.join(root, "PNGImages"))))
         self.masks = list(sorted(os.listdir(os.path.join(root, "PNGMasks"))))
+        self.masks = remove_unwanted_files(self.masks)
         self.imgs = get_image_fnames(self.masks)
+        self.imgs = remove_unwanted_files(self.imgs)
         all_img_fnames = list(sorted(os.listdir(os.path.join(root, "PNGImages"))))
         self.imgs, self.masks = remove_unmatched_fnames(self.imgs, self.masks, all_img_fnames)
 
@@ -34,11 +36,11 @@ class ClawObjectDataset(object):
         # load images and masks
         img_path = os.path.join(self.root, "PNGImages", self.imgs[idx])
         mask_path = os.path.join(self.root, "PNGMasks", self.masks[idx])
-        # add check for same img reference
 
         img = Image.open(img_path).convert("RGB")
         # note that we haven't converted the mask to RGB,
-        # because each color corresponds to a different instance
+        # since the masks are already grayscale,
+        # so each color corresponds to a different instance (classification)
         # with 0 being background
         mask = Image.open(mask_path)
 
@@ -144,14 +146,15 @@ def main():
     dataset = ClawObjectDataset('Data', get_transform(train=True))
     dataset_test = ClawObjectDataset('Data', get_transform(train=False))
 
+    # percentage of data to be used for testing
+    test_split = 0.2
+
     # split the dataset in train and test set HERE
     indices = torch.randperm(len(dataset)).tolist()
-    # training dataset = [:-10] which means everything except the last 10 items of the array
-    dataset = torch.utils.data.Subset(dataset, indices[:-10])
-    # testing dataset = [-10:] which means only the last 10 items of the array
-    dataset_test = torch.utils.data.Subset(dataset_test, indices[-10:])
+    split = int(np.floor(test_split * len(indices)))
+    dataset, dataset_test = torch.utils.data.Subset(dataset, indices[split:]), torch.utils.data.Subset(dataset_test,indices[:split])
 
-    # define training and validation data loaders
+    # define training and testing data loaders
     data_loader = torch.utils.data.DataLoader(
         dataset, batch_size=1, shuffle=True, num_workers=2, #num_workers=4 is default, lowered to reduce resource cost
         collate_fn=utils.collate_fn)
