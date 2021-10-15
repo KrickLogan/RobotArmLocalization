@@ -133,7 +133,12 @@ dmypy.json
 /.DS_store
 
 # Image files
-#*.png
+*.png
 
 # Model
 model.pt
+
+# Numpy files of depth values
+
+*.npy
+
