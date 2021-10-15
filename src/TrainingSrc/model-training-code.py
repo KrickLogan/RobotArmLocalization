@@ -9,27 +9,26 @@ from PIL import Image
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
+from Utilities.custom_utils import get_image_fnames, remove_unmatched_fnames
 
 from Utilities.engine import train_one_epoch, evaluate
 import Utilities.utils as utils
 import Utilities.transforms as T
 
-from matplotlib import pyplot as plt
-import matplotlib.image as mpimg
-
-def show(img, title="title"):
-    plt.title(title)
-    plt.imshow(img)
-    plt.show()
-
 class ClawObjectDataset(object):
+    
+
     def __init__(self, root, transforms):
         self.root = root
         self.transforms = transforms
         # load all image files, sorting them to
         # ensure that they are aligned
-        self.imgs = list(sorted(os.listdir(os.path.join(root, "PNGImages"))))
+        # self.imgs = list(sorted(os.listdir(os.path.join(root, "PNGImages"))))
         self.masks = list(sorted(os.listdir(os.path.join(root, "PNGMasks"))))
+        self.imgs = get_image_fnames(self.masks)
+        all_img_fnames = list(sorted(os.listdir(os.path.join(root, "PNGImages"))))
+        self.imgs, self.masks = remove_unmatched_fnames(self.imgs, self.masks, all_img_fnames)
+
 
     def __getitem__(self, idx):
         # load images and masks
@@ -98,6 +97,8 @@ class ClawObjectDataset(object):
 
     def __len__(self):
         return len(self.imgs)
+    
+    
 
 def get_model_instance_segmentation(num_classes):
     # load an instance segmentation model pre-trained pre-trained on COCO
@@ -140,8 +141,8 @@ def main():
     # our dataset has four classes (background, robot_arm_base, robot_arm_claw, cotton_object)
     num_classes = 4
     # use our dataset and defined transformations
-    dataset = ClawObjectDataset('src/TrainingSrc/Data', get_transform(train=True))
-    dataset_test = ClawObjectDataset('src/TrainingSrc/Data', get_transform(train=False))
+    dataset = ClawObjectDataset('Data', get_transform(train=True))
+    dataset_test = ClawObjectDataset('Data', get_transform(train=False))
 
     # split the dataset in train and test set HERE
     indices = torch.randperm(len(dataset)).tolist()
