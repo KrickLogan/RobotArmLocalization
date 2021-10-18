@@ -10,7 +10,7 @@ import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
 from Utilities.custom_utils import get_image_fnames, remove_unmatched_fnames, remove_unwanted_files
-
+import Utilities.custom_utils as cu
 from Utilities.engine import train_one_epoch, evaluate
 import Utilities.utils as utils
 import Utilities.transforms as T
@@ -25,9 +25,12 @@ class ClawObjectDataset(object):
         # ensure that they are aligned
         # self.imgs = list(sorted(os.listdir(os.path.join(root, "PNGImages"))))
         self.masks = list(sorted(os.listdir(os.path.join(root, "PNGMasks"))))
-        self.masks = remove_unwanted_files(self.masks)
+        # self.masks = remove_unwanted_files(self.masks)
+        self.masks = cu.remove_bad_mask_files(self.masks)
+
         self.imgs = get_image_fnames(self.masks)
-        self.imgs = remove_unwanted_files(self.imgs)
+        # self.imgs = remove_unwanted_files(self.imgs)
+        
         all_img_fnames = list(sorted(os.listdir(os.path.join(root, "PNGImages"))))
         self.imgs, self.masks = remove_unmatched_fnames(self.imgs, self.masks, all_img_fnames)
 

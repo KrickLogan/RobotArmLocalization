@@ -8,21 +8,23 @@ import numpy
 import torch
 import os
 from torchvision.transforms import functional as F
+import sys
+import Utilities.visualizer as viz
 
 PRECISION = 0.75
 
-depths = list(sorted(os.listdir("src/RobotArmLocalizationPackage/Data/Depths")))
-images = list(sorted(os.listdir("src/RobotArmLocalizationPackage/Data/Images")))
-np_depths = []
-np_imgs = []
+# depths = list(sorted(os.listdir("src/RobotArmLocalizationPackage/Data/Depths")))
+# images = list(sorted(os.listdir("src/RobotArmLocalizationPackage/Data/Images")))
+# np_depths = []
+# np_imgs = []
 
-for depth in depths:
-    if not os.path.basename(depth) == '.gitkeep':
-        np_depths.append(np.array(np.load(os.path.join("src/RobotArmLocalizationPackage/Data/Depths/", depth))))
+# for depth in depths:
+#     if not os.path.basename(depth) == '.gitkeep':
+#         np_depths.append(np.array(np.load(os.path.join("src/RobotArmLocalizationPackage/Data/Depths/", depth))))
 
-for img in images:
-    if not os.path.basename(img) == '.gitkeep':
-        np_imgs.append(Image.open(os.path.join("src/RobotArmLocalizationPackage/Data/Images/",img)))
+# for img in images:
+#     if not os.path.basename(img) == '.gitkeep':
+#         np_imgs.append(Image.open(os.path.join("src/RobotArmLocalizationPackage/Data/Images/",img)))
 
 def load_model():
     model = torch.load('model.pt', map_location=torch.device('cpu'))
@@ -40,7 +42,7 @@ def get_bool_masks(masks):
     bool_masks = bool_masks.squeeze(1)
     return bool_masks
 
-def get_mask_layer(bool_masks):
+def get_composite_masks(bool_masks):
     composite_mask = numpy.zeros((bool_masks[0].size()), bool)
     for mask in bool_masks:
         m = mask.numpy()
@@ -64,14 +66,14 @@ def get_label_string(label):
 def show_img(img):
     plt.imshow(img)
     plt.title('Original Image')
-    maximize_plt()
+    # maximize_plt()
     plt.show()
 
 def show_img_mask(img, mask):
     plt.imshow(img)
     plt.imshow(mask, cmap='ocean', alpha=.5)
     plt.title('Predicted Masks')
-    maximize_plt()
+    # maximize_plt()
     plt.show()
 
 def show_all_masks(img, masks):
@@ -110,6 +112,8 @@ def show_img_boxes(img, rectangles):
     plt.show()
 
 def get_avg_depth_of_seg(depth_arr, bool_seg_mask):
+    bool_seg_mask = np.logical_and(bool_seg_mask, depth_arr != 0)
+    bool_seg_mask = torch.gt(bool_seg_mask, 0)
     mx = ma.masked_array(depth_arr, np.invert(bool_seg_mask).long())
     return mx.mean()
 
@@ -124,11 +128,45 @@ def maximize_plt():
         mng = plt.get_current_fig_manager() 
         mng.window.state("zoomed")
 
-def main():
-    for i in range(len(np_imgs)):
-        img = np_imgs[i]
-        depth_arr = np_depths[i]
+# def main():
+#     for i in range(len(np_imgs)):
+#         img = np_imgs[i]
+#         depth_arr = np_depths[i]
 
+#         model = load_model()
+#         img_tens = F.to_tensor(img)
+#         img_tens = size_img_tensor(img_tens)
+#         output = model([img_tens])
+        
+#         boxes = output[0]['boxes']
+#         labels = output[0]['labels']
+#         masks = output[0]['masks']
+#         scores = output[0]['scores']
+
+#         show_img(img)
+
+#         rectangles = get_rectangles(boxes)
+#         show_img_boxes(img, rectangles)
+
+#         show_all_masks(img, masks)
+
+#         avg_depths = []
+#         bool_masks = get_bool_masks(masks)
+#         for bmask in bool_masks: 
+#             avg_depths.append(get_avg_depth_of_seg(depth_arr, bmask))
+
+#         print(f'Labels: {labels}')
+#         print(f'Scores: {scores}')
+#         print(f'Avg Depths: {avg_depths}')
+
+#         for i in range(len(masks)):
+#             #if scores[i] >= 0.90:
+#             show_mask_with_score_label_depth(img, bool_masks[i], scores[i], labels[i], avg_depths[i], depth_arr)
+
+def main(img_name):
+
+        img = Image.open(os.path.join("Data/Images/",img_name + ".png"))
+        np_depth = np.load(f"Data/Depths/{img_name}_depth.npy")
         model = load_model()
         img_tens = F.to_tensor(img)
         img_tens = size_img_tensor(img_tens)
@@ -141,25 +179,34 @@ def main():
 
         show_img(img)
 
-        rectangles = get_rectangles(boxes)
-        show_img_boxes(img, rectangles)
+        # rectangles = get_rectangles(boxes)
+        # show_img_boxes(img, rectangles)
 
-        show_all_masks(img, masks)
-
-        avg_depths = []
+        # show_all_masks(img, masks)
         bool_masks = get_bool_masks(masks)
+        # viz.show_mask_overlay(img, get_composite_masks(bool_masks), "All Mask Predictions")
+        
+        avg_depths = []
+        mask_depths = []
+        
         for bmask in bool_masks: 
-            avg_depths.append(get_avg_depth_of_seg(depth_arr, bmask))
-
+            avg_depths.append(get_avg_depth_of_seg(np_depth, bmask))
+            mask_depths.append(ma.masked_array(np_depth, np.invert(bmask).long()))
+        
         print(f'Labels: {labels}')
         print(f'Scores: {scores}')
         print(f'Avg Depths: {avg_depths}')
 
         for i in range(len(masks)):
+            data_labels, data_values = viz.get_graph_labels_values(mask_depths[i])
+            viz.show_mask_overlay(np_depth, bool_masks[i], "Mask Over Depth", True, np_depth)
+            viz.show_bar_graph(data_labels, data_values, f"Depth Spread {get_label_string(labels[i])}\nAVG Depth: {avg_depths[i]}", "Range", "Frequency")
+            
+        # for i in range(len(masks)):
             #if scores[i] >= 0.90:
-            show_mask_with_score_label_depth(img, bool_masks[i], scores[i], labels[i], avg_depths[i], depth_arr)
+            # show_mask_with_score_label_depth(img, bool_masks[i], scores[i], labels[i], avg_depths[i], depth_arr)
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1])
     
