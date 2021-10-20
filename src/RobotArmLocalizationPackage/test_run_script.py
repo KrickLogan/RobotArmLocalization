@@ -11,18 +11,19 @@ from torchvision.transforms import functional as F
 
 PRECISION = 0.75
 
-depths = list(sorted(os.listdir("src/RobotArmLocalizationPackage/Data/Depths")))
-images = list(sorted(os.listdir("src/RobotArmLocalizationPackage/Data/Images")))
+depths = list(sorted(os.listdir("Data/Depths")))
+images = list(sorted(os.listdir("Data/Images")))
 np_depths = []
 np_imgs = []
+center_point = [500,800]
 
 for depth in depths:
     if not os.path.basename(depth) == '.gitkeep':
-        np_depths.append(np.array(np.load(os.path.join("src/RobotArmLocalizationPackage/Data/Depths/", depth))))
+        np_depths.append(np.array(np.load(os.path.join("Data/Depths/", depth))))
 
 for img in images:
     if not os.path.basename(img) == '.gitkeep':
-        np_imgs.append(Image.open(os.path.join("src/RobotArmLocalizationPackage/Data/Images/",img)))
+        np_imgs.append(Image.open(os.path.join("Data/Images/",img)))
 
 def load_model():
     model = torch.load('model.pt', map_location=torch.device('cpu'))
@@ -71,6 +72,16 @@ def show_img_mask(img, mask):
     plt.imshow(img)
     plt.imshow(mask, cmap='ocean', alpha=.5)
     plt.title('Predicted Masks')
+    maximize_plt()
+    plt.show()
+
+def show_img_mask_center_point(img, mask, center_point):
+    plt.imshow(img)
+    plt.imshow(mask, cmap='ocean', alpha=.5)
+    x = center_point[0]
+    y = center_point[1]
+    plt.plot(x, y, 'g*')
+    plt.title('Center Point Predictions')
     maximize_plt()
     plt.show()
 
@@ -125,7 +136,7 @@ def maximize_plt():
         mng.window.state("zoomed")
 
 def main():
-    for i in range(len(np_imgs)):
+    for i in range(1):
         img = np_imgs[i]
         depth_arr = np_depths[i]
 
@@ -157,7 +168,8 @@ def main():
 
         for i in range(len(masks)):
             #if scores[i] >= 0.90:
-            show_mask_with_score_label_depth(img, bool_masks[i], scores[i], labels[i], avg_depths[i], depth_arr)
+            #show_mask_with_score_label_depth(img, bool_masks[i], scores[i], labels[i], avg_depths[i], depth_arr)
+            show_img_mask_center_point(img, bool_masks[i], center_point)
 
 
 if __name__ == "__main__":
