@@ -52,11 +52,11 @@ class ClawObjectDataset(object):
         # instances are encoded as different colors
         obj_ids = np.unique(mask)
 
-        # convert grayscale values to contiguous integer values from 0 to number of classes
+        # convert grayscale values of masks to contiguous integer values from 0 to number of classes
         for i in range(len(obj_ids)):
             mask = np.where(mask == obj_ids[i], i, mask)
         
-        # normalize classification values to contiguous integer values from 0 to number of classes
+        # normalize classification values (object ids) to contiguous integer values from 0 to number of classes
         for i in range(len(obj_ids)):
             obj_ids[i] = i
         #obj_ids = range(len(obj_ids))?

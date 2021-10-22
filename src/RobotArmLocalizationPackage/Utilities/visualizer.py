@@ -15,7 +15,7 @@ def get_rectangles(boxes):
 
 def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None):
     if force_contrast: 
-        plt.imshow(img, vmin=0, vmax = 1000)
+        plt.imshow(img, vmin=350, vmax = 614)
     else:
         plt.imshow(img)
     plt.imshow(mask, cmap='ocean', alpha=.5)
@@ -43,12 +43,14 @@ def show_bar_graph(data_labels, data_values, title="", x_axis_label="", y_axis_l
 def get_graph_labels_values(ma_depth):
     partitions = 6
     unique_values, frequencies = np.unique(ma_depth, return_counts=True)
-
+    
     for i in range(len(unique_values)):   
         if not np.isscalar(unique_values[i]):
             frequencies = np.delete(frequencies, i)
             unique_values = np.delete(unique_values, i)
 
+    print(f"Percentage 0: {frequencies[0]/frequencies[1:].sum()} ")
+    
     frequencies = frequencies[1:]
     unique_values = unique_values[1:]
     
