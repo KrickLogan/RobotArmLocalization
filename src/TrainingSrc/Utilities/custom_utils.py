@@ -14,12 +14,12 @@ def remove_unmatched_fnames(image_fnames, mask_fnames, all_image_fnames):
             mask_fnames.remove(m_image.replace('.', '_mask.'))
     return image_fnames, mask_fnames
 
-def remove_unwanted_files(fnames):
-    substring = 'frame'
-    for fname in fnames:
-        if substring not in fname:
-            fnames.remove(fname)
-    return fnames
+# def remove_unwanted_files(fnames):
+#     substring = 'frame'
+#     for fname in fnames:
+#         if substring not in fname:
+#             fnames.remove(fname)
+#     return fnames
 
 def remove_bad_img_files(fnames):
     good_img_files = []
