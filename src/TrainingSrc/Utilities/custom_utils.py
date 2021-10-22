@@ -1,3 +1,5 @@
+import re
+
 def get_image_fnames(mask_fnames):
         image_fnames = [mask.replace('_mask', '') for mask in mask_fnames]
         return image_fnames
@@ -18,3 +20,18 @@ def remove_unwanted_files(fnames):
         if substring not in fname:
             fnames.remove(fname)
     return fnames
+
+def remove_bad_img_files(fnames):
+    good_img_files = []
+    for fname in fnames:
+        if bool(re.match("frame_\d{1,3}\\.png", fname)):
+            good_img_files.append(fname)
+    return good_img_files
+
+def remove_bad_mask_files(mfnames):
+    good_mask_files = []
+    for fname in mfnames:
+        if bool(re.match("frame_\d{1,3}_mask\\.png", fname)):
+            good_mask_files.append(fname)
+        
+    return good_mask_files

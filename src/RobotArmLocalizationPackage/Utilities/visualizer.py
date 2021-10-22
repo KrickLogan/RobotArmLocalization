@@ -12,9 +12,15 @@ def get_rectangles(boxes):
         rectangles.append(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
     return rectangles
 
-def show_mask_overlay(img, mask, title=""):
-    plt.imshow(img)
+
+def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None):
+    if force_contrast: 
+        plt.imshow(img, vmin=350, vmax = 614)
+    else:
+        plt.imshow(img)
     plt.imshow(mask, cmap='ocean', alpha=.5)
+    if depth_arr is not None:
+        plt.imshow(depth_arr, alpha=0)
     plt.title(title)
     plt.show()
 
@@ -35,13 +41,27 @@ def show_bar_graph(data_labels, data_values, title="", x_axis_label="", y_axis_l
     plt.show()
 
 def get_graph_labels_values(ma_depth):
-    partitions = 10
+    partitions = 6
     unique_values, frequencies = np.unique(ma_depth, return_counts=True)
-    index_interval = unique_values[-1]//(partitions)
+    
+    for i in range(len(unique_values)):   
+        if not np.isscalar(unique_values[i]):
+            frequencies = np.delete(frequencies, i)
+            unique_values = np.delete(unique_values, i)
+
+    print(f"Percentage 0: {frequencies[0]/frequencies[1:].sum()} ")
+    
+    frequencies = frequencies[1:]
+    unique_values = unique_values[1:]
+    
+    index_interval = (unique_values[-1] - unique_values[0])//(partitions)
+    
     np_segment_boundaries = np.arange(unique_values[0], unique_values[-1], index_interval)
+    
     data_labels = [None] * partitions
     data_values = [None] * partitions
-    for i in range(1,len(np_segment_boundaries)-1):
+    for i in range(1,len(np_segment_boundaries)):
+        
         data_labels[i-1] = f"[{np_segment_boundaries[i-1]}, {np_segment_boundaries[i]})"
         sum = 0
         for value, frequency in zip(unique_values, frequencies):
@@ -54,19 +74,10 @@ def get_graph_labels_values(ma_depth):
             sum += frequency
     data_labels[-1] = f"[{np_segment_boundaries[-2]}, {unique_values[-1]}]"
     data_values[-1] = sum
+    
+
     return data_labels, data_values
 
-    assert len(data_labels) == partitions
-    assert len(data_values) == partitions
-    assert data_labels[-1] != None
-    assert data_values[-1] != None
-
-    # if len(unique_values) > partitions:
-    #     index_interval = unique_values[-1]//(partitions-1)
-    #     np_segment_indices = np.arange(unique_values[0], unique_values[-1], index_interval)
-    # else :
-    #     index_interval = 
-    #     np_segment_indices = np.arange(unique_values[0], unique_values[-1], index_interval)
     
 
 # def show_all_masks(img, masks):

@@ -2,10 +2,18 @@ import os
 import numpy as np
 from PIL import Image
 from Utilities.custom_utils import get_image_fnames, remove_unmatched_fnames, remove_unwanted_files
+import Utilities.custom_utils as cu
 
 mask_fnames = list(sorted(os.listdir("Data/PNGMasks")))
+
+mask_fnames = cu.remove_bad_mask_files(mask_fnames)
+
 image_fnames = get_image_fnames(mask_fnames)
+
+image_fnames = cu.remove_bad_img_files(image_fnames)
+
 all_image_fnames = list(sorted(os.listdir("Data/PNGImages")))
+
 image_fnames, mask_fnames = remove_unmatched_fnames(image_fnames, mask_fnames, all_image_fnames)
 
 np_masks = []
@@ -14,8 +22,8 @@ rework_masks = []
 rework_masks_colors = []
 correct_unique_values = [0,64,127,255]
 
-image_fnames = remove_unwanted_files(image_fnames)
-mask_fnames = remove_unwanted_files(mask_fnames)
+# image_fnames = remove_unwanted_files(image_fnames)
+# mask_fnames = remove_unwanted_files(mask_fnames)
 
 for img in image_fnames:
     np_imgs.append((np.array(Image.open(os.path.join("Data/PNGImages",img))), img))
