@@ -7,6 +7,7 @@ import os
 from torchvision.transforms import functional as F
 import sys
 import Utilities.visualizer as viz
+from scipy import ndimage
 
 PRECISION = 0.75
 
@@ -31,6 +32,10 @@ def get_avg_depth_of_seg(depth_arr, bool_seg_mask):
     bool_seg_mask = torch.gt(bool_seg_mask, 0)
     mx = ma.masked_array(depth_arr, np.invert(bool_seg_mask).long())
     return mx.mean()
+
+def center_of_mask(mask):
+    return ndimage.measurements.center_of_mass(mask)
+
 
 # def size_img_tensor(tens):
 #     if tens.size()[0] > 3:
@@ -72,11 +77,13 @@ def main(img_name):
         print(f'Avg Depths: {avg_depths}')
 
         for i in range(len(masks)):
-            data_labels, data_values = viz.get_graph_labels_values(mask_depths[i])
-            viz.show_bar_graph(data_labels, data_values, f"Depth Spread {viz.get_label_string(labels[i])}\nAVG Depth: {avg_depths[i]}", "Range", "Frequency")
-            viz.show_mask_overlay(np_depth, bool_masks[i], "Mask Over Depth", True, np_depth)
-            # plt_title = f'Label: {viz.get_label_string(labels[i])}, Score: {round(scores[i].item(),4)}, Average Depth: {round(avg_depths[i], 4)}'
-            # viz.show_mask_overlay(np_depth, bool_masks[i], plt_title, True, np_depth)
+            # data_labels, data_values = viz.get_graph_labels_values(mask_depths[i])
+            # viz.show_bar_graph(data_labels, data_values, f"Depth Spread {viz.get_label_string(labels[i])}\nAVG Depth: {avg_depths[i]}", "Range", "Frequency")
+            # viz.show_mask_overlay(np_depth, bool_masks[i], "Mask Over Depth", True, np_depth)
+            plt_title = f'Label: {viz.get_label_string(labels[i])}, Score: {round(scores[i].item(),4)}, Average Depth: {round(avg_depths[i], 4)}'
+            # viz.show_mask_overlay(img, bool_masks[i], plt_title, True, np_depth)
+            viz.show_mask_overlay(img, bool_masks[i], plt_title)
+            mask_center = center_of_mask(bool_masks[i].astype(int))
 
 if __name__ == "__main__":
     main(sys.argv[1])
