@@ -36,6 +36,14 @@ def get_avg_depth_of_seg(depth_arr, bool_seg_mask):
 def center_of_mask(mask):
     return ndimage.measurements.center_of_mass(mask)
 
+def get_center(boxes):
+    points = []
+    for box in boxes:
+        x, y, w, h = box.detach().numpy()
+        p1 = (w + x)/2
+        p2 = (h + y)/2
+        points += [p1, p2]
+    return points
 
 # def size_img_tensor(tens):
 #     if tens.size()[0] > 3:

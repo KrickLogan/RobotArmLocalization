@@ -42,7 +42,7 @@ def show_point(img, point, title, mask = None):
     if(mask != None):
         plt.imshow(mask, cmap='ocean', alpha=.5)
     plt.title(title)
-    
+  
 
 def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None):
     if force_contrast: 
