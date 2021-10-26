@@ -37,11 +37,7 @@ def show_img(img):
     maximize_plt()
     plt.show()
 
-def show_point(img, point, title, mask = None):
-    plt.imshow(img)
-    if(mask != None):
-        plt.imshow(mask, cmap='ocean', alpha=.5)
-    plt.title(title)
+
   
 
 def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None):
@@ -120,3 +116,32 @@ def get_graph_labels_values(ma_depth):
     data_values[-1] = sum
 
     return data_labels, data_values
+
+def show_img_mask_center_point(img, boxes, center_points):
+    # center_point = get_center(boxes)
+
+    plt.imshow(img)
+    x = center_points[0]
+    y = center_points[1]
+    x2 = center_points[2]
+    y2 = center_points[3]
+    x3 = center_points[4]
+    y3 = center_points[5]
+    plt.plot(x, y, 'g*')
+    plt.plot(x2, y2, 'g*')
+    plt.plot(x3, y3, 'g*')
+    rectangles = get_rectangles(boxes)
+    for rect in rectangles:
+        plt.gca().add_patch(rect)
+
+    plt.title('Center Point Predictions')
+    maximize_plt()
+    plt.show()
+
+def show_point(img, point, title, mask = None):
+    plt.imshow(img)
+    if(mask != None):
+        plt.imshow(mask, cmap='ocean', alpha=.5)
+    plt.title(title)
+    plt.plot(point[1], point[0], 'b*')
+    plt.show()

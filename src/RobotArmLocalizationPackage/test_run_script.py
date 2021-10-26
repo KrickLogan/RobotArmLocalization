@@ -67,8 +67,8 @@ def main(img_name):
 
         viz.show_img(img)
 
-        rectangles = viz.get_rectangles(boxes)
-        viz.show_img_boxes(img, rectangles)
+        # rectangles = viz.get_rectangles(boxes)
+        # viz.show_img_boxes(img, rectangles)
 
         bool_masks = get_bool_masks(masks)
         # viz.show_mask_overlay(img, get_composite_masks(bool_masks), "All Mask Predictions")
@@ -91,7 +91,14 @@ def main(img_name):
             plt_title = f'Label: {viz.get_label_string(labels[i])}, Score: {round(scores[i].item(),4)}, Average Depth: {round(avg_depths[i], 4)}'
             # viz.show_mask_overlay(img, bool_masks[i], plt_title, True, np_depth)
             viz.show_mask_overlay(img, bool_masks[i], plt_title)
-            mask_center = center_of_mask(bool_masks[i].astype(int))
+            # print(np.unique(bool_masks[i].numpy().astype(int)))
+            # mask_center = center_of_mask(bool_masks[i].numpy().astype(int))
+            
+            # viz.show_point(img, mask_center, "mask and center", bool_masks[i])
+            
+        
+        viz.show_img_mask_center_point(img, boxes, get_center(boxes))
+
 
 if __name__ == "__main__":
     main(sys.argv[1])
