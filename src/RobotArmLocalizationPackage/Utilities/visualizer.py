@@ -59,6 +59,14 @@ def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None)
     maximize_plt()
     plt.show()
 
+def show_point(img, point, title, mask = None):
+    plt.imshow(img)
+    if(mask != None):
+        plt.imshow(mask, cmap='ocean', alpha=.5)
+    plt.title(title)
+    plt.plot(point[0], point[1], 'b*')
+    plt.show()
+
 def show_img_boxes(img, rectangles):
     plt.imshow(img)
     for rect in rectangles:
