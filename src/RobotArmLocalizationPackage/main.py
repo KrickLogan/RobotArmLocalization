@@ -12,7 +12,7 @@ def main(frame_prefix, sys_base_to_claw):
     img = utils.load_image(frame_prefix + ".png")
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
     
-    detector = ObjectDetector(img, depth_arr)
+    detector = ObjectDetector(img)
     detections = detector.run()
     claw = None
     cotton = None
@@ -37,7 +37,7 @@ def main(frame_prefix, sys_base_to_claw):
         rotation_angle = base_to_claw.get_angle_between(sys_base_to_claw) # Vector class
         base_to_cotton = cotton - base
         base_to_cotton = base_to_cotton.rotate(rotation_angle) #Vector class
-    
+        return base_to_cotton
 
 
 

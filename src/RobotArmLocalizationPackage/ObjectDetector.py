@@ -3,9 +3,8 @@ from torchvision.transforms import functional as F
 
 class ObjectDetector:
 
-    def __init__(self, img, depth):
+    def __init__(self, img):
         self._img = img
-        self._depth = depth
         self._model = utils.load_model()
         self._detections = []
     
