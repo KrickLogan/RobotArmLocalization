@@ -44,7 +44,7 @@ def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None)
 
         if depth_arr is not None:
             unique_values = np.unique(ma.masked_array(depth_arr, np.invert(mask).long()))
-            print(unique_values)
+            # print(unique_values)
             max = unique_values[-2]
             min = unique_values[1]
 
@@ -94,7 +94,7 @@ def get_graph_labels_values(ma_depth):
             frequencies = np.delete(frequencies, i)
             unique_values = np.delete(unique_values, i)
 
-    print(f"Percentage 0: {frequencies[0]/frequencies[1:].sum()} ")
+    # print(f"Percentage 0: {frequencies[0]/frequencies[1:].sum()} ")
     
     frequencies = frequencies[1:]
     unique_values = unique_values[1:]
