@@ -47,7 +47,7 @@ def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None)
 
         if depth_arr is not None:
             unique_values = np.unique(ma.masked_array(depth_arr, np.invert(mask).long()))
-            print(unique_values)
+            # print(unique_values)
             max = unique_values[-2]
             min = unique_values[1]
 
@@ -60,6 +60,14 @@ def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None)
         plt.imshow(depth_arr, alpha=0)
     plt.title(title)
     maximize_plt()
+    plt.show()
+
+def show_point(img, point, title, mask = None):
+    plt.imshow(img)
+    if(mask != None):
+        plt.imshow(mask, cmap='ocean', alpha=.5)
+    plt.title(title)
+    plt.plot(point[0], point[1], 'b*')
     plt.show()
 
 def show_img_boxes(img, rectangles):
@@ -89,7 +97,7 @@ def get_graph_labels_values(ma_depth):
             frequencies = np.delete(frequencies, i)
             unique_values = np.delete(unique_values, i)
 
-    print(f"Percentage 0: {frequencies[0]/frequencies[1:].sum()} ")
+    # print(f"Percentage 0: {frequencies[0]/frequencies[1:].sum()} ")
     
     frequencies = frequencies[1:]
     unique_values = unique_values[1:]
