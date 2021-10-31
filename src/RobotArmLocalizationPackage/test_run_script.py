@@ -45,6 +45,11 @@ def get_center(boxes):
         points += [p1, p2]
     return points
 
+def get_coordinate(depth_arr, bool_seg_mask, angle):
+    depth = get_avg_depth_of_seg(depth_arr, bool_seg_mask)
+    coordinate = depth * tan(angle)
+    return coordinate
+
 # def size_img_tensor(tens):
 #     if tens.size()[0] > 3:
 #         tens = tens[0:3]
