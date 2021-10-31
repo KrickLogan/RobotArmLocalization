@@ -4,6 +4,7 @@ import os
 import numpy as np
 import pytest
 import numpy.ma as ma
+from math import tan
 
 PRECISION = 0.75
 BASE_STRING = 'Base'
@@ -46,6 +47,10 @@ def calculate_vector(box_center_pxl, img_center_pxl, depth, HFOV, VFOV):
     y = depth
     return (x,y,z)
 
+def get_coord_value(angle, depth):
+    coordinate = depth * tan(angle)
+    return coordinate
+
 def get_label_string(label): ## Rework to use a dict?
     label_string = ''
     if label == 1:
@@ -60,10 +65,6 @@ def get_label_string(label): ## Rework to use a dict?
         label_string = ERROR_STRING
     return label_string
 
-def get_angle_between_pxls(px1, px2, FOV):
+#def get_angle_between_pxls(px1, px2, FOV):
     #SomethingHere
     # return angle
-
-def get_coord_value(angle, depth):
-    #Something Here
-    #return coordinate value
