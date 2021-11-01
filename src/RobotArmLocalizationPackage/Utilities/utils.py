@@ -2,7 +2,6 @@ import torch
 from PIL import Image
 import os
 import numpy as np
-import pytest
 import numpy.ma as ma
 
 PRECISION = 0.75
@@ -11,6 +10,15 @@ CLAW_STRING = 'Claw'
 COTTON_STRING = 'Cotton'
 BACKGROUND_STRING = 'Background'
 ERROR_STRING = 'ERROR'
+
+HFOV = 50 #degrees
+VFOV = 35 #degrees
+
+def get_hfov():
+    return HFOV
+
+def get_vfov():
+    return VFOV
 
 def load_model():
     model = torch.load('model.pt', map_location=torch.device('cpu'))
@@ -60,9 +68,22 @@ def get_label_string(label): ## Rework to use a dict?
         label_string = ERROR_STRING
     return label_string
 
-def get_angle_between_pxls(px1, px2, FOV):
-    #SomethingHere
-    # return angle
+def get_angle_between_pxls(px1, px2, fov):
+    # px1 = center of mask px
+    x1 = px1[0]
+    y1 = px1[1]
+
+    # px2 = center of image px
+    x2 = px2[0]
+    y2 = px2[1]
+    
+    if fov == HFOV:
+        angle = ((x1 - x2)/(x2))*(fov/2)
+
+    elif fov == VFOV:
+        angle = ((y1 - y2)/(y2))*(fov/2)
+    
+    return angle
 
 def get_coord_value(angle, depth):
     #Something Here

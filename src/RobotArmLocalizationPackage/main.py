@@ -3,11 +3,6 @@ import ObjectDetector
 import Utilities.utils as utils
 import sys
 
-
-HFOV = 50 #degrees
-VFOV = 35 #degrees
-
-
 def main(frame_prefix, sys_base_to_claw):
     img = utils.load_image(frame_prefix + ".png")
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
@@ -20,7 +15,7 @@ def main(frame_prefix, sys_base_to_claw):
     for obj in detections:
         center_pxl = utils.get_center_point(obj["box"])
         depth = utils.get_avg_depth(utils.get_bool_mask(obj["mask"]), depth_arr)
-        coordinates = utils.calculate_vector(center_pxl, depth, HFOV, VFOV)
+        coordinates = utils.calculate_vector(center_pxl, depth, utils.get_hfov, utils.get_vfov)
         label = utils.get_label_string(obj["label"])
         
         if label == utils.CLAW_STRING:
@@ -38,10 +33,6 @@ def main(frame_prefix, sys_base_to_claw):
         base_to_cotton = cotton - base
         base_to_cotton = base_to_cotton.rotate(rotation_angle) #Vector class
         return base_to_cotton
-
-
-
-
 
 if __name__ == "__main__":
     main(sys.argv[1])
