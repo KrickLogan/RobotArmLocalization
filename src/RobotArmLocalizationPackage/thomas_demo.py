@@ -10,9 +10,15 @@ from Vector import Vector
 
 
 
-'''Example usage of system'''
+'''
+Example usage of system
+
+localizer = Localizer(img, depth_arr)
+target_vector = localizer.get_target_vector()
+
+'''
 def get_img_depth(frame_prefix):
-    #would really be like "take picture"
+    # would really be like "take picture"
     img = utils.load_image(frame_prefix + ".png")
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
     return img, depth_arr
