@@ -33,26 +33,27 @@ def main(frame_prefix):
     rectangles = viz.get_rectangles([claw.box])
     viz.show_img_boxes(img, rectangles)
     claw_center = claw.get_center_pixel()
-    viz.show_point(img, claw_center, "title")
+    viz.show_point(img, claw_center, f"{claw_center}")
 
     rectangles = viz.get_rectangles([base.box])
     viz.show_img_boxes(img, rectangles)
     base_center = base.get_center_pixel()
-    viz.show_point(img, base_center, "title")
+    viz.show_point(img, base_center, f"{base_center}")
 
     rectangles = viz.get_rectangles([object.box])
     viz.show_img_boxes(img, rectangles)
     object_center = object.get_center_pixel()
-    viz.show_point(img, object_center, "title")
+    viz.show_point(img, object_center, f"{object_center}")
 
     print(claw_center)
     print(base_center)
     print(object_center)
 
 
+    # All of this is actually in localizer.to_vector()
     depth = claw.get_average_depth(depth_arr)
     print(depth)
-    height, width = img.size
+    width, height = img.size
     print(f"Height: {height} Width: {width}")
     img_center_pxl = (width/2, height/2) #need to fix, y pixels in image are upside down
     print(f"Image Center Pixel: {img_center_pxl}")
