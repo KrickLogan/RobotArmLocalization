@@ -9,9 +9,15 @@ class Vector:
         self.y = y
         self.z = z
     
+
     # def __add__(self, other)
     # def __sub__(self, other)
     # def magnitude(self)
     # def dot(self, other)
     # def xy_rotate(self, angle)
     # def angle_between(self, other)
+
+    def __str__(self) -> str:
+        return(f"({self.x}, {self.y}, {self.z})")
+    def __repr__(self) -> str:
+        return(f"({self.x}, {self.y}, {self.z})")

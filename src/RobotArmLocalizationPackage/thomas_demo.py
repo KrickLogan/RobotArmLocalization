@@ -5,7 +5,7 @@ import Utilities.utils as utils
 import sys
 from Localizer import Localizer
 from inspect import currentframe, getframeinfo
-
+import Utilities.visualizer as viz
 from Vector import Vector
 
 
@@ -25,13 +25,25 @@ def main(frame_prefix):
 
     localizer = Localizer(img, depth_arr)
 
-    claw = localizer.get_claw()
-    base = localizer.get_base()
-    object = localizer.get_object()
+    print(localizer.detector.get_size())
+    claw = localizer.get_claw()[0]#Need to error check at detection level to elimiate possibility of getting this far with multiple detections for a class
+    base = localizer.get_base()[0]
+    object = localizer.get_object()[0]
 
-    claw_center = claw.get_center_point()
-    base_center = base.get_center_point()
-    object_center = object.get_center_point()
+    rectangles = viz.get_rectangles([claw.box])
+    viz.show_img_boxes(img, rectangles)
+    claw_center = claw.get_center_pixel()
+    viz.show_point(img, claw_center, "title")
+
+    rectangles = viz.get_rectangles([base.box])
+    viz.show_img_boxes(img, rectangles)
+    base_center = base.get_center_pixel()
+    viz.show_point(img, base_center, "title")
+
+    rectangles = viz.get_rectangles([object.box])
+    viz.show_img_boxes(img, rectangles)
+    object_center = object.get_center_pixel()
+    viz.show_point(img, object_center, "title")
 
     print(claw_center)
     print(base_center)
@@ -46,8 +58,8 @@ def main(frame_prefix):
     print(f"Image Center Pixel: {img_center_pxl}")
     obj_center_pxl = claw.get_center_pixel()
     print(f"Object Center Pixel: {obj_center_pxl}")
-    vertical_fov = utils.get_vfov
-    horiz_fov = utils.get_hfov
+    vertical_fov = utils.get_vfov()
+    horiz_fov = utils.get_hfov()
     print(f"Horizontal and Vertical FOV: {horiz_fov}, {vertical_fov}")
     xy_plane_angle, zy_plane_angle = localizer.get_angles_between_pixels(obj_center_pxl, img_center_pxl, vertical_fov, horiz_fov)
     print(f"XY Plane Angle: {xy_plane_angle}, ZY Plane Angle: {zy_plane_angle}")
@@ -63,4 +75,13 @@ def main(frame_prefix):
     object_vector = localizer.to_vector(object)
     print(object_vector)
 
-    target_vector = localizer.get_target_vector() #returns the vector from the RA base to the object
+    # target_vector = localizer.get_target_vector() #returns the vector from the RA base to the object
+
+    #for now will just do the calculations of cl_vec - base_vec. will eventually be handled in vector class
+    target_vector = Vector(claw_vector.x - base_vector.x, claw_vector.y - base_vector.y,
+            claw_vector.z - base_vector.z)
+
+    print(target_vector)
+
+if __name__ == "__main__":
+    main(sys.argv[1])

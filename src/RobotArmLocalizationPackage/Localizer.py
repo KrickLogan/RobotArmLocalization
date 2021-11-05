@@ -1,4 +1,7 @@
 from math import tan,radians
+from typing import List
+
+from PIL.Image import Image
 from DetectedObject import DetectedObject
 from ObjectDetector import ObjectDetector
 import Utilities.utils as utils
@@ -6,7 +9,7 @@ from inspect import currentframe, getframeinfo
 from Vector import Vector
 
 class Localizer:
-    def __init__(self, img, depth):
+    def __init__(self, img: Image, depth):
         self.detector = ObjectDetector(img)
         self.detector.run()
         self._image = img
@@ -32,13 +35,13 @@ class Localizer:
     #     self.rotation_angle = self.target_vector.angle_between(truth_vector)
     #     self.target_vector.xy_rotate(self.rotation_angle)
 
-    def get_claw(self) -> DetectedObject:
+    def get_claw(self) -> List[DetectedObject]:
         return self.detector.get_claw()
     
-    def get_base(self) -> DetectedObject:
+    def get_base(self) -> List[DetectedObject]:
         return self.detector.get_base()
 
-    def get_object(self) -> DetectedObject:
+    def get_object(self) -> List[DetectedObject]:
         return self.detector.get_object()
     
     def get_target_vector(self) -> Vector:
@@ -64,15 +67,15 @@ class Localizer:
         height, width = self._image.size
         img_center_pxl = (width/2, height/2) #need to fix, y pixels in image are upside down
         obj_center_pxl = detected_object.get_center_pixel()
-        vertical_fov = utils.get_vfov
-        horiz_fov = utils.get_hfov
+        vertical_fov = utils.get_vfov()
+        horiz_fov = utils.get_hfov()
         xy_plane_angle, zy_plane_angle = self.get_angles_between_pixels(obj_center_pxl, img_center_pxl, vertical_fov, horiz_fov)
         y = depth
         x = y * tan(radians(xy_plane_angle))
         z = y * tan(radians(zy_plane_angle))
         return Vector(x,y,z)
 
-    def get_angles_between_pixels(obj_center_pxl, img_center_pxl, vertical_fov, horiz_fov) -> float:
+    def get_angles_between_pixels(self, obj_center_pxl, img_center_pxl, vertical_fov, horiz_fov) -> float:
         obj_x, obj_z = obj_center_pxl
         img_x, img_z = img_center_pxl
         xy_plane_angle = (obj_x - img_x)*(horiz_fov/2)/(img_x)

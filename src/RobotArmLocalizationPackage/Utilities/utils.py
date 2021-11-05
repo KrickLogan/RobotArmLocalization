@@ -22,7 +22,7 @@ def load_model():
 
 def load_image(img_file_name):
     img = Image.open(os.path.join("Data/Images/",img_file_name)).convert("RGB")
-
+    return img
 def load_depth_arr(dp_arr_name):
     np_depth = np.load(os.path.join("Data/Depths/", dp_arr_name))
     return np_depth
