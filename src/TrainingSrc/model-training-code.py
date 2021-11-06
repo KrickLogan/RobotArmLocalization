@@ -9,7 +9,6 @@ from PIL import Image
 import torchvision
 from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
 from torchvision.models.detection.mask_rcnn import MaskRCNNPredictor
-from Utilities.custom_utils import get_image_fnames, remove_unmatched_fnames, remove_unwanted_files
 import Utilities.custom_utils as cu
 from Utilities.engine import train_one_epoch, evaluate
 import Utilities.utils as utils
@@ -28,11 +27,14 @@ class ClawObjectDataset(object):
         # self.masks = remove_unwanted_files(self.masks)
         self.masks = cu.remove_bad_mask_files(self.masks)
 
-        self.imgs = get_image_fnames(self.masks)
+        # exclude any masks that were made incorrectly (more/less than 4 unique classifications)
+        self.masks = cu.exclude_incorrect_masks(self.masks)
+
+        self.imgs = cu.get_image_fnames(self.masks)
         # self.imgs = remove_unwanted_files(self.imgs)
         
         all_img_fnames = list(sorted(os.listdir(os.path.join(root, "PNGImages"))))
-        self.imgs, self.masks = remove_unmatched_fnames(self.imgs, self.masks, all_img_fnames)
+        self.imgs, self.masks = cu.remove_unmatched_fnames(self.imgs, self.masks, all_img_fnames)
 
 
     def __getitem__(self, idx):
@@ -43,9 +45,10 @@ class ClawObjectDataset(object):
         img = Image.open(img_path).convert("RGB")
         # note that we haven't converted the mask to RGB,
         # since the masks are already grayscale,
+        # (masks will also be converted to grayscale and remove alpha layer just in case)
         # so each color corresponds to a different instance (classification)
         # with 0 being background
-        mask = Image.open(mask_path)
+        mask = Image.open(mask_path).convert('L')
 
         mask = np.array(mask)
 
@@ -101,9 +104,7 @@ class ClawObjectDataset(object):
         return img, target
 
     def __len__(self):
-        return len(self.imgs)
-    
-    
+        return len(self.imgs)    
 
 def get_model_instance_segmentation(num_classes):
     # load an instance segmentation model pre-trained pre-trained on COCO
@@ -186,7 +187,7 @@ def main():
 
     for epoch in range(num_epochs):
         # train for one epoch, printing every 10 iterations
-        train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=1)
+        train_one_epoch(model, optimizer, data_loader, device, epoch, print_freq=10)
         # update the learning rate
         lr_scheduler.step()
         # evaluate on the test dataset

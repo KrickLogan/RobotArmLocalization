@@ -79,10 +79,10 @@ def main(img_name):
 
         for i in range(len(masks)):
             data_labels, data_values = viz.get_graph_labels_values(mask_depths[i])
-            viz.show_bar_graph(data_labels, data_values, f"Depth Spread {viz.get_label_string(labels[i])}\nAVG Depth: {avg_depths[i]}", "Range", "Frequency")
+            # viz.show_bar_graph(data_labels, data_values, f"Depth Spread {viz.get_label_string(labels[i])}\nAVG Depth: {avg_depths[i]}", "Range", "Frequency")
             # viz.show_mask_overlay(np_depth, bool_masks[i], "Mask Over Depth", True, np_depth)
             plt_title = f'Label: {viz.get_label_string(labels[i])}, Score: {round(scores[i].item(),4)}, Average Depth: {round(avg_depths[i], 4)}'
-            viz.show_mask_overlay(np_depth, bool_masks[i], plt_title, True, np_depth)
+            viz.show_mask_overlay(img, bool_masks[i], plt_title, False, np_depth)
 
 if __name__ == "__main__":
     main(sys.argv[1])
