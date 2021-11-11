@@ -32,11 +32,7 @@ def get_avg_depth_of_seg(depth_arr, bool_seg_mask):
     mx = ma.masked_array(depth_arr, np.invert(bool_seg_mask).long())
     return mx.mean()
 
-def get_center_point(box):
-    x1, y1, x2, y2 = box.detach().numpy()
-    x = (x1 + x2)/2
-    y = (y1 + y2)/2
-    return((x,y))
+
 
 # def size_img_tensor(tens):
 #     if tens.size()[0] > 3:
