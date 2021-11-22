@@ -65,6 +65,19 @@ def show_point(img, point, title, mask = None):
         plt.imshow(mask, cmap='ocean', alpha=.5)
     plt.title(title)
     plt.plot(point[0], point[1], 'b*')
+    maximize_plt()
+    plt.show()
+
+def show_points(img, points, title, mask = None):
+    plt.imshow(img)
+    if(mask != None):
+        plt.imshow(mask, cmap='ocean', alpha=.5)
+    plt.title(title)
+    for i in range(len(points)):
+        point = points[i]
+        plt.plot(point[0], point[1], 'r*')
+
+    maximize_plt()
     plt.show()
 
 def show_img_boxes(img, rectangles):

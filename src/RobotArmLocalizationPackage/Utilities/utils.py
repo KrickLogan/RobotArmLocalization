@@ -2,12 +2,10 @@ import torch
 from PIL import Image
 import os
 import numpy as np
-import pytest
 import numpy.ma as ma
-from inspect import currentframe, getframeinfo
 from math import tan
 
-PRECISION = 0.75
+PRECISION = 0.6
 BASE_STRING = 'Base'
 CLAW_STRING = 'Claw'
 COTTON_STRING = 'Cotton'
@@ -23,6 +21,7 @@ def load_model():
 def load_image(img_file_name):
     img = Image.open(os.path.join("Data/Images/",img_file_name)).convert("RGB")
     return img
+
 def load_depth_arr(dp_arr_name):
     np_depth = np.load(os.path.join("Data/Depths/", dp_arr_name))
     return np_depth
@@ -75,7 +74,6 @@ def get_label_string(label): ## Rework to use a dict?
     else:
         label_string = ERROR_STRING
     return label_string
-
 
 def get_angle_between_pxls(box_val, img_val, fov): ## there will be an issue with the axis. y pixel value goes top to bottom 0-height
     return (box_val-img_val)*(fov/2)/img_val

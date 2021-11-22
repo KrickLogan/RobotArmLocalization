@@ -1,3 +1,4 @@
+from matplotlib.pyplot import axis
 import numpy as np
 import torch
 import numpy.ma as ma
@@ -20,10 +21,10 @@ class DetectedObject:
     def get_label(self):
         return self.label
         
-    def get_bool_mask(self):   
-        bool_mask = self.mask > utils.PRECISION 
+    def get_bool_mask(self) -> np.ndarray:   
+        bool_mask = self.mask > utils.PRECISION
         # assert bool_mask.ndim == 2
-        bool_mask = bool_mask.squeeze(1) #########Maybeeee???
+        bool_mask = np.squeeze(bool_mask)
         return bool_mask
 
     def get_average_depth(self, depth_arr) -> float:
@@ -32,5 +33,3 @@ class DetectedObject:
         bool_mask = torch.gt(bool_mask, 0) #convert back to boolean
         mx = ma.masked_array(depth_arr, np.invert(bool_mask).long())
         return mx.mean()
-
-    
