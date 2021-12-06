@@ -45,7 +45,7 @@ def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None)
         if depth_arr is not None:
             unique_values = np.unique(ma.masked_array(depth_arr, np.invert(mask).long()))
             
-            print(unique_values)
+            # print(unique_values)
             max = unique_values[-2]
             min = unique_values[1]
 

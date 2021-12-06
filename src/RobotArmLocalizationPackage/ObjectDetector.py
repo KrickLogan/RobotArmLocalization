@@ -18,6 +18,7 @@ class ObjectDetector:
         self.object = DetectedObject
     
     def run(self) -> List[DetectedObject]:
+        # runs the model on the provided image
         img_tens = F.to_tensor(self._img)
         self._output = self._model([img_tens])
         boxes = self._output[0]['boxes']

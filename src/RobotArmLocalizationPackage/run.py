@@ -6,10 +6,13 @@ from DetectedObject import DetectedObject
 from Localizer import Localizer
 import Utilities.utils as utils
 import Utilities.visualizer as viz
+import matplotlib.pyplot as plt
 
 def main():
     frame_prefix = "frame_20"
     img = utils.load_image(frame_prefix + ".png")
+    plt.imshow(img)
+    plt.show()
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
 
     detector = ObjectDetector(img) # provide image to model
@@ -33,7 +36,7 @@ def main():
     viz.show_img_boxes(img, rectangles)
     claw_center = claw.get_center_pixel()
     viz.show_point(img, claw_center, f"Center Point Coordinates: {claw_center}")
-    base_center = claw.get_center_pixel()
+    base_center = base.get_center_pixel()
     viz.show_point(img, base_center, f"Center Point Coordinates: {base_center}")
     obj_center = obj.get_center_pixel()
     viz.show_point(img, obj_center, f"Center Point Coordinates: {obj_center}")
@@ -57,6 +60,17 @@ def main():
     input()
 
     localizer = Localizer(detector, depth_arr)
+    norm_claw_center = localizer.normalize_pixel_value(claw_center, [img.size[0]/2, img.size[1]/2])
+    norm_base_center = localizer.normalize_pixel_value(base_center, [img.size[0]/2, img.size[1]/2])
+    norm_obj_center = localizer.normalize_pixel_value(obj_center, [img.size[0]/2, img.size[1]/2])
+    
+    print("Claw Normalized Pixel Coordinates: ", norm_claw_center)
+    input()
+    print("Base Normalized Pixel Coordinates: ", norm_base_center)
+    input()
+    print("Object Normalized Pixel Coordinates: ", norm_obj_center)
+    input()
+
     print("Vectors of Objects relative to Camera:\n")
     print("Claw Vector: ", localizer.claw_vector)
     print("Base Vector: ", localizer.base_vector)

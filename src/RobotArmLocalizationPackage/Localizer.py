@@ -1,11 +1,11 @@
 from math import tan,radians
-from typing import List
+# from typing import List
 
 from PIL.Image import Image
 from DetectedObject import DetectedObject
 from ObjectDetector import ObjectDetector
 import Utilities.utils as utils
-from inspect import currentframe, getframeinfo
+# from inspect import currentframe, getframeinfo
 from Vector import Vector
 
 # The Localizer Class incudes all functions related to the conversion of
@@ -43,6 +43,7 @@ class Localizer:
     
      
     def to_vector(self, detected_object: DetectedObject, img_size) -> Vector:
+        # Converts the detected object to a position vector
         depth = detected_object.get_average_depth(self._depth_arr)
         width, height = img_size
         img_dims = (width, height)
@@ -61,6 +62,7 @@ class Localizer:
         return Vector(x,y,z)
 
     def get_angles_between_pixels(self, obj_center_pxl, img_dims, vertical_fov, horiz_fov) -> float:
+        # uses the camera's field of vision to calculate the angle between pixels
         obj_x, obj_z = obj_center_pxl
         img_width, img_height = img_dims
         xy_plane_angle = (obj_x)*(horiz_fov)/(img_width)
