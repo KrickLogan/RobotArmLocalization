@@ -7,12 +7,16 @@ from Localizer import Localizer
 import Utilities.utils as utils
 import Utilities.visualizer as viz
 import matplotlib.pyplot as plt
+from PIL import ImageOps
 
 def main():
     frame_prefix = "frame_20"
     img = utils.load_image(frame_prefix + ".png")
     plt.imshow(img)
     plt.show()
+    # img = ImageOps.mirror(img) # i had a dream where I needed to check if the mirrors worked. it does but does not recognize claw upside down.
+    # plt.imshow(img)
+    # plt.show()
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
 
     detector = ObjectDetector(img) # provide image to model
