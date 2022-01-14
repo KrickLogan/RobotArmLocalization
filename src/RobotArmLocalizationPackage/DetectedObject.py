@@ -29,7 +29,7 @@ class DetectedObject:
 
     def get_average_depth(self, depth_arr) -> float:
         bool_mask = self.get_bool_mask()
-        bool_mask = np.logical_and(bool_mask, depth_arr != 0) #discard 0's
+        bool_mask = np.logical_and(bool_mask, depth_arr != 0)
         bool_mask = torch.gt(bool_mask, 0) #convert back to boolean
         mx = ma.masked_array(depth_arr, np.invert(bool_mask).long())
         return mx.mean()
