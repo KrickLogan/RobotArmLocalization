@@ -32,11 +32,11 @@ def get_center_point(box):
     y = (y1 + y2)/2
     return((x,y))
 
-# def get_bool_mask(mask):   
-#     bool_mask = mask > PRECISION 
-#     assert bool_mask.ndim == 2
-#     bool_mask = bool_mask.squeeze(1) #########Maybeeee???
-#     return bool_mask
+def get_bool_mask(mask):   
+    bool_mask = mask > PRECISION 
+    assert bool_mask.ndim == 2
+    bool_mask = bool_mask.squeeze(1) #########Maybeeee???
+    return bool_mask
 
 def get_avg_depth(bool_mask, depth_arr):
     bool_mask = np.logical_and(bool_mask, depth_arr != 0)

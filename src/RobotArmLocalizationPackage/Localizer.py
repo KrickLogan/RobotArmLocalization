@@ -1,72 +1,53 @@
 from math import tan,radians
-from typing import List
+# from typing import List
 
 from PIL.Image import Image
 from DetectedObject import DetectedObject
 from ObjectDetector import ObjectDetector
 import Utilities.utils as utils
-from inspect import currentframe, getframeinfo
+# from inspect import currentframe, getframeinfo
 from Vector import Vector
 
+# The Localizer Class incudes all functions related to the conversion of
+#  data from the detection outputs into real world position values.
+#  Using the detector for a list of detections and the depth array from
+#  the camera, this class uses the boxes and masks from themodel outputs 
+#  in conjunction with the depth array to calculate the position vectors
+
 class Localizer:
-    def __init__(self, img: Image, depth):
-        self.detector = ObjectDetector(img)
-        self.detector.run()
-        self._image = img
+    
+    def __init__(self, detector: ObjectDetector, depth):
+        # self._image = img
         self._depth_arr = depth
         self.base_vector = Vector #these must be 1 and only 1. should force object detector to error out if more than one of any of these are detected
         self.claw_vector = Vector
         self.object_vector = Vector
         self.target_vector = Vector
-        self.rotation_angle = 0
-        # self.calculate_vectors()
-    #
-    # Not ready yet
-    # def calibrate_coordinate_system(self, true_claw_position):
-    #     truth_vector = Vector(true_claw_positon)
-    #     '''
-    #     DO ERROR CHECKING FOR THESE AND MORE CONDITIONS SOMEHOW
-    #     if self.target_vector.magnitude() != truth_vector.magnitude:
-    #         utils.fail(getframeinfo(currentframe))
-    #     elif self.target_vector.z != truth_vector.z:
-    #         utils.fail(getframeinfo(currentframe))
-    #     etc etc for other conditions 
-    #     '''
-    #     self.rotation_angle = self.target_vector.angle_between(truth_vector)
-    #     self.target_vector.xy_rotate(self.rotation_angle)
-
-    def get_claw(self) -> List[DetectedObject]:
-        return self.detector.get_claw()
-    
-    def get_base(self) -> List[DetectedObject]:
-        return self.detector.get_base()
-
-    def get_object(self) -> List[DetectedObject]:
-        return self.detector.get_object()
-    
-    def get_target_vector(self) -> Vector:
-        #for now will just do the calculations of cl_vec - base_vec. will eventually be handled in vector class
-        return Vector(self.claw_vector.x - self.base_vector.x, self.claw_vector.y - self.base_vector.y,
-                self.claw_vector.z - self.base_vector.z)
+        self.base_to_claw_vector = Vector
+        self.calculate_vectors(detector)
+        # self.rotation_angle = 0
+        # self.rotation_plane_vector = Vector
+        # self.translate_system()
         
-    def calculate_vectors(self):
-        for detected_object in self.detector.get_detections():
-            vector = detected_object.to_vector(self._depth_arr)
-            if detected_object.label == utils.BASE_STRING and self.base_vector == None:
-                self.base_vectors=vector
-            elif detected_object.label == utils.CLAW_STRING and self.claw_vector == None:
-                self.claw_vector=vector
-            elif detected_object.label == utils.COTTON_STRING and self.object_vector == None:
-                self.claw_vectors=vector
-            else:
-                utils.fail(getframeinfo(currentframe()))
-
+    
+    def get_target_vector(self) -> Vector: # returns the vector from the base to the 
+        return self.target_vector
+        
+    def calculate_vectors(self, detector: ObjectDetector):
+        img_size = detector.get_image_size()
+        self.claw_vector = self.to_vector(detector.get_claw(), img_size)
+        self.base_vector = self.to_vector(detector.get_base(), img_size)
+        self.object_vector = self.to_vector(detector.get_object(), img_size)
+        self.target_vector = self.object_vector - self.base_vector
+        self.base_to_claw_vector = self.claw_vector - self.base_vector
+    
      
-    def to_vector(self, detected_object) -> Vector:
+    def to_vector(self, detected_object: DetectedObject, img_size) -> Vector:
+        # Converts the detected object to a position vector
         depth = detected_object.get_average_depth(self._depth_arr)
-        width, height = self._image.size
+        width, height = img_size
         img_dims = (width, height)
-        img_center_pxl = (width/2, height/2) #need to fix, y pixels in image are upside down
+        img_center_pxl = (width/2, height/2) 
         obj_center_pxl = detected_object.get_center_pixel()
         
         obj_center_pxl = self.normalize_pixel_value(obj_center_pxl, img_center_pxl)
@@ -81,6 +62,7 @@ class Localizer:
         return Vector(x,y,z)
 
     def get_angles_between_pixels(self, obj_center_pxl, img_dims, vertical_fov, horiz_fov) -> float:
+        # uses the camera's field of vision to calculate the angle between pixels
         obj_x, obj_z = obj_center_pxl
         img_width, img_height = img_dims
         xy_plane_angle = (obj_x)*(horiz_fov)/(img_width)
@@ -91,3 +73,6 @@ class Localizer:
         #translates pixel coordinates so that y axis is standard (bottom to top, low to high) and so origin is moved to image center
         obj_center_pxl = (obj_center_pxl[0], 1080 - obj_center_pxl[1])
         return (obj_center_pxl[0] - img_center_pxl[0], obj_center_pxl[1] - img_center_pxl[1])
+
+    # def translate_system():
+        # Apply rotation to the target vector
