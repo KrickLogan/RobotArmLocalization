@@ -68,3 +68,4 @@ class DetectedObject:
         bool_mask = torch.gt(bool_mask, 0) #convert back to boolean
         mx = ma.masked_array(depth_arr, np.invert(bool_mask).long())
         return mx.mean()
+        
