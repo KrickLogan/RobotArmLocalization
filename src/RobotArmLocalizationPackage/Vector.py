@@ -78,6 +78,9 @@ class Vector:
         proj = target*(self.dot(target)/(target.magnitude()*target.magnitude()))
         return proj
 
+    def perp(self, u: Vector):
+        return self - self.project(u)
+
     def as_point(self) -> tuple:
         return (self.x, self.y, self.z)
     
