@@ -65,7 +65,6 @@ class Vector:
     def angle_between(self, other: Vector) -> float:
         
         angle = acos(self.dot(other)/(self.magnitude() * other.magnitude()))
-        
         return angle
 
     def decompose(self) -> Vector:

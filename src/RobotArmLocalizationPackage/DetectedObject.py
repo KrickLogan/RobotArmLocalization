@@ -30,6 +30,13 @@ class DetectedObject:
         bool_mask = np.squeeze(bool_mask)
         return bool_mask
 
+    def get_average_depth(self, depth_arr) -> float:
+        bool_mask = self.get_bool_mask()
+        bool_mask = np.logical_and(bool_mask, depth_arr != 0)
+        bool_mask = torch.gt(bool_mask, 0) #convert back to boolean
+        mx = ma.masked_array(depth_arr, np.invert(bool_mask).long())
+        return mx.mean()
+
     def to_vector(self, img_size, depth_arr) -> Vector:
         # Converts the detected object to a position vector
         depth = self.get_average_depth(depth_arr)
@@ -62,10 +69,5 @@ class DetectedObject:
         obj_center_pxl = (obj_center_pxl[0], 1080 - obj_center_pxl[1])
         return (obj_center_pxl[0] - img_center_pxl[0], obj_center_pxl[1] - img_center_pxl[1])
 
-    def get_average_depth(self, depth_arr) -> float:
-        bool_mask = self.get_bool_mask()
-        bool_mask = np.logical_and(bool_mask, depth_arr != 0)
-        bool_mask = torch.gt(bool_mask, 0) #convert back to boolean
-        mx = ma.masked_array(depth_arr, np.invert(bool_mask).long())
-        return mx.mean()
+    
         
