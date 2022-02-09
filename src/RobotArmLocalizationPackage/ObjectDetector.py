@@ -17,6 +17,10 @@ class ObjectDetector:
         self.base = DetectedObject
         self.object = DetectedObject
     
+    # def __init__(self):
+    #     self._model = torch.load('model.pt', map_location=torch.device('cpu'))
+    #     self._output = None
+
     def run(self) -> List[DetectedObject]:
         # runs the model on the provided image
         img_tens = F.to_tensor(self._img)
