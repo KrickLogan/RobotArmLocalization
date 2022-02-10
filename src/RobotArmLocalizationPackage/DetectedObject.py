@@ -26,28 +26,39 @@ class DetectedObject:
         bool_mask = np.squeeze(bool_mask)
         return bool_mask
 
-    def get_average_depth(self, depth_arr) -> float:
+    def get_masked_array(self, depth_arr)->np.ma:
         bool_mask = self.get_bool_mask()
         bool_mask = np.logical_and(bool_mask, depth_arr != 0)
-        bool_mask =depth_arr != 0
-        arr = depth_arr[bool_mask] 
-        average_depth = self.remove_depth_outliers(arr)
+        bool_mask = torch.gt(bool_mask, 0) #convert back to boolean
+        mx = ma.masked_array(depth_arr, np.invert(bool_mask).long()) 
+        return(mx)
+
+    def get_average_depth(self, depth_arr) -> float:
+        # bool_mask = self.get_bool_mask()
+        # bool_mask = np.logical_and(bool_mask, depth_arr != 0)
+        # bool_mask = torch.gt(bool_mask, 0) #convert back to boolean
+        # mx = ma.masked_array(depth_arr, np.invert(bool_mask).long())
+        # bool_mask =depth_arr != 0
+        # print("bool_mask is:",bool_mask)
+        # arr = depth_arr[bool_mask] 
+        mx = self.get_masked_array(depth_arr)
+        average_depth = self.remove_depth_outliers(mx)
 
         return average_depth.mean()  
         
     def remove_depth_outliers(self,depth_arr)->np.ndarray:
         #removing outliers
-        mean= np.mean(depth_arr)
-        std= np.std(depth_arr)
+        mean= np.ma.MaskedArray.mean(depth_arr)
+        std= np.ma.MaskedArray.std(depth_arr)
         print("mean and std is:",mean,std)
 
         flt = depth_arr.flatten()
 
         z=flt[(flt>(mean- 3* std)) & (flt<(mean+3* std))]
         print(" Result array : ", z)
-        mean = np.mean(z)
-        std= np.std(z)
-        print(mean,std)
+        mean = np.ma.MaskedArray.mean(z)
+        std= np.ma.MaskedArray.std(z)
+        print("mean,std after removing high values:",mean,std)
         return z
 
 
