@@ -4,6 +4,8 @@ from math import tan,radians
 from PIL.Image import Image
 from DetectedObject import DetectedObject
 from ObjectDetector import ObjectDetector
+from Rotation import Rotation
+import pickle
 import Utilities.utils as utils
 # from inspect import currentframe, getframeinfo
 from Vector import Vector
@@ -34,4 +36,28 @@ class Localizer:
         self.s_rot_vector = pos_claw_1
         cam_claw_2 = cam_claw_2.rotate_about_vector(self.f_rot_vector.unit(),self.f_rot_rads)
         self.s_rot_rads = cam_claw_2.perp(self.s_rot_vector).angle_between(pos_claw_2.perp(self.s_rot_vector))
+        pickle(self)
+        unpickle(self)
 
+    def pickle(self):
+        rot = Rotation(self.f_rot_vector, self.f_rot_rads, self.s_rot_vector, self.s_rot_rads)
+        fh = open("rotation.pkl", "bw")
+        pickle.dump(rot, fh)
+        fh.close()
+
+    def unpickle(self):
+        f = open("rotation.pkl", "rb")
+        f_new = pickle.load(f)
+        print(f_new.f_rot_vector)
+        f.close()
+
+
+#import pickle
+#rot = Rotation()
+#fh = open ("rotation.pkl", "bw")
+#pickle.dump(rot, fh)
+#fh.close()
+#f = open ("rotation.pkl", "rb")
+#f_new = pickle.load(f)
+#print(f_new.val)
+#f.close()
