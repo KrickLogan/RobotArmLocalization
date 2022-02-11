@@ -1,8 +1,4 @@
-import pickle as pickle
-
 class Rotation:
-    #def __init__(self, value=3):
-        #self.value = value
     def __init__(self, f_rot_vector, f_rot_rads, s_rot_vectors, s_rot_rads):
         self._f_rot_vector = f_rot_vector
         self._f_rot_rads= f_rot_rads
@@ -33,21 +29,23 @@ class Rotation:
     def get_second_rot_radian(self):
         return self._s_rot_rads
 
-    def pickle(self):
-        fh = open ("rotation.pkl", "bw")
-        pickle.dump(self, fh)
-        fh.close()
+#Antiquated pickling functions. Moved to utils.py, pending review before deletion.
 
-    def unpickle(self):
-        f = open ("rotation.pkl", "rb")
-        f_new = pickle.load(f)
-        print(f_new.f_rot_vector)
-        print(f_new.f_rot_rads)
-        print(f_new.s_rot_vector)
-        print(f_new.s_rot_rads)
-        f.close()
+    #def pickle(self):
+        #fh = open ("rotation.pkl", "bw")
+        #pickle.dump(self, fh)
+        #fh.close()
 
-#import pickle
+    #def unpickle(self):
+        #f = open ("rotation.pkl", "rb")
+        #f_new = pickle.load(f)
+        #print(f_new.f_rot_vector)
+        #print(f_new.f_rot_rads)
+        #print(f_new.s_rot_vector)
+        #print(f_new.s_rot_rads)
+        #f.close()
+
+#import pickle as pickle
 #rot = Rotation()
 #fh = open ("rotation.pkl", "bw")
 #pickle.dump(rot, fh)
