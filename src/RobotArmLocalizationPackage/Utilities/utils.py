@@ -4,6 +4,7 @@ import os
 import numpy as np
 import numpy.ma as ma
 from math import tan
+import pickle as pickle
 
 PRECISION = 0.6
 BASE_STRING = 'Base'
@@ -91,3 +92,15 @@ def get_coord_value(angle, depth):
 def fail(frameinfo):
     print(frameinfo.filename, frameinfo.lineno)
     #Should start throwing exceptions instead of this wherever this function is called
+
+def pickle(self, filename): #new pickling function, should be able to pickle any object.
+    fh = open (filename, "bw")
+    pickle.dump(self.__dict__, fh)
+    fh.close()
+
+def unpickle(self, filename): #new unpickling function, should be able to unpickle any object.
+    fh = open (filename, "rb")
+    fh_new = pickle.load(fh)
+    #print(fh_new.__dict__)
+    fh.close()
+    return fh_new
