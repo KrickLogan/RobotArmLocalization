@@ -44,6 +44,8 @@ class Vector:
         #return 
     
     def rotate_about_vector(self, vNorm:Vector, angle:float) -> Vector:
+        '''vNorm must be unit vector'''
+        vNorm=vNorm.unit()#just in case
         a = self * cos(angle) 
         b = vNorm.cross(self)*sin(angle) 
         c = vNorm * (vNorm.dot(self)) * (1-cos(angle))
@@ -61,8 +63,8 @@ class Vector:
 
 
     def angle_between(self, other: Vector) -> float:
-        angle = acos(self.dot(other)/(self.magnitude() * other.magnitude()))
         
+        angle = acos(self.dot(other)/(self.magnitude() * other.magnitude()))
         return angle
 
     def decompose(self) -> Vector:
@@ -71,7 +73,17 @@ class Vector:
         k = Vector(0, 0, self.z)
         return i, j, k
     
-    def norm(self):
+    def project(self, target: Vector) -> Vector:
+        proj = target*(self.dot(target)/(target.magnitude()*target.magnitude()))
+        return proj
+
+    def perp(self, u: Vector):
+        return self - self.project(u)
+
+    def as_point(self) -> tuple:
+        return (self.x, self.y, self.z)
+    
+    def unit(self):
         return self/self.magnitude()
 
     def __str__(self) -> str:
@@ -79,3 +91,4 @@ class Vector:
         
     def __repr__(self) -> str:
         return(f"({self.x}, {self.y}, {self.z})")
+    
