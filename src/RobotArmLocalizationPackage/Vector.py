@@ -4,7 +4,7 @@
 '''
 import numpy as np
 from math import sqrt, acos, degrees, cos, sin
-import Vector
+# import Vector
 
 class Vector:
     def __init__(self, x, y, z):

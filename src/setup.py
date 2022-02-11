@@ -6,7 +6,7 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh: long_description = fh.read()
 
 setuptools.setup(
-    name = "RobotArmLocalization",
+    name = "RobotArmLocalizationPackage",
     version="0.0.4",
     author="SE490 Fall, SE491 Spring 2021-22 SCSU Capstone John Deere Team",
     description="Robot Arm and Object Localization",
@@ -19,7 +19,13 @@ setuptools.setup(
         "Operating System :: OS Independent"
 
     ],
-    package_dir={"": "src"},
-    packages=setuptools.find_packages(where="src"),
-    python_requires=">= 3.6",
+
+    package_dir={'': 'src'},
+    
+    packages = [
+        "RobotArmLocalizationPackage",
+        "RobotArmLocalizationPackage.Data",
+        "RobotArmLocalizationPackage.Utilities"
+    ]
+
 )

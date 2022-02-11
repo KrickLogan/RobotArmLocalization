@@ -1,7 +1,7 @@
 
 from typing import List
 import torch
-import Utilities.utils as utils
+import RobotArmLocalizationPackage.Utilities.utils as utils
 from torchvision.transforms import functional as F
 from DetectedObject import DetectedObject
 from PIL import Image
