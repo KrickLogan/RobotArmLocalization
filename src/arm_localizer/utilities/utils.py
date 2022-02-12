@@ -16,15 +16,19 @@ HFOV = 69 #degrees
 VFOV = 42 #degrees
 
 def load_model():
-    model = torch.load('model.pt', map_location=torch.device('cpu'))
+    model = torch.load('data/model/model.pt', map_location=torch.device('cpu'))
     return model
 
 def load_image(img_file_name):
-    img = Image.open(os.path.join("Data/Images/",img_file_name)).convert("RGB")
+    dirname = os.path.join(os.path.dirname(__file__),"../camera_data/images/")
+    dirname.replace(r'\\','/')
+    img = Image.open(os.path.join(dirname,img_file_name)).convert("RGB")
     return img
 
 def load_depth_arr(dp_arr_name):
-    np_depth = np.load(os.path.join("Data/Depths/", dp_arr_name))
+    dirname = os.path.join(os.path.dirname(__file__),"../camera_data/depths/")
+    dirname.replace(r'\\','/')
+    np_depth = np.load(os.path.join(dirname, dp_arr_name))
     return np_depth
 
 def get_center_point(box):
@@ -93,9 +97,9 @@ def fail(frameinfo):
     print(frameinfo.filename, frameinfo.lineno)
     #Should start throwing exceptions instead of this wherever this function is called
 
-def pickle(self, filename): #new pickling function, should be able to pickle any object.
+def pickle_obj(obj, filename): #new pickling function, should be able to pickle any object.
     fh = open (filename, "bw")
-    pickle.dump(self.__dict__, fh)
+    pickle.dump(obj, fh)
     fh.close()
 
 def unpickle(self, filename): #new unpickling function, should be able to unpickle any object.
