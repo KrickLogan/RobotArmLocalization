@@ -1,10 +1,9 @@
-'''
-    Note that all of the coordinate values are such that x is horizontal,
-    y is DEPTH, and z is vertical in 3d space relative to the camera.
-'''
+
+from __future__ import annotations
 import numpy as np
 from math import sqrt, acos, degrees, cos, sin
-# import Vector
+# from arm_localizer.vector import Vector
+
 
 class Vector:
     def __init__(self, x, y, z):

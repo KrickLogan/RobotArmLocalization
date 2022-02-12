@@ -1,9 +1,9 @@
 
 from typing import List
 import torch
-import RobotArmLocalizationPackage.Utilities.utils as utils
+import arm_localizer.utilities.utils as utils
 from torchvision.transforms import functional as F
-from DetectedObject import DetectedObject
+from arm_localizer.detected_object import DetectedObject
 from PIL import Image
 from inspect import currentframe, getframeinfo
 
