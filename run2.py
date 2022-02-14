@@ -56,9 +56,9 @@ def main():
     cam_claw_2 = detector.get_claw().to_vector(img2.size,depth_arr2) - detector.get_base().to_vector(img2.size,depth_arr2)
     pos_claw_2 = get_pos(cam_claw_2)
 
+    
+    utils.calibrate(cam_claw_1, pos_claw_1, cam_claw_2, pos_claw_2)
     l = Localizer()
-    l.calibrate(cam_claw_1, pos_claw_1, cam_claw_2, pos_claw_2)
-
     #Now we are ready to use the system.
 
     target = detector.get_object().to_vector(img2.size,depth_arr2) - detector.get_base().to_vector(img2.size,depth_arr2)
