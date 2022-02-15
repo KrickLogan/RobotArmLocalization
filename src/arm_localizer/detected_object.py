@@ -47,14 +47,7 @@ class DetectedObject:
         #removing outliers
         mean= np.ma.MaskedArray.mean(masked_depth_arr)
         std= np.ma.MaskedArray.std(masked_depth_arr)
-        print("mean and std is:",mean,std)
-
         z = masked_depth_arr [(masked_depth_arr>(mean- 3* std)) & (masked_depth_arr<(mean+3* std))]
-
-        # print(" Result array : ", z)
-        # mean = np.ma.MaskedArray.mean(z)
-        # std= np.ma.MaskedArray.mean(z)
-        # print("mean,std after removing high values:",mean,std)
         return z
 
     def to_vector(self, img_size, depth_arr) -> Vector:

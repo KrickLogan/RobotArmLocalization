@@ -24,14 +24,13 @@ setuptools.setup(
     
     packages = [
         "arm_localizer",
-        "arm_localizer.camera_data",
         "arm_localizer.data",
-        "arm_localizer.utilities"
+        "arm_localizer.utilities",
+        "arm_localizer.data.model"
     ],
 
     package_data = {
-        'arm_localizer.data.model': [ 'model.pt' ],
-        'arm_localizer.data.rotation': [ 'rotation.pkl' ],                  
+        'arm_localizer.data.model': [ 'model.pt' ],                 
     }
 
 )

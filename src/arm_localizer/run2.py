@@ -1,12 +1,13 @@
-from ObjectDetector import ObjectDetector
-from DetectedObject import DetectedObject
-from Localizer import Localizer
-import matplotlib.pyplot as plt
-import Utilities.utils as utils
-import Utilities.visualizer as viz
-from Vector import Vector
-from math import radians, degrees
+# from ObjectDetector import ObjectDetector
+# from DetectedObject import DetectedObject
+# from Localizer import Localizer
+# import matplotlib.pyplot as plt
+# import Utilities.utils as utils
+# import Utilities.visualizer as viz
+# from Vector import Vector
+# from math import radians, degrees
 
+# THIS FILE IS ONLY BEING KEPT TO PROVIDE EXAMPLE USAGE. WILL BE DELETED SOON
 
 
 print(3)

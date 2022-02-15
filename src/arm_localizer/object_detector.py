@@ -4,6 +4,7 @@ import torch
 import arm_localizer.utilities.utils as utils
 from torchvision.transforms import functional as F
 from arm_localizer.detected_object import DetectedObject
+from arm_localizer.utilities import utils
 from PIL import Image
 from inspect import currentframe, getframeinfo
 
@@ -11,7 +12,7 @@ class ObjectDetector:
 
     def __init__(self, img):
         self._img = img
-        self._model = torch.load('model.pt', map_location=torch.device('cpu'))
+        self._model = utils.load_model()
         self._output = None
         self.claw = DetectedObject
         self.base = DetectedObject
