@@ -2,8 +2,8 @@
 from typing import List
 
 from torchvision.transforms import functional as F
-from arm_localizer.detected_object import DetectedObject
-import arm_localizer.utilities.utils as utils
+from detected_object import DetectedObject
+import utilities.utils as utils
 from PIL import Image
 from inspect import currentframe, getframeinfo
 

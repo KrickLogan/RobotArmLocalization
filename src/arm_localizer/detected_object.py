@@ -3,7 +3,7 @@ import numpy as np
 from numpy.lib.function_base import average
 import torch
 import numpy.ma as ma
-import arm_localizer.utilities.utils as utils
+from arm_localizer.utilities import utils
 from math import tan,radians
 from arm_localizer.vector import Vector
 
