@@ -5,7 +5,6 @@ import torch
 import numpy.ma as ma
 import arm_localizer.utilities.utils as utils
 from math import tan,radians
-import arm_localizer.utilities.utils as utils
 from arm_localizer.vector import Vector
 
 class DetectedObject:
