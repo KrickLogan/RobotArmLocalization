@@ -1,9 +1,9 @@
 
-from ObjectDetector import ObjectDetector
-from DetectedObject import DetectedObject
-from Localizer import Localizer
-import Utilities.utils as utils
-import Utilities.visualizer as viz
+from arm_localizer.object_detector import ObjectDetector
+from arm_localizer.detected_object import DetectedObject
+from arm_localizer.localizer import Localizer
+import arm_localizer.utilities.utils as utils
+import arm_localizer.utilities.visualizer as viz
 import matplotlib.pyplot as plt
 from PIL import ImageOps
 
