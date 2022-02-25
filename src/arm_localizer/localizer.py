@@ -11,9 +11,13 @@ import arm_localizer.utilities.utils as utils
 # from inspect import currentframe, getframeinfo
 from arm_localizer.vector import Vector
 
+
 # The Localizer Class holds and provides the rotation which translates
 #  a vector to its corresponding position relative to the Robot arm's positioning
 #  system.
+
+class LocalizerNotInitializedError(Exception):
+    pass
 
 class Localizer:
     
@@ -21,21 +25,28 @@ class Localizer:
         # self.f_rot_vector = None
         # self.f_rot_rads = None
         # self.s_rot_vector = None
-        # self.s_rot_rads = None 
+        # self.s_rot_rads = None
+        # self.rotation = utils.unpickle()  
         filename = "./rotation/rotation.pickle"
         fh = open(filename, "rb")
         try:
             fh_new = pickle.load(fh)
         except pickle.UnpicklingError as e:
-            print(e)
+            print(traceback.format_exc(e))
+            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
         except pickle.PicklingError as e:
-            print(e)
+            print(traceback.format_exc(e))
+            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
         except (AttributeError,  EOFError, ImportError, IndexError) as e:
             print(traceback.format_exc(e))
+            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
         except Exception as e:
             print(traceback.format_exc(e))
-        self.rotation = fh_new
-        fh.close()
+            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
+        else:
+            self.rotation = fh_new
+        finally:
+            fh.close()
         
     def get_real_position(self, t_vector: Vector) -> Vector:
         ''' This Function is the final usage of the system. It applies the rotations to the vector of the detected object
