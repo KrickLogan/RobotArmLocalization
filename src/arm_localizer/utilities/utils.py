@@ -6,7 +6,9 @@ import numpy as np
 import numpy.ma as ma
 from math import tan
 import pickle as pickle
+
 from arm_localizer.vector import Vector
+
 from arm_localizer.rotation import Rotation
 
 PRECISION = 0.6

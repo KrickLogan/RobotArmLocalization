@@ -1,10 +1,10 @@
 
 from typing import List
-import torch
-import arm_localizer.utilities.utils as utils
+
 from torchvision.transforms import functional as F
-from arm_localizer.detected_object import DetectedObject
-from arm_localizer.utilities import utils
+from .detected_object import DetectedObject
+from .utilities import utils
+# import utilities.utils as utils
 from PIL import Image
 from inspect import currentframe, getframeinfo
 
