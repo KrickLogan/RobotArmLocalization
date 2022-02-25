@@ -3,9 +3,9 @@ import numpy as np
 from numpy.lib.function_base import average
 import torch
 import numpy.ma as ma
-from arm_localizer.utilities import utils
+from .utilities import utils
 from math import tan,radians
-from arm_localizer.vector import Vector
+from .vector import Vector
 
 class DetectedObject:
     def __init__(self, label, box, mask, score):

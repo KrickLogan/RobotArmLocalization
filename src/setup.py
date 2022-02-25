@@ -20,7 +20,7 @@ setuptools.setup(
 
     ],
 
-    # package_dir={'': 'arm_localizer'},
+    # package_dir={'': ''},
     
     packages = [
         "arm_localizer",

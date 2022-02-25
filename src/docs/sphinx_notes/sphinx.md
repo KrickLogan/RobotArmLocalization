@@ -1,7 +1,7 @@
 # Sphinx notes
 
-- init files caused problems for the sphinx-autodoc -o command which generates rst files for each module. I just removed all the files I didn't want rst files for and ran it.
-- modify the sphinx-autodoc -o command to run on files from the utilities folder (./utilities/ eg)
+- init files caused problems for the `sphinx-apidoc -o` command which generates rst files for each module. I just removed all the files I didn't want rst files for and ran it.
+- modify the `sphinx-apidoc -o` command to run on files from the utilities folder (./utilities/ eg)
 - in conf file, add the utilities folder to the path
 - haven't modified them to be classes yet
 - add the name of each rst file to the modules.rst file

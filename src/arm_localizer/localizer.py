@@ -1,9 +1,10 @@
 from math import tan,radians
 # from typing import List
 
-import utilities.utils as utils
+from .utilities import utils
+# import utilities.utils as utils
 from inspect import currentframe, getframeinfo
-from vector import Vector
+from .vector import Vector
 
 # The Localizer Class holds and provides the rotation which translates
 #  a vector to its corresponding position relative to the Robot arm's positioning
