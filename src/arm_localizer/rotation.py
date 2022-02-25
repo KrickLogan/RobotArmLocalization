@@ -1,3 +1,5 @@
+
+
 class Rotation:
     def __init__(self, f_rot_vector, f_rot_rads, s_rot_vectors, s_rot_rads):
         self._f_rot_vector = f_rot_vector

@@ -1,12 +1,10 @@
 from math import tan,radians
 # from typing import List
 
-from PIL.Image import Image
-from arm_localizer.detected_object import DetectedObject
-from arm_localizer.object_detector import ObjectDetector
-import arm_localizer.utilities.utils as utils
-# from inspect import currentframe, getframeinfo
-from arm_localizer.vector import Vector
+from .utilities import utils
+# import utilities.utils as utils
+from inspect import currentframe, getframeinfo
+from .vector import Vector
 
 # The Localizer Class holds and provides the rotation which translates
 #  a vector to its corresponding position relative to the Robot arm's positioning
