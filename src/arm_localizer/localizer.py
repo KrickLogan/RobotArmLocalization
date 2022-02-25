@@ -21,19 +21,21 @@ class Localizer:
         # self.f_rot_vector = None
         # self.f_rot_rads = None
         # self.s_rot_vector = None
-        # self.s_rot_rads = None
-        self.rotation = utils.unpickle()
-    try:
-        with open(self.session_filename, "rb") as f:
-         data = pickle.loads(zlib.decompress(f.read()))
-    except pickle.PicklingError as e:
-        print('The pickle object does not support pickling')
-    except pickle.UnpicklingError as e:
-        print('The file contains corrupted data.')
-    except (AttributeError,  EOFError, ImportError, IndexError) as e:
-        print(traceback.format_exc(e))
-    except Exception as e:
-        print(traceback.format_exc(e))
+        # self.s_rot_rads = None 
+        filename = "./rotation/rotation.pickle"
+        fh = open(filename, "rb")
+        try:
+            fh_new = pickle.load(fh)
+        except pickle.UnpicklingError as e:
+            print(e)
+        except pickle.PicklingError as e:
+            print(e)
+        except (AttributeError,  EOFError, ImportError, IndexError) as e:
+            print(traceback.format_exc(e))
+        except Exception as e:
+            print(traceback.format_exc(e))
+        self.rotation = fh_new
+        fh.close()
         
     def get_real_position(self, t_vector: Vector) -> Vector:
         ''' This Function is the final usage of the system. It applies the rotations to the vector of the detected object
