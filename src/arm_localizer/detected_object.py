@@ -17,10 +17,9 @@ class DetectedObject:
     of this class is to organize and label the model outputs for manipulation. Included
     here are also relevant methods which use the model outputs.
     '''
-    def __init__(self, label, box, mask, score, te):
+    def __init__(self, label, box, mask, score):
         '''Constructor Method
         '''
-        self.te = te
         self.label = label
         self.box = box
         self.mask = mask
