@@ -9,7 +9,14 @@ from PIL import Image
 from inspect import currentframe, getframeinfo
 
 class ObjectDetector:
+    """This class uses the trained RCNN to make detections on an image
 
+    Extended description of class
+
+    Attributes:
+        attr1 (int): Description of attr1
+        attr2 (str): Description of attr2
+    """
     def __init__(self, img):
         self._img = img
         self._model = utils.load_model()

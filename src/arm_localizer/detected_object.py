@@ -12,8 +12,7 @@ from .vector import Vector
 
 
 class DetectedObject:
-    '''
-    '''
+
     """This is a detection returned from the model
 
     A :class:`arm_localizer.detected_object.DetectedObject` is generated for each
@@ -23,7 +22,6 @@ class DetectedObject:
     here are also relevant methods which use the model outputs.
 
     Attributes:
-    
         label (int): the label of the detection indicating the class. Can be converted to string using
         box (): The bounding box for the detection as pixel coordinates of the corners of the box
         mask (array): An array of values from 0 to 1 indicating the corresponding pixel's confidence of classification 
@@ -99,7 +97,6 @@ class DetectedObject:
 
         Args:
             depth_arr (np.ndarray): an array whose values are depths from a depth camera in mm
-            
 
         Returns:
             np.ma: Masked array whose values are limited to depth values inside of the mask
