@@ -96,13 +96,13 @@ def calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, 
     detector = ObjectDetector()
 
     detector.run(img1)
-    cam_to_claw_1 = detector.get_claw().to_vector(get_img_size(img1), depth1)
-    cam_to_base_1 = detector.get_base().to_vector(get_img_size(img1), depth1)
+    cam_to_claw_1 = detector.get_claw().to_vector(img1.size, depth1)
+    cam_to_base_1 = detector.get_base().to_vector(img1.size, depth1)
     base_to_claw_1 = cam_to_claw_1 - cam_to_base_1
     
     detector.run(img2)
-    cam_to_claw_2 = detector.get_claw().to_vector(get_img_size(img2), depth2)
-    cam_to_base_2 = detector.get_base().to_vector(get_img_size(img2), depth2)
+    cam_to_claw_2 = detector.get_claw().to_vector(img2.size, depth2)
+    cam_to_base_2 = detector.get_base().to_vector(img2.size, depth2)
     base_to_claw_2 = cam_to_claw_2 - cam_to_base_2
     
     first_rot_vector = base_to_claw_1.cross(pos_claw_1)
