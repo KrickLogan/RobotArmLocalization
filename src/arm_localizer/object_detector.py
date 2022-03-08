@@ -9,15 +9,22 @@ from PIL import Image
 from inspect import currentframe, getframeinfo
 
 class ObjectDetector:
-    """This class uses the trained RCNN to make detections on an image
+    """This class uses the trained RCNN to make detections on an image. It handles the output of the model.
 
-    Extended description of class
+    This class provides an interface for the detections yielded from the model. It can provide the full output
+    from the model, or processed individual detections from the model in the form of :class:`arm_localizer.detected_object.DetectedObject` 's
 
     Attributes:
-        attr1 (int): Description of attr1
-        attr2 (str): Description of attr2
+        _img (PIL.Image): Will be changed
+        _model (): The trained model
+        _output (): the output of the model as a multi-dimensional array
+        claw : won't be here much longer
+        base: same
+        object: same
     """
     def __init__(self, img):
+        """Constructor method
+        """
         # self._img = img
         self._model = utils.load_model()
         self._output = None
@@ -32,7 +39,20 @@ class ObjectDetector:
 
     def run(self, img) -> List[DetectedObject]:
         # runs the model on the provided image
-        img_tens = F.to_tensor(img)
+        """Runs the model on the provided image
+
+        This method runs the model on the image. It then interprets and organizes the output
+        by classifying detections and constructing new :class:`arm_localizer.detected_object.DetectedObject`'s
+        for each detection.
+
+        Args:
+            None right now but will change in next version
+
+        Returns:
+            detections: the model detections. changed in next version
+
+        """
+        img_tens = F.to_tensor(self._img)
         self._output = self._model([img_tens])
         boxes = self._output[0]['boxes']
         labels = self._output[0]['labels']
@@ -56,6 +76,18 @@ class ObjectDetector:
         return self._detections #Do something if more than one or none are detected for any of the target labels
     
     def get_model_outputs(self):
+        """I think this will be gone soon too
+
+        Extended description of function.
+
+        Args:
+            arg1 (int): Description of arg1
+            arg2 (str): Description of arg2
+
+        Returns:
+            bool: Description of return value
+
+        """
         return self._output
 
     def get_all_detections(self):
@@ -65,6 +97,18 @@ class ObjectDetector:
     #     return len(self._detections)
     
     def get_image_size(self):
+        """I think this will be gone soon too
+
+        Extended description of function.
+
+        Args:
+            arg1 (int): Description of arg1
+            arg2 (str): Description of arg2
+
+        Returns:
+            bool: Description of return value
+
+        """
         return self._img.size
     
     def get_claw(self) -> DetectedObject: # shouldn't return a list, error check at detection level to allow 1 and only 1 of each "type " ie claw, boject, base

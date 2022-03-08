@@ -8,7 +8,7 @@ import numpy.ma as ma
 from .utilities import utils
 from math import tan,radians
 from .vector import Vector
-
+from scipy.ndimage import center_of_mass
 
 
 class DetectedObject:
@@ -55,6 +55,34 @@ class DetectedObject:
         x = (x1 + x2)/2
         y = (y1 + y2)/2
         return((x,y))
+
+    def get_center_mass_pixel(self) -> tuple:
+        """This function returns the center of mass of a :class:`arm_localizer.detected_object.DetectedObject` as an (X,Y) tuple
+
+        This function uses scipy's center_of_mass function to calculate the (X,Y) pixel coordinates of
+        the center point of the detected object's mask. Note that this is the untransformed pixel value
+        where y goes top to bottom in the image.
+
+        Args:
+        none
+
+        Returns:
+            tuple: (X,Y) coordinates of center pixel
+
+        """
+        # get the boolean mask and convert it from a tensor to a numpy array
+        bool_mask_arr = self.get_bool_mask().numpy()
+        
+        #convert the boolean mask array into a binary mask array
+        binary_mask_arr = bool_mask_arr.astype(int)
+
+        # use scipy's center_of_mass function to calculate the center of mass
+        center_mass = center_of_mass(binary_mask_arr)
+
+        # flip (y,x) to (x,y)
+        center_mass_pixel = (center_mass[1],center_mass[0])
+
+        return center_mass_pixel
 
     def get_label(self):
         """Gets the label of the detected object
