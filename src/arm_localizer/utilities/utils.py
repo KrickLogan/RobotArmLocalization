@@ -6,12 +6,12 @@ import numpy as np
 import numpy.ma as ma
 from math import tan
 import pickle as pickle
-from arm_localizer import ObjectDetector, Vector, Rotation
+# from arm_localizer import ObjectDetector, Vector, Rotation
 # from arm_localizer.vector import Vector
 
 # from arm_localizer.rotation import Rotation
 
-PRECISION = 0.6
+PRECISION = 0.5
 BASE_STRING = 'Base'
 CLAW_STRING = 'Claw'
 COTTON_STRING = 'Cotton'
@@ -90,31 +90,6 @@ def fail(frameinfo):
 
 def get_img_size(img):
     return img.size
-
-def calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, pos_claw_1, pos_claw_2):
-    
-    detector = ObjectDetector()
-
-    detector.run(img1)
-    cam_to_claw_1 = detector.get_claw().to_vector(img1.size, depth1)
-    cam_to_base_1 = detector.get_base().to_vector(img1.size, depth1)
-    base_to_claw_1 = cam_to_claw_1 - cam_to_base_1
-    
-    detector.run(img2)
-    cam_to_claw_2 = detector.get_claw().to_vector(img2.size, depth2)
-    cam_to_base_2 = detector.get_base().to_vector(img2.size, depth2)
-    base_to_claw_2 = cam_to_claw_2 - cam_to_base_2
-    
-    first_rot_vector = base_to_claw_1.cross(pos_claw_1)
-    first_rot_rads = base_to_claw_1.angle_between(pos_claw_1)
-    
-    second_rot_vector = pos_claw_1
-
-    base_to_claw_2 = base_to_claw_2.rotate_about_vector(first_rot_vector.unit(), first_rot_rads)
-    second_rot_rads = base_to_claw_2.perp(second_rot_vector).angle_between(pos_claw_2.perp(second_rot_vector))
-    rotation = Rotation(first_rot_vector, first_rot_rads, second_rot_vector, second_rot_rads)
-    
-    pickle_obj(rotation)
 
 
 def pickle_obj(obj):#, filename): #new pickling function, should be able to pickle any object.

@@ -30,29 +30,3 @@ class Rotation:
     
     def get_second_rot_radian(self):
         return self._s_rot_rads
-
-#Antiquated pickling functions. Moved to utils.py, pending review before deletion.
-
-    #def pickle(self):
-        #fh = open ("rotation.pkl", "bw")
-        #pickle.dump(self, fh)
-        #fh.close()
-
-    #def unpickle(self):
-        #f = open ("rotation.pkl", "rb")
-        #f_new = pickle.load(f)
-        #print(f_new.f_rot_vector)
-        #print(f_new.f_rot_rads)
-        #print(f_new.s_rot_vector)
-        #print(f_new.s_rot_rads)
-        #f.close()
-
-#import pickle as pickle
-#rot = Rotation()
-#fh = open ("rotation.pkl", "bw")
-#pickle.dump(rot, fh)
-#fh.close()
-#f = open ("rotation.pkl", "rb")
-#f_new = pickle.load(f)
-#print(f_new.value)
-#f.close()

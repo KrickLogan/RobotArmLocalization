@@ -113,7 +113,7 @@ def get_graph_labels_values(ma_depth):
     frequencies = frequencies[1:]
     unique_values = unique_values[1:]
     
-    index_interval = (unique_values[-1] - unique_values[0])//(partitions)
+    index_interval = round((unique_values[-1] - unique_values[0])/(partitions))
     
     np_segment_boundaries = np.arange(unique_values[0], unique_values[-1], index_interval)
     
@@ -122,6 +122,7 @@ def get_graph_labels_values(ma_depth):
     for i in range(1,len(np_segment_boundaries)):
         
         data_labels[i-1] = f"[{np_segment_boundaries[i-1]}, {np_segment_boundaries[i]})"
+
         sum = 0
         for value, frequency in zip(unique_values, frequencies):
             if value >= np_segment_boundaries[i-1] and value < np_segment_boundaries[i]:
