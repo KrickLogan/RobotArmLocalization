@@ -1,4 +1,5 @@
 from fileinput import filename
+from genericpath import exists
 import torch
 from PIL import Image
 import os
@@ -127,3 +128,9 @@ def unpickle():#, filename): #new unpickling function, should be able to unpickl
         print(e)
     fh.close()
     return fh_new
+
+newdir = ":/rotation"
+if not os.path.exists(newdir):
+    os.makedirs(newdir)
+else:
+    print("folder already exists")
