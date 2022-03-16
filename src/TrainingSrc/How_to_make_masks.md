@@ -30,7 +30,7 @@
 ##### Detailed instructions:
 1. Open image.
 
-2. Toolbar: File > Save As > “frame_###_mask.xcf” (add “_mask” to the filename)
+2. Toolbar: File > Export As > “frame_###_mask.png” (add “_mask” to the filename)
 
 3. Using Free Select Tool (Mode: Replace), trace outline around robot claw
 
