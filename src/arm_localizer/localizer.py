@@ -22,10 +22,10 @@ class LocalizerNotInitializedError(Exception):
 class Localizer:
     
     def __init__(self):
-        self.f_rot_vector = None
-        self.f_rot_rads = None
-        self.s_rot_vector = None
-        self.s_rot_rads = None
+        # self.f_rot_vector = None
+        # self.f_rot_rads = None
+        # self.s_rot_vector = None
+        # self.s_rot_rads = None
         # self.rotation = utils.unpickle()  
         filename = "./rotation.pkl"
         fh = open(filename, "rb")
