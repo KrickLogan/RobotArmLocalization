@@ -18,7 +18,6 @@ BACKGROUND_STRING = 'Background'
 ERROR_STRING = 'ERROR'
 HFOV = 69 #degrees
 VFOV = 42 #degrees
-
 def load_model():
     # dirname = os.path.join(os.path.dirname(__file__),"../camera_data/depths/")
     model = torch.load(os.path.join(os.path.dirname(__file__),'../data/model/model.pt'), map_location=torch.device('cpu'))
@@ -129,8 +128,9 @@ def unpickle():#, filename): #new unpickling function, should be able to unpickl
     fh.close()
     return fh_new
 
-newdir = ":/rotation"
-if not os.path.exists(newdir):
-    os.makedirs(newdir)
-else:
-    print("folder already exists")
+def newfolder():    
+    newdir = ":/rotation"
+    if not os.path.exists(newdir):
+        os.makedirs(newdir)
+    else:
+        print("folder already exists")
