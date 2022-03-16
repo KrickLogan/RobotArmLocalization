@@ -7,6 +7,7 @@ from math import sqrt, radians, cos, sin, acos, tan
 from scipy.ndimage import center_of_mass
 import torch
 import numpy.ma as ma
+import pickle
 
 class Vector:
     def __init__(self, x, y, z):
@@ -464,14 +465,33 @@ class ObjectDetector:
         return False
     
 
+class LocalizerNotInitializedError(Exception):
+    pass
+
 class Localizer:
     
     def __init__(self):
-        # self.f_rot_vector = None
-        # self.f_rot_rads = None
-        # self.s_rot_vector = None
-        # self.s_rot_rads = None
-        self.rotation = utils.unpickle()
+        
+        filename = "./rotation/rotation.pkl"
+        fh = open(filename, "rb")
+        try:
+            fh_new = pickle.load(fh)
+        except pickle.UnpicklingError as e:
+            print(e)
+            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
+        except pickle.PicklingError as e:
+            print(e)
+            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
+        except (AttributeError,  EOFError, ImportError, IndexError) as e:
+            print(e)
+            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
+        except Exception as e:
+            print(e)
+            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
+        else:
+            self.rotation = fh_new
+        finally:
+            fh.close()
         
     def get_real_position(self, t_vector: Vector) -> Vector:
         ''' This Function is the final usage of the system. It applies the rotations to the vector of the detected object
