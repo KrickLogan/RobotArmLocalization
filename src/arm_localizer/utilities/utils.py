@@ -1,4 +1,3 @@
-from fileinput import filename
 import torch
 from PIL import Image
 import os
@@ -19,7 +18,6 @@ BACKGROUND_STRING = 'Background'
 ERROR_STRING = 'ERROR'
 HFOV = 69 #degrees
 VFOV = 42 #degrees
-
 def load_model():
 
     model = torch.load(os.path.join(os.path.dirname(__file__),'../data/model/model.pt'), map_location=torch.device('cpu'))
@@ -108,3 +106,10 @@ def unpickle():#, filename): #new unpickling function, should be able to unpickl
         print(e)
     fh.close()
     return fh_new
+
+def create_rotation_folder():    
+    newdir = "./rotation"
+    if not os.path.exists(newdir):
+        os.makedirs(newdir)
+    else:
+        print("folder already exists")
