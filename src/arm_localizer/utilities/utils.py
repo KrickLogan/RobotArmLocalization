@@ -91,21 +91,22 @@ def get_img_size(img):
 
 
 def pickle_obj(obj):#, filename): #new pickling function, should be able to pickle any object.
-    filename = "./rotation/rotation.pickle"
+    create_rotation_folder()
+    filename = "./rotation/rotation.pkl"
     fh = open(filename, "bw")
     pickle.dump(obj, fh)
     fh.close()
 
-def unpickle():#, filename): #new unpickling function, should be able to unpickle any object.
-    # dirname = "./rotation/"
-    filename = "./rotation/rotation.pickle"
-    fh = open(filename, "rb")
-    try:
-        fh_new = pickle.load(fh)
-    except pickle.UnpicklingError as e:
-        print(e)
-    fh.close()
-    return fh_new
+# def unpickle():#, filename): #new unpickling function, should be able to unpickle any object.
+#     # dirname = "./rotation/"
+#     filename = "./rotation/rotation.pkl"
+#     fh = open(filename, "rb")
+#     try:
+#         fh_new = pickle.load(fh)
+#     except pickle.UnpicklingError as e:
+#         print(e)
+#     fh.close()
+#     return fh_new
 
 def create_rotation_folder():    
     newdir = "./rotation"
