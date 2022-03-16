@@ -262,13 +262,13 @@ class DetectedObject:
         """
         mx = self.get_masked_array(masked_depth_arr)
         masked_array_no_outliers = self.remove_depth_outliers(mx)
-        data_labels, data_values = visualizer.get_graph_labels_values(masked_array_no_outliers)
-        visualizer.show_bar_graph(data_labels, data_values, "Depth distribution", "Depth Ranges", "count")
+        # data_labels, data_values = visualizer.get_graph_labels_values(masked_array_no_outliers)
+        # visualizer.show_bar_graph(data_labels, data_values, "Depth distribution", "Depth Ranges", "count")
         # return np.ma.MaskedArray.mean(masked_array_no_outliers)
         depth = np.percentile(masked_array_no_outliers.compressed(), 90)
-        print("max: ", masked_array_no_outliers.max())
-        print("min: ", masked_array_no_outliers.min())
-        print(depth)
+        # print("max: ", masked_array_no_outliers.max())
+        # print("min: ", masked_array_no_outliers.min())
+        # print(depth)
         return depth
         
     def remove_depth_outliers(self,masked_depth_arr) -> np.ma:
