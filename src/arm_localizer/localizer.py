@@ -27,7 +27,7 @@ class Localizer:
         # self.s_rot_vector = None
         # self.s_rot_rads = None
         # self.rotation = utils.unpickle()  
-        filename = "./rotation.pkl"
+        filename = "./rotation/rotation.pkl"
         fh = open(filename, "rb")
         try:
             fh_new = pickle.load(fh)
