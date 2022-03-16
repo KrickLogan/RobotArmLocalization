@@ -1,4 +1,3 @@
-from fileinput import filename
 import torch
 from PIL import Image
 import os
@@ -6,12 +5,12 @@ import numpy as np
 import numpy.ma as ma
 from math import tan
 import pickle as pickle
+# from arm_localizer import ObjectDetector, Vector, Rotation
+# from arm_localizer.vector import Vector
 
-from arm_localizer.vector import Vector
+# from arm_localizer.rotation import Rotation
 
-from arm_localizer.rotation import Rotation
-
-PRECISION = 0.6
+PRECISION = 0.5
 BASE_STRING = 'Base'
 CLAW_STRING = 'Claw'
 COTTON_STRING = 'Cotton'
@@ -19,7 +18,6 @@ BACKGROUND_STRING = 'Background'
 ERROR_STRING = 'ERROR'
 HFOV = 69 #degrees
 VFOV = 42 #degrees
-
 def load_model():
 
     model = torch.load(os.path.join(os.path.dirname(__file__),'../data/model/model.pt'), map_location=torch.device('cpu'))
@@ -79,29 +77,40 @@ def fail(frameinfo):
     print(frameinfo.filename, frameinfo.lineno)
     #Should start throwing exceptions instead of this wherever this function is called
 
-def calibrate(cam_claw_1: Vector, pos_claw_1: Vector, cam_claw_2: Vector, pos_claw_2: Vector):
-    f_rot_vector = cam_claw_1.cross(pos_claw_1)
-    f_rot_rads = cam_claw_1.angle_between(pos_claw_1)
-    s_rot_vector = pos_claw_1
-    cam_claw_2 = cam_claw_2.rotate_about_vector(f_rot_vector.unit(), f_rot_rads)
-    s_rot_rads = cam_claw_2.perp(s_rot_vector).angle_between(pos_claw_2.perp(s_rot_vector))
-    rotation = Rotation(f_rot_vector, f_rot_rads, s_rot_vector, s_rot_rads)
-    pickle_obj(rotation)
+# def calibrate(cam_claw_1: Vector, pos_claw_1: Vector, cam_claw_2: Vector, pos_claw_2: Vector):
+#     f_rot_vector = cam_claw_1.cross(pos_claw_1)
+#     f_rot_rads = cam_claw_1.angle_between(pos_claw_1)
+#     s_rot_vector = pos_claw_1
+#     cam_claw_2 = cam_claw_2.rotate_about_vector(f_rot_vector.unit(), f_rot_rads)
+#     s_rot_rads = cam_claw_2.perp(s_rot_vector).angle_between(pos_claw_2.perp(s_rot_vector))
+#     rotation = Rotation(f_rot_vector, f_rot_rads, s_rot_vector, s_rot_rads)
+#     pickle_obj(rotation)
+
+def get_img_size(img):
+    return img.size
 
 
 def pickle_obj(obj):#, filename): #new pickling function, should be able to pickle any object.
-    filename = "./rotation/rotation.pickle"
+    create_rotation_folder()
+    filename = "./rotation/rotation.pkl"
     fh = open(filename, "bw")
     pickle.dump(obj, fh)
     fh.close()
 
-def unpickle():#, filename): #new unpickling function, should be able to unpickle any object.
-    # dirname = "./rotation/"
-    filename = "./rotation/rotation.pickle"
-    fh = open(filename, "rb")
-    try:
-        fh_new = pickle.load(fh)
-    except pickle.UnpicklingError as e:
-        print(e)
-    fh.close()
-    return fh_new
+# def unpickle():#, filename): #new unpickling function, should be able to unpickle any object.
+#     # dirname = "./rotation/"
+#     filename = "./rotation/rotation.pkl"
+#     fh = open(filename, "rb")
+#     try:
+#         fh_new = pickle.load(fh)
+#     except pickle.UnpicklingError as e:
+#         print(e)
+#     fh.close()
+#     return fh_new
+
+def create_rotation_folder():    
+    newdir = "./rotation"
+    if not os.path.exists(newdir):
+        os.makedirs(newdir)
+    else:
+        print("folder already exists")

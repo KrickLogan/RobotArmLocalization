@@ -24,9 +24,8 @@ setuptools.setup(
     
     packages = [
         "arm_localizer",
-        "arm_localizer.data",
-        "arm_localizer.utilities",
-        "arm_localizer.data.model"
+        "arm_localizer.data.model",
+        "arm_localizer.utilities"
     ],
 
     package_data = {
