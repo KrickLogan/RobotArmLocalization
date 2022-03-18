@@ -1,5 +1,5 @@
-# This file is used for demonstrating the model
-# as it stands on 2/20/2022
+# This file is used for demonstrating pyrealsense2's deprojection
+# as it stands on 3/18/2022
 
 from arm_localizer.object_detector import ObjectDetector
 import arm_localizer.utilities.utils as utils
