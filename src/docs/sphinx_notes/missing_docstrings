@@ -1,0 +1,35 @@
+The classes/methods that do not have docstrings:
+
+arm_localizer 
+=============
+
+no description
+
+vector 
+	+ all functions
+
+rotation
+	+ all functions
+
+LocalizerNotInitializedError(Exception)
+
+Localizer
+	+ function
+
+function Calibrate
+
+
+utils
+=====
+
+no description
+
+all functions
+
+
+visualizer
+==========
+
+no description
+
+all functions 
