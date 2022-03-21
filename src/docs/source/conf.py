@@ -12,17 +12,16 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../arm_localizer'))
 sys.path.insert(0, os.path.abspath('../../arm_localizer/utilities'))
 
 # -- Project information -----------------------------------------------------
 
 project = 'Arm Localizer'
-copyright = '2022, Thomas'
-author = 'Thomas'
+copyright = '2022, SCSU Capstone John Deere Team'
+author = 'SE490 Fall, SE491 Spring 2021-22 SCSU Capstone John Deere Team'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '0.0.2'
 
 
 # -- General configuration ---------------------------------------------------
@@ -36,6 +35,9 @@ extensions = [
     'sphinx.ext.todo',
     'sphinx.ext.coverage',
 ]
+
+# Configuration of sphinx.ext.coverage
+coverage_show_missing_items = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
