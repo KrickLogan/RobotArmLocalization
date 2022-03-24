@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh: long_description = fh.read(
 
 setuptools.setup(
     name = "arm_localizer",
-    version="0.0.4",
+    version="0.0.2",
     author="SE490 Fall, SE491 Spring 2021-22 SCSU Capstone John Deere Team",
     description="Robot Arm and Object Localization",
     long_description=long_description,

@@ -12,42 +12,10 @@ Subpackages
 Submodules
 ----------
 
-arm\_localizer.detected\_object module
---------------------------------------
+arm\_localizer.arm\_localizer module
+------------------------------------
 
-.. automodule:: arm_localizer.detected_object
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-arm\_localizer.localizer module
--------------------------------
-
-.. automodule:: arm_localizer.localizer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-arm\_localizer.object\_detector module
---------------------------------------
-
-.. automodule:: arm_localizer.object_detector
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-arm\_localizer.rotation module
-------------------------------
-
-.. automodule:: arm_localizer.rotation
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-arm\_localizer.vector module
-----------------------------
-
-.. automodule:: arm_localizer.vector
+.. automodule:: arm_localizer.utilities
    :members:
    :undoc-members:
    :show-inheritance:
