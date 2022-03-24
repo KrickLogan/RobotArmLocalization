@@ -1,7 +1,7 @@
 from asyncio.windows_events import NULL
 from typing import List
 from torchvision.transforms import functional as F
-from .utilities import utils, visualizer
+from arm_localizer.utilities import utils, visualizer
 from PIL import Image
 import numpy as np
 from math import sqrt, radians, cos, sin, acos, tan
