@@ -24,13 +24,13 @@ def load_model():
     return model
 
 def load_image(img_file_name):
-    dirname = "./camera_data/images/"
+    dirname = "../camera_data/images/"
     img = Image.open(os.path.join(dirname,img_file_name)).convert("RGB")
     return img
 
 def load_depth_arr(dp_arr_name):
 
-    dirname = "./camera_data/depths/"
+    dirname = "../camera_data/depths/"
     np_depth = np.load(os.path.join(dirname, dp_arr_name))
     return np_depth
 
