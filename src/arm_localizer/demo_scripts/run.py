@@ -1,9 +1,9 @@
 # This file demonstrates all the features of the system as it
 #  stands on 12/6/2021
 
-from arm_localizer.object_detector import ObjectDetector
-from arm_localizer.detected_object import DetectedObject
-from arm_localizer.localizer import Localizer
+from arm_localizer.arm_localizer import ObjectDetector
+from arm_localizer.arm_localizer import DetectedObject
+from arm_localizer.arm_localizer import Localizer
 import arm_localizer.utilities.utils as utils
 import arm_localizer.utilities.visualizer as viz
 import matplotlib.pyplot as plt

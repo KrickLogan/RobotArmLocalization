@@ -6,6 +6,13 @@
 # import Utilities.visualizer as viz
 # from Vector import Vector
 # from math import radians, degrees
+from arm_localizer.arm_localizer import Vector
+from arm_localizer.arm_localizer import utils
+from math import radians
+import matplotlib.pyplot as plt
+from arm_localizer.arm_localizer import ObjectDetector
+from arm_localizer.arm_localizer import DetectedObject
+from arm_localizer.arm_localizer import Localizer
 
 # THIS FILE IS ONLY BEING KEPT TO PROVIDE EXAMPLE USAGE. WILL BE DELETED SOON
 
@@ -41,9 +48,9 @@ def main():
     
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
 
-    detector = ObjectDetector(img1) # provide image to model
+    detector = ObjectDetector() # provide image to model
     
-    detector.run() # Run model on image
+    detector.run(img1) # Run model on image
 
     cam_claw_1 = detector.get_claw().to_vector(img1.size,depth_arr) - detector.get_base().to_vector(img1.size,depth_arr)
     pos_claw_1 = get_pos(cam_claw_1)
@@ -53,9 +60,9 @@ def main():
     img2 = get_image(frame_prefix)
     depth_arr2 = utils.load_depth_arr(frame_prefix + "_depth.npy")
 
-    detector = ObjectDetector(img2) # provide image to model
+    detector = ObjectDetector() # provide image to model
     
-    detector.run() # Run model on image
+    detector.run(img2) # Run model on image
 
     cam_claw_2 = detector.get_claw().to_vector(img2.size,depth_arr2) - detector.get_base().to_vector(img2.size,depth_arr2)
     pos_claw_2 = get_pos(cam_claw_2)

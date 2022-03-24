@@ -1,7 +1,7 @@
 
-from arm_localizer.object_detector import ObjectDetector
-from arm_localizer.detected_object import DetectedObject
-from arm_localizer.localizer import Localizer
+from arm_localizer.arm_localizer import ObjectDetector
+from arm_localizer.arm_localizer import DetectedObject
+from arm_localizer.arm_localizer import Localizer
 import arm_localizer.utilities.utils as utils
 import arm_localizer.utilities.visualizer as viz
 import matplotlib.pyplot as plt
@@ -15,9 +15,9 @@ def main():
 
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
 
-    detector = ObjectDetector(img) # provide image to model
+    detector = ObjectDetector() # provide image to model
     
-    detector.run() # Run model on image
+    detector.run(img) # Run model on image
 
     # The following get the model outputs for each of the detections
 
