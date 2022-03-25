@@ -1,6 +1,6 @@
 from turtle import color
 
-from arm_localizer.vector import Vector
+from arm_localizer import Vector
 import matplotlib.pyplot as plt
 from math import radians, degrees
 
