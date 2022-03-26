@@ -1,7 +1,7 @@
 # This file is used for demonstrating the model
 # as it stands on 2/20/2022
 
-from arm_localizer.object_detector import ObjectDetector
+from arm_localizer import ObjectDetector
 import arm_localizer.utilities.utils as utils
 import arm_localizer.utilities.visualizer as viz
 
@@ -10,9 +10,9 @@ def main():
     img = utils.load_image(frame_prefix + ".png")
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
 
-    detector = ObjectDetector(img) # provide image to model
+    detector = ObjectDetector() # provide image to model
     
-    detector.run() # Run model on image
+    detector.run(img) # Run model on image
 
     # The following get the model outputs for each of the detections
 
