@@ -8,6 +8,7 @@ from scipy.ndimage import center_of_mass
 import torch
 import numpy.ma as ma
 import pickle
+import pyrealsense2 as rs
 
 class Vector:
     def __init__(self, x, y, z):
@@ -185,7 +186,7 @@ class DetectedObject:
         # get the boolean mask and convert it from a tensor to a numpy array
         bool_mask_arr = self.get_bool_mask().numpy()
         
-        #convert the boolean mask array into a binary mask array
+        # convert the boolean mask array into a binary mask array
         binary_mask_arr = bool_mask_arr.astype(int)
 
         # use scipy's center_of_mass function to calculate the center of mass
@@ -290,8 +291,38 @@ class DetectedObject:
         z = masked_depth_arr [(masked_depth_arr>(mean- 3* std)) & (masked_depth_arr<(mean+3* std))]
         return z
 
-    def to_vector(self, img_dims, depth_arr) -> Vector:
-        # Converts the detected object to a position vector
+    def rs_to_vector(self, depth_arr) -> Vector:
+        """Converts the detected object to a position vector using a depth array.
+
+        This function uses pyrealsense2's deprojection method, which factors in the camera's intrinsics,
+        to calculate its position in 3d coordinates, represented by this vector. Measurements are in mm.
+
+        Args:
+            depth_arr (np.ndarray): A depth array which corresponds to the image and the detections
+
+        Returns:
+            :class:`arm_localizer.vector.Vector`: returns a vector which points to the object from the camera
+
+        """
+        _intrinsics = rs.intrinsics()
+        _intrinsics.width = 640
+        _intrinsics.height = 480
+        _intrinsics.ppx = 324.5739440917969
+        _intrinsics.ppy = 243.86447143554688
+        _intrinsics.fx = 603.4510498046875
+        _intrinsics.fy = 603.4326171875
+        _intrinsics.model  = rs.distortion.none
+        _intrinsics.coeffs = [0.0, 0.0, 0.0, 0.0, 0.0]
+
+        center_point = self.get_center_mass_pixel()
+        average_depth = self.get_average_depth(self.get_masked_array(depth_arr))
+
+        result = rs.rs2_deproject_pixel_to_point(_intrinsics, center_point, average_depth)
+        result_vector = Vector(result[0], result[2], -result[1])
+
+        return result_vector
+
+    def to_vector(self, img_size, depth_arr) -> Vector:
         """Converts the detected object to a position vector using a depth array.
 
         This function uses a depth array and a detections position in an image to calculate
@@ -309,9 +340,9 @@ class DetectedObject:
         
         raw_obj_center_pxl = self.get_center_pixel()
         
-        obj_center_pxl = self.normalize_pixel_value(raw_obj_center_pxl, img_dims)
+        obj_center_pxl = self.normalize_pixel_value(raw_obj_center_pxl, img_size)
         
-        xy_plane_angle, zy_plane_angle = self.get_angles_between_pixels(obj_center_pxl, img_dims)
+        xy_plane_angle, zy_plane_angle = self.get_angles_between_pixels(obj_center_pxl, img_size)
         
         y = depth
         x = y * tan(radians(xy_plane_angle))
@@ -347,7 +378,6 @@ class DetectedObject:
         return xy_plane_angle, zy_plane_angle
 
     def normalize_pixel_value(self, obj_center_pxl, img_dims):
-        
         """Translates pixel coordinates so that y axis is standard (bottom to top, low to high) and so origin is moved to image center
 
         To make more comprehensible, normalize the pixel values. Initially the center pixel of a detection is given
@@ -514,6 +544,36 @@ def calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, 
     detector.run(img2)
     cam_to_claw_2 = detector.get_claw().to_vector(img2.size, depth2)
     cam_to_base_2 = detector.get_base().to_vector(img2.size, depth2)
+    base_to_claw_2 = cam_to_claw_2 - cam_to_base_2
+    
+    first_rot_vector = base_to_claw_1.cross(pos_claw_1)
+    first_rot_rads = base_to_claw_1.angle_between(pos_claw_1)
+    
+    second_rot_vector = pos_claw_1
+
+    base_to_claw_2 = base_to_claw_2.rotate_about_vector(first_rot_vector.unit(), first_rot_rads)
+    pc2_perp = pos_claw_2.perp(second_rot_vector)
+    bc2_perp = base_to_claw_2.perp(second_rot_vector)
+    second_rot_rads = base_to_claw_2.perp(second_rot_vector).angle_between(pc2_perp)
+    if bc2_perp.cross(pc2_perp).dot(second_rot_vector.unit()) < 0:
+        second_rot_rads = -1 * second_rot_rads
+    
+    rotation = Rotation(first_rot_vector, first_rot_rads, second_rot_vector, second_rot_rads)
+    
+    utils.pickle_obj(rotation)
+
+def rs_calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, pos_claw_1, pos_claw_2):
+    
+    detector = ObjectDetector()
+
+    detector.run(img1)
+    cam_to_claw_1 = detector.get_claw().rs_to_vector(depth1)
+    cam_to_base_1 = detector.get_base().rs_to_vector(depth1)
+    base_to_claw_1 = cam_to_claw_1 - cam_to_base_1
+    
+    detector.run(img2)
+    cam_to_claw_2 = detector.get_claw().rs_to_vector(depth2)
+    cam_to_base_2 = detector.get_base().rs_to_vector(depth2)
     base_to_claw_2 = cam_to_claw_2 - cam_to_base_2
     
     first_rot_vector = base_to_claw_1.cross(pos_claw_1)
