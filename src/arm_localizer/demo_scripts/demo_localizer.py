@@ -28,8 +28,7 @@ def show_all_detections(img, depth_arr, detector):
     viz.show_mask_overlay(depth_arr, detector.get_base().get_bool_mask(), "Base Detection", force_contrast=True, depth_arr=depth_arr)
     viz.show_mask_overlay(depth_arr, detector.get_object().get_bool_mask(), "Object Detection", force_contrast=True, depth_arr=depth_arr)
 
-    rectangles = viz.get_rectangles([detector.get_claw().box, detector.get_base().box, detector.get_object().box])
-    viz.show_img_boxes(img, rectangles)
+    viz.show_img_boxes(img, [detector.get_claw().box, detector.get_base().box, detector.get_object().box])
 
     center_points = get_center_points(detector)
     # print(center_points)

@@ -36,8 +36,7 @@ def main():
     
     # Use the visualizer to show the boxes and the center points
 
-    rectangles = viz.get_rectangles([claw.box, base.box, obj.box])
-    viz.show_img_boxes(img, rectangles)
+    viz.show_img_boxes(img, [claw.box, base.box, obj.box])
     claw_center = claw.get_center_pixel()
     viz.show_point(img, claw_center, f"Center Point Coordinates: {claw_center}")
     base_center = base.get_center_pixel()
