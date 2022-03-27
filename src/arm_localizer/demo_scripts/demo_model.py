@@ -6,7 +6,7 @@ import arm_localizer.utilities.utils as utils
 import arm_localizer.utilities.visualizer as viz
 
 def main():
-    frame_prefix = "frame_0"
+    frame_prefix = "frame_20"
     img = utils.load_image(frame_prefix + ".png")
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
 

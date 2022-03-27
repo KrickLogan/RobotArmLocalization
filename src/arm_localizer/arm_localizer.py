@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 from typing import List
 from torchvision.transforms import functional as F
 from arm_localizer.utilities import utils, visualizer
@@ -393,7 +392,6 @@ class ObjectDetector:
         """Constructor method
         """
 
-        # self._model = utils.load_model()
         self._output = None
         self._detections = None
 
@@ -451,19 +449,19 @@ class ObjectDetector:
         for obj in self._detections:
             if obj.get_label() == utils.CLAW_STRING:
                 return obj
-        return NULL
+        return False #consider alternative returns?
         
     def get_base(self) -> DetectedObject: # shouldn't return a list, error check at detection level to allow 1 and only 1 of each "type " ie claw, boject, base
         for obj in self._detections:
             if obj.get_label() == utils.BASE_STRING:
                 return obj
-        return NULL
+        return False #consider alternative returns?
 
     def get_object(self) -> DetectedObject: # shouldn't return a list, error check at detection level to allow 1 and only 1 of each "type " ie claw, boject, base
         for obj in self._detections:
             if obj.get_label() == utils.COTTON_STRING:
                 return obj
-        return NULL
+        return False #consider alternative returns?
     
 
 class LocalizerNotInitializedError(Exception):
