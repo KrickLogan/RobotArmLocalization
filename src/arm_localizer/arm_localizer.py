@@ -590,3 +590,11 @@ def rs_calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarra
     rotation = Rotation(first_rot_vector, first_rot_rads, second_rot_vector, second_rot_rads)
     
     utils.pickle_obj(rotation)
+
+def get_object_position(img, depth):
+    l = Localizer()
+    d = ObjectDetector()
+    d.run(img)
+    target = d.get_object().rs_to_vector(depth) - d.get_base().rs_to_vector(depth)
+    real_pos = l.get_real_position(target)
+    return real_pos
