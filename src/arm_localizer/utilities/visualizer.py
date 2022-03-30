@@ -10,12 +10,12 @@ def maximize_plt():
         mng = plt.get_current_fig_manager() 
         mng.window.state("zoomed")
 
-def get_rectangles(boxes):
-    rectangles = []
-    for box in boxes:
-        x, y, w, h = box.detach().numpy()
-        rectangles.append(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
-    return rectangles
+# def get_rectangles(boxes):
+#     rectangles = []
+#     for box in boxes:
+#         x, y, w, h = box.detach().numpy()
+#         rectangles.append(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
+#     return rectangles
 
 def get_label_string(label):
     label_string = ''
@@ -85,13 +85,28 @@ def show_points(img, points, title, mask = None):
     maximize_plt()
     plt.show()
 
-def show_img_boxes(img, rectangles):
+def show_img_boxes(img, detections):
     plt.imshow(img)
-    for rect in rectangles:
-        plt.gca().add_patch(rect)
-
+    for d in detections:
+        x, y, w, h = d.box.detach().numpy()
+        plt.gca().add_patch(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
     maximize_plt()
     plt.show()
+
+# def get_rectangles(boxes):
+#     rectangles = []
+#     for box in boxes:
+#         x, y, w, h = box.detach().numpy()
+#         rectangles.append(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
+#     return rectangles
+
+# def show_img_boxes(img, rectangles):
+#     plt.imshow(img)
+#     for rect in rectangles:
+#         plt.gca().add_patch(rect)
+
+#     maximize_plt()
+#     plt.show()
 
 def show_bar_graph(data_labels, data_values, title="", x_axis_label="", y_axis_label=""):
     label_indices = [i for i, _ in enumerate(data_labels)]
