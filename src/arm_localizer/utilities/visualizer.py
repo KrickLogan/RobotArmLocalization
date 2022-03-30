@@ -81,9 +81,9 @@ def show_points(img, points, title, mask = None):
     maximize_plt()
     plt.show()
 
-def show_img_boxes(img, boxes):
-    for box in boxes:
-        x, y, w, h = box.detach().numpy()
+def show_img_boxes(img, detections):
+    for d in detections:
+        x, y, w, h = d.box.detach().numpy()
         plt.gca().add_patch(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
     maximize_plt()
     plt.show()
