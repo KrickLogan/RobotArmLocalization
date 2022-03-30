@@ -210,7 +210,7 @@ class DetectedObject:
             int: label int
 
         """
-        return self.label
+        return self.label    
 
     def get_bool_mask(self) -> np.ndarray:
         """Returns a boolean array, true values representing a pixel including the detected object, false in pixels without a detected object
