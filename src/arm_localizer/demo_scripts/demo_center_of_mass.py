@@ -31,7 +31,8 @@ def main():
     obj_center_mass_pixel = obj.get_center_mass_pixel()
     obj_center_pixel = obj.get_center_pixel()
 
-    viz.show_img_boxes(img, [claw.box, base.box, obj.box])
+    rectangles = viz.get_rectangles([claw.box, base.box, obj.box])
+    viz.show_img_boxes(img, rectangles)
 
     print (f"claw center pixel: {claw_center_pixel}")
     viz.show_point(img, claw_center_pixel, f"Claw Center Point Coordinates (old): {claw_center_pixel}")

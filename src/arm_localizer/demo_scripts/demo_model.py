@@ -29,8 +29,8 @@ def main():
 
     viz.show_img(img) # Show the image
 
-
-    viz.show_img_boxes(img, [claw.box, base.box, obj.box])
+    rectangles = viz.get_rectangles([claw.box, base.box, obj.box])
+    viz.show_img_boxes(img, rectangles)
 
     viz.show_mask_overlay(img, claw.get_bool_mask(), "Claw mask")
     claw_center = claw.get_center_pixel()
