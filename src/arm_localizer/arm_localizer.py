@@ -1,6 +1,6 @@
 from typing import List
 from torchvision.transforms import functional as F
-from .utilities import utils, visualizer
+from arm_localizer.utilities import utils, visualizer
 from PIL import Image
 import numpy as np
 from math import sqrt, radians, cos, sin, acos, tan
@@ -422,7 +422,6 @@ class ObjectDetector:
         """Constructor method
         """
 
-        self._model = utils.load_model()
         self._output = None
         self._detections = None
 
@@ -443,7 +442,7 @@ class ObjectDetector:
 
         """
         img_tens = F.to_tensor(img)
-        self._output = self._model([img_tens])
+        self._output = utils.load_model()([img_tens])
         boxes = self._output[0]['boxes']
         labels = self._output[0]['labels']
         masks = self._output[0]['masks']
@@ -480,19 +479,19 @@ class ObjectDetector:
         for obj in self._detections:
             if obj.get_label() == utils.CLAW_STRING:
                 return obj
-        return False
+        return False #consider alternative returns?
         
     def get_base(self) -> DetectedObject: # shouldn't return a list, error check at detection level to allow 1 and only 1 of each "type " ie claw, boject, base
         for obj in self._detections:
             if obj.get_label() == utils.BASE_STRING:
                 return obj
-        return False
+        return False #consider alternative returns?
 
     def get_object(self) -> DetectedObject: # shouldn't return a list, error check at detection level to allow 1 and only 1 of each "type " ie claw, boject, base
         for obj in self._detections:
             if obj.get_label() == utils.COTTON_STRING:
                 return obj
-        return False
+        return False #consider alternative returns?
     
 
 class LocalizerNotInitializedError(Exception):
