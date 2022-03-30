@@ -58,7 +58,14 @@ def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None)
         plt.imshow(depth_arr, alpha=0)
     plt.title(title)
     maximize_plt()
-    plt.show()
+    plt.show() 
+
+def show_all_masks(img, detections, depth= None):
+    for detection in detections:
+        show_mask_overlay(img=img, mask=detection.get_bool_mask(), title=detection.get_label(), force_contrast=False, depth_arr=depth) 
+
+def show_mask(img, detection, depth= None): 
+        show_mask_overlay(img=img, mask=detection.get_bool_mask(), title=detection.get_label(), force_contrast=False, depth_arr=depth)
 
 def show_point(img, point, title, mask = None):
     plt.imshow(img)
