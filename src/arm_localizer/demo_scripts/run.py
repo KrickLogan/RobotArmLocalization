@@ -1,9 +1,10 @@
 # This file demonstrates all the features of the system as it
 #  stands on 12/6/2021
 
-from arm_localizer.arm_localizer import ObjectDetector
-from arm_localizer.arm_localizer import DetectedObject
-from arm_localizer.arm_localizer import Localizer
+
+from arm_localizer import ObjectDetector
+from arm_localizer import DetectedObject
+from arm_localizer import Localizer
 import arm_localizer.utilities.utils as utils
 import arm_localizer.utilities.visualizer as viz
 import matplotlib.pyplot as plt
@@ -19,9 +20,9 @@ def main():
     # plt.show()
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
 
-    detector = ObjectDetector(img) # provide image to model
+    detector = ObjectDetector() # provide image to model
     
-    detector.run() # Run model on image
+    detector.run(img) # Run model on image
 
     # The following get the model outputs for each of the detections
 
@@ -50,7 +51,7 @@ def main():
 
     bmask = claw.get_bool_mask()
 
-    viz.show_mask_overlay(img=depth_arr, mask=bmask, title="Depth Values of claw", depth_arr=depth_arr, force_contrast=True)
+    viz.show_mask_overlay(img=img, mask=bmask, title="Depth Values of claw", depth_arr=depth_arr)
 
     claw_depth = claw.get_average_depth(depth_arr)
     base_depth = base.get_average_depth(depth_arr)

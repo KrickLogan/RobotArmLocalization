@@ -69,6 +69,10 @@ def show_point(img, point, title, mask = None):
     maximize_plt()
     plt.show()
 
+def show_center_point (img, detection, title = ""):
+    center_point = detection.get_center_mass_pixel()
+    show_point(img, center_point, title)   
+
 def show_points(img, points, title, mask = None):
     plt.imshow(img)
     if(mask != None):

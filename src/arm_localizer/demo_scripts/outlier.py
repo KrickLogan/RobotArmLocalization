@@ -1,22 +1,25 @@
 
-from arm_localizer.arm_localizer import ObjectDetector
-from arm_localizer.arm_localizer import DetectedObject
-from arm_localizer.arm_localizer import Localizer
+from arm_localizer import ObjectDetector
+from arm_localizer import DetectedObject
+from arm_localizer import Localizer
+
 import arm_localizer.utilities.utils as utils
 import arm_localizer.utilities.visualizer as viz
 import matplotlib.pyplot as plt
 from PIL import ImageOps
 
 def main():
-    frame_prefix = "frame_200"
+    frame_prefix = "frame_20"
     img = utils.load_image(frame_prefix + ".png")
     plt.imshow(img)
     plt.show()
 
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
 
-    detector = ObjectDetector() # provide image to model
+
     
+    detector = ObjectDetector() # provide image to model
+
     detector.run(img) # Run model on image
 
     # The following get the model outputs for each of the detections
