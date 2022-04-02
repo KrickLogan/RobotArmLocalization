@@ -27,6 +27,11 @@ def load_depth_arr(dp_arr_name):
     np_depth = np.load(os.path.join(dirname, dp_arr_name))
     return np_depth
 
+def set_threshold(new_threshold):
+    """Sets the Threshold used for determining masks from the model
+    """
+    THRESHOLD = new_threshold
+
 def get_vfov():
     """Gets the Vertical Field of Vision of the camera in degrees
     """
@@ -40,7 +45,7 @@ def get_hfov():
 def Set_vfov(new_vfov):
     """Sets the Vertical Field of Vision of the camera in degrees
     """
-    return new_vfov
+    VFOV = new_vfov
 
 def set_hfov(new_hfov):
     """Sets the Horizontal Field of Vision of the camera in degrees
@@ -80,6 +85,7 @@ def fail(frameinfo):
 #     rotation = Rotation(f_rot_vector, f_rot_rads, s_rot_vector, s_rot_rads)
 #     pickle_obj(rotation)
 
+# ----- Delete? -----
 def get_img_size(img):
     return img.size
 
