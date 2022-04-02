@@ -421,10 +421,9 @@ class ObjectDetector:
     def __init__(self):
         """Constructor method
         """
-
+        self.threshold = 0.5
         self._output = None
         self._detections = None
-
 
     def run(self, img) -> List[DetectedObject]:
         # runs the model on the provided image
@@ -457,6 +456,34 @@ class ObjectDetector:
 
         return self._detections #Do something if more than one or none are detected for any of the target labels
     
+    def set_threshold(self, new_threshold):
+        """short description
+
+        long description
+
+        Args:
+            new_threshold: definition
+
+        Returns:
+            threshold: definition
+
+        """
+        self.threshold = new_threshold
+
+    def get_threshold(self):
+        """short description
+
+        long description
+
+        Args:
+            None
+
+        Returns:
+            threshold: definition
+
+        """
+        return self.threshold
+
     def get_model_outputs(self):
         """I think this will be gone soon too
 

@@ -4,7 +4,6 @@ import os
 import numpy as np
 import pickle as pickle
 
-THRESHOLD = 0.5
 BASE_STRING = 'Base'
 CLAW_STRING = 'Claw'
 COTTON_STRING = 'Cotton'
@@ -27,11 +26,6 @@ def load_depth_arr(dp_arr_name):
     np_depth = np.load(os.path.join(dirname, dp_arr_name))
     return np_depth
 
-def set_threshold(new_threshold):
-    """Sets the Threshold used for determining masks from the model
-    """
-    THRESHOLD = new_threshold
-
 def get_vfov():
     """Gets the Vertical Field of Vision of the camera in degrees
     """
@@ -42,7 +36,7 @@ def get_hfov():
     """
     return HFOV
 
-def Set_vfov(new_vfov):
+def set_vfov(new_vfov):
     """Sets the Vertical Field of Vision of the camera in degrees
     """
     VFOV = new_vfov
