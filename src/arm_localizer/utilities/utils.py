@@ -2,15 +2,9 @@ import torch
 from PIL import Image
 import os
 import numpy as np
-import numpy.ma as ma
-from math import tan
 import pickle as pickle
-# from arm_localizer import ObjectDetector, Vector, Rotation
-# from arm_localizer.vector import Vector
 
-# from arm_localizer.rotation import Rotation
-
-PRECISION = 0.5
+THRESHOLD = 0.5
 BASE_STRING = 'Base'
 CLAW_STRING = 'Claw'
 COTTON_STRING = 'Cotton'
@@ -18,8 +12,8 @@ BACKGROUND_STRING = 'Background'
 ERROR_STRING = 'ERROR'
 HFOV = 69 #degrees
 VFOV = 42 #degrees
-def load_model():
 
+def load_model():
     model = torch.load(os.path.join(os.path.dirname(__file__),'../data/model/model.pt'), map_location=torch.device('cpu'))
     return model
 
@@ -29,7 +23,6 @@ def load_image(img_file_name):
     return img
 
 def load_depth_arr(dp_arr_name):
-
     dirname = "./camera_data/depths/"
     np_depth = np.load(os.path.join(dirname, dp_arr_name))
     return np_depth
@@ -47,7 +40,7 @@ def get_hfov():
 def Set_vfov(new_vfov):
     """Sets the Vertical Field of Vision of the camera in degrees
     """
-    return VFOV
+    return new_vfov
 
 def set_hfov(new_hfov):
     """Sets the Horizontal Field of Vision of the camera in degrees
@@ -72,11 +65,12 @@ def get_label_string(label): ## Rework to use a dict?
         label_string = ERROR_STRING
     return label_string
 
-
+# ----- Delete? -----
 def fail(frameinfo):
     print(frameinfo.filename, frameinfo.lineno)
     #Should start throwing exceptions instead of this wherever this function is called
 
+# ----- Delete? -----
 # def calibrate(cam_claw_1: Vector, pos_claw_1: Vector, cam_claw_2: Vector, pos_claw_2: Vector):
 #     f_rot_vector = cam_claw_1.cross(pos_claw_1)
 #     f_rot_rads = cam_claw_1.angle_between(pos_claw_1)
@@ -89,7 +83,6 @@ def fail(frameinfo):
 def get_img_size(img):
     return img.size
 
-
 def pickle_obj(obj):#, filename): #new pickling function, should be able to pickle any object.
     create_rotation_folder()
     filename = "./rotation/rotation.pkl"
@@ -97,6 +90,7 @@ def pickle_obj(obj):#, filename): #new pickling function, should be able to pick
     pickle.dump(obj, fh)
     fh.close()
 
+# ----- Delete? -----
 # def unpickle():#, filename): #new unpickling function, should be able to unpickle any object.
 #     # dirname = "./rotation/"
 #     filename = "./rotation/rotation.pkl"

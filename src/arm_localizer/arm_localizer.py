@@ -226,7 +226,7 @@ class DetectedObject:
             bool: Description of return value
 
         """   
-        bool_mask = self.mask > utils.PRECISION
+        bool_mask = self.mask > utils.THRESHOLD
         # assert bool_mask.ndim == 2
         bool_mask = np.squeeze(bool_mask)
         return bool_mask
