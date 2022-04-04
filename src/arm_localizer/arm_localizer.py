@@ -165,7 +165,7 @@ class DetectedObject:
             to use when determining the bool mask.
 
         """
-        if new_threshold >= 0 and new_threshold <= 1:
+        if new_threshold > 0 and new_threshold < 1:
             self.threshold = new_threshold
         else:
             print('Threshold value must be between 0 and 1.')
