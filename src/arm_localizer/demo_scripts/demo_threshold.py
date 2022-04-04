@@ -64,12 +64,12 @@ def main():
     obj.set_threshold(0.5)
     print('\nSetting threshold value to: 0.5')
 
-    print('\nAttempting to set threshold value to: 1.2')
-    obj.set_threshold(1.2)
+    print('\nAttempting to set threshold value to: 1')
+    obj.set_threshold(1)
     print(f'threshold value is: {obj.get_threshold()}')
 
-    print('\nAttempting to set threshold value to: -0.2')
-    obj.set_threshold(-0.2)
+    print('\nAttempting to set threshold value to: 0')
+    obj.set_threshold(0)
     print(f'threshold value is: {obj.get_threshold()}\n')
 
 if __name__ == "__main__":
