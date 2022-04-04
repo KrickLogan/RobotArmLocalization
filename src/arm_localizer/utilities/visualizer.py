@@ -100,6 +100,13 @@ def show_img_boxes(img, detections):
     maximize_plt()
     plt.show()
 
+def show_img_box(img, detection):
+    plt.imshow(img)
+    x, y, w, h = detection.box.detach().numpy()
+    plt.gca().add_patch(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
+    maximize_plt()
+    plt.show()
+
 # def get_rectangles(boxes):
 #     rectangles = []
 #     for box in boxes:
