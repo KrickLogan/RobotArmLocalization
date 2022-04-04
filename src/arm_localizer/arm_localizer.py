@@ -161,8 +161,7 @@ class DetectedObject:
             new_threshold: The new value for threshold, must be between 0 and 1.
 
         Returns:
-            threshold: The Threshold value used for determining the level of confidence
-            to use when determining the bool mask.
+            None
 
         """
         if new_threshold > 0 and new_threshold < 1:
@@ -179,7 +178,7 @@ class DetectedObject:
             None
 
         Returns:
-            threshold: The Threshold value used for determining the level of confidence
+            threshold(float): The Threshold value used for determining the level of confidence
             to use when determining the bool mask.
 
         """
