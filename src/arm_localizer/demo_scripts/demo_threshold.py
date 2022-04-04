@@ -61,6 +61,8 @@ def main():
     obj.set_threshold(0.75)
     viz.show_mask_overlay(img, obj.get_bool_mask(), f"Object mask with {obj.get_threshold()} threshold")
 
+    # Invalid Input Tests
+
     obj.set_threshold(0.5)
     print('\nSetting threshold value to: 0.5')
 
