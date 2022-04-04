@@ -125,7 +125,6 @@ class Rotation:
 
 
 class DetectedObject:
-
     """This is a detection returned from the model
 
     A :class:`arm_localizer.detected_object.DetectedObject` is generated for each
@@ -140,6 +139,7 @@ class DetectedObject:
         mask (array): An array of values from 0 to 1 indicating the corresponding pixel's confidence of classification 
         relative to the detection class.
         score() : The confidence the model ascribes to this detection
+        threshold(float): The Threshold value used for determining the level of confidence to use when determining the bool mask.
 
     """
     def __init__(self, label, box, mask, score):
@@ -149,6 +149,41 @@ class DetectedObject:
         self.box = box
         self.mask = mask
         self.score = score
+        self.threshold = 0.5
+    
+    def set_threshold(self, new_threshold):
+        """Sets the value of threshold.
+
+        Sets the value of the threshold variable. The value of threshold
+        must be between 0 and 1.
+
+        Args:
+            new_threshold: The new value for threshold, must be between 0 and 1.
+
+        Returns:
+            threshold: The Threshold value used for determining the level of confidence
+            to use when determining the bool mask.
+
+        """
+        if new_threshold >= 0 and new_threshold <= 1:
+            self.threshold = new_threshold
+        else:
+            print('Threshold value must be between 0 and 1.')
+
+    def get_threshold(self) -> float:
+        """Gets the value of threshold.
+
+        Gets the value of the threshold variable.
+
+        Args:
+            None
+
+        Returns:
+            threshold: The Threshold value used for determining the level of confidence
+            to use when determining the bool mask.
+
+        """
+        return self.threshold
     
     def get_center_pixel(self) -> tuple:
         """This function returns the center pixel of the bounding box of a :class:`arm_localizer.detected_object.DetectedObject` as an (X,Y) tuple
@@ -226,7 +261,7 @@ class DetectedObject:
             bool: Description of return value
 
         """   
-        bool_mask = self.mask > utils.THRESHOLD
+        bool_mask = self.mask > self.threshold
         # assert bool_mask.ndim == 2
         bool_mask = np.squeeze(bool_mask)
         return bool_mask
@@ -421,7 +456,6 @@ class ObjectDetector:
     def __init__(self):
         """Constructor method
         """
-        self.threshold = 0.5
         self._output = None
         self._detections = None
 
@@ -455,34 +489,6 @@ class ObjectDetector:
             self._detections.append(obj)
 
         return self._detections #Do something if more than one or none are detected for any of the target labels
-    
-    def set_threshold(self, new_threshold):
-        """short description
-
-        long description
-
-        Args:
-            new_threshold: definition
-
-        Returns:
-            threshold: definition
-
-        """
-        self.threshold = new_threshold
-
-    def get_threshold(self):
-        """short description
-
-        long description
-
-        Args:
-            None
-
-        Returns:
-            threshold: definition
-
-        """
-        return self.threshold
 
     def get_model_outputs(self):
         """I think this will be gone soon too
