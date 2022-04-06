@@ -40,14 +40,9 @@ def show_all_vectors(cam_claw_1, cam_claw_2, pos_claw_1, pos_claw_2, cam_obj, po
     ax.set_zlim([-200,500])
     plt.show()
 
-def get_vector(detection, depth_arr, img_size):
-    return detection.rs_to_vector(depth_arr)
-    # return detection.to_vector(img_size, depth_arr)
-
 def main():
     
     og = Vector(0,0,0)
-
 
 
     # These are the positions of the claws, in positions 1 and 2, in millimeters, 
@@ -84,9 +79,8 @@ def main():
     depth_arr1 = np.load(os.path.join("camera_data", "depths", "3_15_22", camera_position, f"{frame_prefix}_depth.npy"))
     
     detector.run(img1)
-    # cam_claw1 = detector.get_claw().to_vector(depth_arr1) - detector.get_base().to_vector(depth_arr1)
-    cam_claw1 = get_vector(detector.get_claw(), depth_arr1, img1.size) - get_vector(detector.get_base(), depth_arr1, img1.size)
-
+    cam_claw1 = detector.get_claw().rs2_to_vector(depth_arr1) - detector.get_base().rs2_to_vector(depth_arr1)
+    
     #load claw 2
     file_names=['claw_2', 'obj_2', 'obj_3']
     obj_position = 0
@@ -102,21 +96,25 @@ def main():
 
     detector.run(img2)
 
-    # cam_claw2 = detector.get_claw().to_vector(depth_arr2) - detector.get_base().to_vector(depth_arr2)
-    # cam_obj = detector.get_object().to_vector(depth_arr2) - detector.get_base().to_vector(depth_arr2)
+    cam_claw2 = detector.get_claw().rs2_to_vector(depth_arr2) - detector.get_base().rs2_to_vector(depth_arr2)
+    cam_obj = detector.get_object().rs2_to_vector(depth_arr2) - detector.get_base().rs2_to_vector(depth_arr2)
     
-    cam_claw2 = get_vector(detector.get_claw(), depth_arr2, img2.size) - get_vector(detector.get_base(), depth_arr2, img2.size)
-    cam_obj = get_vector(detector.get_object(), depth_arr2, img2.size) - get_vector(detector.get_base(), depth_arr2, img2.size)
-    
-    show_all_vectors(cam_claw_1=cam_claw1, cam_claw_2=cam_claw2, pos_claw_1=pos_claw_1, pos_claw_2=pos_claw_2, cam_obj=cam_obj, pos_obj=pos_obj, og=og)
+    show_all_vectors(cam_claw_1=cam_claw1, cam_claw_2=og, pos_claw_1=pos_claw_1, pos_claw_2=og, cam_obj=cam_obj, pos_obj=pos_obj, og=og)
 
     l = Localizer()
 
     #apply first rotation
     cam_claw1 = cam_claw1.rotate_about_vector(l.rotation._f_rot_vector, l.rotation._f_rot_rads)
+    cam_obj = cam_obj.rotate_about_vector(l.rotation._f_rot_vector, l.rotation._f_rot_rads)
+
+    show_all_vectors(cam_claw_1=cam_claw1, cam_claw_2=og, pos_claw_1=pos_claw_1, pos_claw_2=og, cam_obj=cam_obj, pos_obj=pos_obj, og=og)
+
+    print("note that at this point, the camera object and position object vectors are not aligned, we need more information which we will get from",
+        "a second set of claw data.")
     
     show_all_vectors(cam_claw_1=cam_claw1, cam_claw_2=cam_claw2, pos_claw_1=pos_claw_1, pos_claw_2=pos_claw_2, cam_obj=cam_obj, pos_obj=pos_obj, og=og)
 
+    print("apply first rotation to second claw vector")
     cam_claw2 = cam_claw2.rotate_about_vector(l.rotation._f_rot_vector, l.rotation._f_rot_rads)
     cam_obj = cam_obj.rotate_about_vector(l.rotation._f_rot_vector, l.rotation._f_rot_rads)
 
@@ -129,6 +127,8 @@ def main():
     
     show_all_vectors(cam_claw_1=cam_claw1, cam_claw_2=cam_claw2, pos_claw_1=pos_claw_1, pos_claw_2=pos_claw_2, cam_obj=cam_obj, pos_obj=pos_obj, og=og)
 
+    #apply second rotation to the cam object vector to finally calculate the coordinates of the object in the robot arm's coordinate system.
+
     cam_obj = cam_obj.rotate_about_vector(l.rotation._s_rot_vector, l.rotation._s_rot_rads)
 
     
@@ -140,10 +140,13 @@ def main():
     print(f"Angle Between: {round(degrees(cam_obj.angle_between(pos_obj)))}\n")
     e = pos_obj - cam_obj
     print(f"Error Vector: {e}, Magnitude: {round(e.magnitude())}")
-    # print(f"Net Magnitude error: {abs(round(e.magnitude()) - abs(pmag - cmag))}")
 
     show_all_vectors(cam_claw_1=cam_claw1, cam_claw_2=cam_claw2, pos_claw_1=pos_claw_1, pos_claw_2=pos_claw_2, cam_obj=cam_obj, pos_obj=pos_obj, og=og)
 
 
 if __name__ == "__main__":
     main()
+
+
+
+
