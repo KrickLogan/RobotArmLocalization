@@ -11,39 +11,120 @@ import pickle
 import pyrealsense2 as rs
 
 class Vector:
+    """This class stores and handles all vector manipulations
+
+    In this system, positions are represented as Vectors. this class supports this class and provides all the relevant operations to do 
+    the calculations.
+
+    Attribures:
+        x(int): the x value
+        y(int): the y value
+        z(int): the z value
+        
+
+    """
     def __init__(self, x, y, z):
         self.x = x
         self.y = y
         self.z = z
 
     def __add__(self, other):
+        """Adds the components of two vectors together
+
+        Args:
+            other (Vector): The right hand vector
+
+        Returns:
+            Vector: the summed vector
+
+        """
         newx = self.x + other.x
         newy = self.y + other.y
         newz = self.z + other.z
         return Vector(newx, newy, newz)
 
     def __sub__(self, other):
+        """Overload subtraction operator. Subtracts the right hand vector from the left
+
+        Args:
+            other (Vector): the right hand vector to be subtracted from the left
+
+        Returns:
+            Vector: the result of the subtraction
+
+        """
         newx = self.x - other.x
         newy = self.y - other.y
         newz = self.z - other.z
         return Vector(newx, newy, newz)
 
     def __mul__(self, c:float):
+        """Overload multiplication operator. Scalar multiplication of a vector
+
+        Args:
+            c (float): the scalar value to be applied to the vector
+
+        Returns:
+            Vector: the result of the multiplication
+
+        """
         return Vector(c*self.x, c*self.y, c*self.z)
 
     def __truediv__(self, c):
+        """Overload division operator. scalar division of a vector
+
+        Args:
+            c (Vector): the scalar value to be applied to the vector
+
+        Returns:
+            Vector: the result of the division
+
+        """
         return Vector(self.x/c, self.y/c, self.z/c)
 
     def magnitude(self) -> float :
+        """Gets the magnitude of the vector
+
+        calculates the euclidean distance of the vectors and returns it
+
+        Args:
+            none
+
+        Returns:
+            float: returns the magnitude of the vector
+
+        """
         mag = sqrt((self.x * self.x + self.y * self.y + self.z * self.z))
         return mag
 
     def dot(self, other) -> float :
+        """Dot product of two vectors
+
+        Calculates the Dot product between two vectors
+
+        Args:
+            other(Vector): the other vector for the dot product operation
+
+        Returns:
+            float: The result of the dot product operation
+
+        """
         dot = self.x * other.x + self.y * other.y + self.z * other.z
         return dot
     
     def rotate_about_vector(self, vNorm, angle:float):
-        '''vNorm must be unit vector'''
+        """Rotates the self vector about the submitted vector by 'angle' radians
+
+        rotates a vector about a different vector by a certain angle
+
+        Args:
+            vNorm (Vector): The vector normal to the plane of rotation
+            angle (float): the angle of rotation in radians
+
+        Returns:
+            Vector: the rotated vector
+
+        """
         vNorm=vNorm.unit()#just in case
         a = self * cos(angle) 
         b = vNorm.cross(self)*sin(angle) 
@@ -52,6 +133,18 @@ class Vector:
         return vrot
 
     def cross(self, other):
+        """Cross product of two vectors
+
+        applies the cross product operation between two vectors. the 'other' vector argument is the right
+        hand vector for the ooperation
+
+        Args:
+            other(Vector): The right hand vector for the cross product operation
+
+        Returns:
+            Vector: the result of the cross product operation
+
+        """
         i = Vector(1, 0, 0)
         j = Vector(0, 1, 0)
         k = Vector(0, 0, 1)
@@ -62,7 +155,17 @@ class Vector:
 
 
     def angle_between(self, other) -> float:
-        
+        """Finds the angle between to vectors
+
+        returns the smallest angle between two vectors. This is unsigned
+
+        Args:
+            other(Vector): the othe Vector
+
+        Returns:
+            float: returns the angle between the two vectors
+
+        """
         angle = acos(self.dot(other)/(self.magnitude() * other.magnitude()))
         return angle
 
@@ -73,16 +176,54 @@ class Vector:
         return i, j, k
     
     def project(self, target):
+        """Projects the self vector onto the target vector
+
+        Finds the component of the self vector which is parallel to the target vector
+
+        Args:
+            target(Vector): The Vector onto which this vector will be projected
+
+        Returns:
+            Vector: The component of the self vector which is parallel to the target vector
+
+        """
         proj = target*(self.dot(target)/(target.magnitude()*target.magnitude()))
         return proj
 
     def perp(self, u):
+        """Finds the component of the self vector which is perpendicular to u
+
+        Args:
+            u(Vector): the vector
+
+        Returns:
+            Vector: The component of the self vector which is perpendicular to the u vector
+
+        """
         return self - self.project(u)
 
     def as_point(self) -> tuple:
+        """Gets the vector as a tuple of 3 values, (x,y,z)
+
+        Args:
+            none
+
+        Returns:
+            tuple: a set containing the x,y,z coordinates of a vector
+
+        """
         return (self.x, self.y, self.z)
     
     def unit(self):
+        """Gets a unit vector parallel to the self vector
+
+        Args:
+            none
+
+        Returns:
+            Vector: A vector with length 1 which is parallel with the self vector
+
+        """
         return self/self.magnitude()
 
     def __str__(self) -> str:
@@ -93,6 +234,17 @@ class Vector:
     
 
 class Rotation:
+    """This class contains all of the relevant data, as rotations, for the conversion between coordinate systems
+
+    This class consists of two rotations, each composed of a radian value, and a vector of rotation(a vector normal to the plane of rotation)  
+
+    Attribures:
+        _f_rot_vector(Vector): The rotation vector for the first rotation
+        _f_rot_rads(float): The radian value for the first rotation
+        _s_rot_vector(Vector): The rotation vector for the second rotation
+        _s_rot_rads(float): The radian value for the second rotation
+
+    """
     def __init__(self, f_rot_vector, f_rot_rads, s_rot_vectors, s_rot_rads):
         self._f_rot_vector = f_rot_vector
         self._f_rot_rads= f_rot_rads
@@ -458,21 +610,31 @@ class ObjectDetector:
         return self._detections #Do something if more than one or none are detected for any of the target labels
     
     def get_model_outputs(self):
-        """I think this will be gone soon too
+        """Gets the raw output from the model
 
-        Extended description of function.
+        Returns a tensor which includes the raw output from the model. mask, score, label, and box data for each detection
 
         Args:
-            arg1 (int): Description of arg1
-            arg2 (str): Description of arg2
+           none
 
         Returns:
-            bool: Description of return value
+            tensor: A tensor that includes all of the outputs from the model
 
         """
         return self._output
 
     def get_all_detections(self):
+        """Returns a list of DetectedObjects from the model outputs
+
+        This function returns all of the detections from the model in the form of DetectedObjects, as a list
+
+        Args:
+            none
+
+        Returns:
+            List of DetectedObjects: all of the detections from the model as DetectedObjects
+
+        """
         return self._detections
     
     def get_claw(self) -> DetectedObject: # shouldn't return a list, error check at detection level to allow 1 and only 1 of each "type " ie claw, boject, base
@@ -523,16 +685,44 @@ class Localizer:
             fh.close()
         
     def get_real_position(self, t_vector: Vector) -> Vector:
-        ''' This Function is the final usage of the system. It applies the rotations to the vector of the detected object
-        to get it's position in terms of the positioning systems coordinate system.  
-        '''
+        """Applies the relevant saved transformation to the vector that is passed. Returns the converted position vector.
+
+        This function applies the two saved rotations, in order, to convert the a vector between coordinate systems.
+
+        Args:
+            t_vector (Vector): The position (as a vector), relative to the camera system.
+            
+
+        Returns:
+            Vector: The converted position vector
+
+        """
         t_vector=t_vector.rotate_about_vector(self.rotation._f_rot_vector, self.rotation._f_rot_rads)
         t_vector=t_vector.rotate_about_vector(self.rotation._s_rot_vector, self.rotation._s_rot_rads)
         return t_vector
     
 
 def calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, pos_claw_1, pos_claw_2):
-    
+    """This function calculates and saves the relevant transformation information for converting positions between the camera coordinate system and the robot arm coordinate system
+
+    This function accepts two images and two depth arrays, each pair of which corresponds with a different claw position
+    The function is also passed the actual claw positions as gotten from the positioning system of the robot arm.
+    This function then uses the ObjectDetector to detect and calculate the position of the claw from the camera's perspective.
+    Then, we use the actual claw positions to generate relevant transformations to align the coordinate systems.
+    This is then saved and will be used to convert any other positions to the robot arm coordinate system.
+
+    Args:
+        img1 (Image): The first image, rgb data
+        depth1 (np.ndarray): The first depth array, depths in mm
+        img2 (Image): The second image
+        depth2 (np.ndarray): The second depth array
+        pos_claw_1(Vector): The position of the claw from the Robot arm coordinate system which corresponds to the first depth and img
+        pos_claw_2(Vector): The position of the claw from the Robot arm coordinate system which corresponds to the second depth and img
+
+    Returns:
+        none
+
+    """
     detector = ObjectDetector()
 
     detector.run(img1)
@@ -562,7 +752,28 @@ def calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, 
     utils.pickle_obj(rotation)
 
 def rs_calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, pos_claw_1, pos_claw_2):
-    
+    """This function calculates and saves the relevant transformation information for converting positions between the camera coordinate system and the robot arm coordinate system
+
+    This function accepts two images and two depth arrays, each pair of which corresponds with a different claw position
+    The function is also passed the actual claw positions as gotten from the positioning system of the robot arm.
+    This function then uses the ObjectDetector to detect and calculate the position of the claw from the camera's perspective.
+    Then, we use the actual claw positions to generate relevant transformations to align the coordinate systems.
+    This is then saved and will be used to convert any other positions to the robot arm coordinate system.
+    This function uses the pyrealsense deproject pixel to calculate the position vectors
+
+
+    Args:
+        img1 (Image): The first image, rgb data
+        depth1 (np.ndarray): The first depth array, depths in mm
+        img2 (Image): The second image
+        depth2 (np.ndarray): The second depth array
+        pos_claw_1(Vector): The position of the claw from the Robot arm coordinate system which corresponds to the first depth and img
+        pos_claw_2(Vector): The position of the claw from the Robot arm coordinate system which corresponds to the second depth and img
+
+    Returns:
+        none
+
+    """
     detector = ObjectDetector()
 
     detector.run(img1)
@@ -592,6 +803,19 @@ def rs_calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarra
     utils.pickle_obj(rotation)
 
 def get_object_position(img, depth):
+    """This function calculates the position of the detected object in the image, relative to the robot arm's positioning system
+
+    This function first runs the model on the image, then it gets the vector for the claw detection relative to the camera.
+    then it converts that position to be relative to the robot arm's coordinate system.
+
+    Args:
+        img (Image): The image with the object to be located
+        depth (np.ndarray): The depth array corresponding to the image
+
+    Returns:
+        Vector: The position of the object, relative to the coordinate system of the Robot arm, in millimeters
+
+    """
     l = Localizer()
     d = ObjectDetector()
     d.run(img)
