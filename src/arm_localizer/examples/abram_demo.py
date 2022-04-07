@@ -1,3 +1,5 @@
+## Run calibrate.py before running
+
 from arm_localizer import *
 from PIL import Image
 from matplotlib import pyplot as plt
@@ -79,7 +81,7 @@ def main():
     depth_arr1 = np.load(os.path.join("camera_data", "depths", "3_15_22", camera_position, f"{frame_prefix}_depth.npy"))
     
     detector.run(img1)
-    cam_claw1 = detector.get_claw().rs2_to_vector(depth_arr1) - detector.get_base().rs2_to_vector(depth_arr1)
+    cam_claw1 = detector.get_claw().rs_to_vector(depth_arr1) - detector.get_base().rs_to_vector(depth_arr1)
     
     #load claw 2
     file_names=['claw_2', 'obj_2', 'obj_3']
@@ -96,38 +98,43 @@ def main():
 
     detector.run(img2)
 
-    cam_claw2 = detector.get_claw().rs2_to_vector(depth_arr2) - detector.get_base().rs2_to_vector(depth_arr2)
-    cam_obj = detector.get_object().rs2_to_vector(depth_arr2) - detector.get_base().rs2_to_vector(depth_arr2)
+    cam_claw2 = detector.get_claw().rs_to_vector(depth_arr2) - detector.get_base().rs_to_vector(depth_arr2)
+    cam_obj = detector.get_object().rs_to_vector(depth_arr2) - detector.get_base().rs_to_vector(depth_arr2)
     
     show_all_vectors(cam_claw_1=cam_claw1, cam_claw_2=og, pos_claw_1=pos_claw_1, pos_claw_2=og, cam_obj=cam_obj, pos_obj=pos_obj, og=og)
 
+    rs_calibrate(img1, depth_arr1, img2, depth_arr2, pos_claw_1, pos_claw_2)
+
     l = Localizer()
 
-    #apply first rotation
+    print('apply first rotation')
+    
     cam_claw1 = cam_claw1.rotate_about_vector(l.rotation._f_rot_vector, l.rotation._f_rot_rads)
     cam_obj = cam_obj.rotate_about_vector(l.rotation._f_rot_vector, l.rotation._f_rot_rads)
+    
+
+    print("\nNote that at this point, the camera object and position object vectors are not aligned, we need more information which we will get from",
+        "a second set of claw data.")
 
     show_all_vectors(cam_claw_1=cam_claw1, cam_claw_2=og, pos_claw_1=pos_claw_1, pos_claw_2=og, cam_obj=cam_obj, pos_obj=pos_obj, og=og)
 
-    print("note that at this point, the camera object and position object vectors are not aligned, we need more information which we will get from",
-        "a second set of claw data.")
+    
     
     show_all_vectors(cam_claw_1=cam_claw1, cam_claw_2=cam_claw2, pos_claw_1=pos_claw_1, pos_claw_2=pos_claw_2, cam_obj=cam_obj, pos_obj=pos_obj, og=og)
 
     print("apply first rotation to second claw vector")
     cam_claw2 = cam_claw2.rotate_about_vector(l.rotation._f_rot_vector, l.rotation._f_rot_rads)
-    cam_obj = cam_obj.rotate_about_vector(l.rotation._f_rot_vector, l.rotation._f_rot_rads)
-
+    
     show_all_vectors(cam_claw_1=cam_claw1, cam_claw_2=cam_claw2, pos_claw_1=pos_claw_1, pos_claw_2=pos_claw_2, cam_obj=cam_obj, pos_obj=pos_obj, og=og)
 
-    #apply second rotation
+    print('apply second rotation to second claw')
 
     cam_claw1 = cam_claw1.rotate_about_vector(l.rotation._s_rot_vector, l.rotation._s_rot_rads)
     cam_claw2 = cam_claw2.rotate_about_vector(l.rotation._s_rot_vector, l.rotation._s_rot_rads)
     
     show_all_vectors(cam_claw_1=cam_claw1, cam_claw_2=cam_claw2, pos_claw_1=pos_claw_1, pos_claw_2=pos_claw_2, cam_obj=cam_obj, pos_obj=pos_obj, og=og)
 
-    #apply second rotation to the cam object vector to finally calculate the coordinates of the object in the robot arm's coordinate system.
+    print("apply second rotation to the cam object vector to finally calculate the coordinates of the object in the robot arm's coordinate system.")
 
     cam_obj = cam_obj.rotate_about_vector(l.rotation._s_rot_vector, l.rotation._s_rot_rads)
 
