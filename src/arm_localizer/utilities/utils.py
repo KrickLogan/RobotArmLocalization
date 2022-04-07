@@ -6,7 +6,7 @@ import pickle as pickle
 
 BASE_STRING = 'Base'
 CLAW_STRING = 'Claw'
-COTTON_STRING = 'Cotton'
+OBJECT_STRING = 'Object'
 BACKGROUND_STRING = 'Background'
 ERROR_STRING = 'ERROR'
 HFOV = 69 #degrees
@@ -57,7 +57,7 @@ def get_label_string(label): ## Rework to use a dict?
     elif label == 2:
         label_string = CLAW_STRING
     elif label == 3:
-        label_string = COTTON_STRING
+        label_string = OBJECT_STRING
     elif label == 0:
         label_string = BACKGROUND_STRING
     else:

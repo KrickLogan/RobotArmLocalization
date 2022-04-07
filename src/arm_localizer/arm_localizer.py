@@ -142,14 +142,14 @@ class DetectedObject:
         threshold(float): The Threshold value used for determining the level of confidence to use when determining the bool mask.
 
     """
-    def __init__(self, label, box, mask, score):
+    def __init__(self, label, box, mask, score, threshold = 0.5):
         '''Constructor Method
         '''
         self.label = label
         self.box = box
         self.mask = mask
         self.score = score
-        self.threshold = 0.5
+        self.threshold = threshold
     
     def set_threshold(self, new_threshold):
         """Sets the value of threshold.
@@ -439,7 +439,7 @@ class DetectedObject:
 
 
 class ObjectDetector:
-    """This class uses the trained RCNN to make detections on an image. It handles the output of the model.
+    """This class uses the trained RCNN Model to make detections on an image. It handles the output of the model.
 
     This class provides an interface for the detections yielded from the model. It can provide the full output
     from the model, or processed individual detections from the model in the form of :class:`arm_localizer.detected_object.DetectedObject` 's
@@ -452,9 +452,12 @@ class ObjectDetector:
         base: same
         object: same
     """
-    def __init__(self):
+    def __init__(self, threshold_claw = 0.5, threshold_base = 0.5, threshold_object = 0.5):
         """Constructor method
         """
+        self.threshold_claw = threshold_claw
+        self.threshold_base = threshold_base
+        self.threshold_object = threshold_object
         self._output = None
         self._detections = None
 
@@ -483,11 +486,19 @@ class ObjectDetector:
         for i in range(len(boxes)):
             label, box, mask, score = labels[i],boxes[i], masks[i], scores[i]
             label_string = utils.get_label_string(label)
+
+            if(label_string == utils.CLAW_STRING):
+                obj = DetectedObject(label_string, box, mask, score, threshold = self.threshold_claw)
+            elif(label_string == utils.BASE_STRING):
+                obj = DetectedObject(label_string, box, mask, score, threshold = self.threshold_base)
+            elif(label_string == utils.OBJECT_STRING):
+                obj = DetectedObject(label_string, box, mask, score, threshold = self.threshold_object)
+            else:
+                obj = DetectedObject(label_string, box, mask, score)
             
-            obj = DetectedObject(label_string, box, mask, score)
             self._detections.append(obj)
 
-        return self._detections #Do something if more than one or none are detected for any of the target labels
+        return self._detections
 
     def get_model_outputs(self):
         """I think this will be gone soon too
@@ -521,7 +532,7 @@ class ObjectDetector:
 
     def get_object(self) -> DetectedObject: # shouldn't return a list, error check at detection level to allow 1 and only 1 of each "type " ie claw, boject, base
         for obj in self._detections:
-            if obj.get_label() == utils.COTTON_STRING:
+            if obj.get_label() == utils.OBJECT_STRING:
                 return obj
         return False #consider alternative returns?
     
@@ -563,39 +574,43 @@ class Localizer:
         return t_vector
     
 
-def calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, pos_claw_1, pos_claw_2):
+# def calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, pos_claw_1, pos_claw_2):
     
-    detector = ObjectDetector()
+#     detector = ObjectDetector()
 
-    detector.run(img1)
-    cam_to_claw_1 = detector.get_claw().to_vector(img1.size, depth1)
-    cam_to_base_1 = detector.get_base().to_vector(img1.size, depth1)
-    base_to_claw_1 = cam_to_claw_1 - cam_to_base_1
+#     detector.run(img1)
+#     cam_to_claw_1 = detector.get_claw().to_vector(img1.size, depth1)
+#     cam_to_base_1 = detector.get_base().to_vector(img1.size, depth1)
+#     base_to_claw_1 = cam_to_claw_1 - cam_to_base_1
     
-    detector.run(img2)
-    cam_to_claw_2 = detector.get_claw().to_vector(img2.size, depth2)
-    cam_to_base_2 = detector.get_base().to_vector(img2.size, depth2)
-    base_to_claw_2 = cam_to_claw_2 - cam_to_base_2
+#     detector.run(img2)
+#     cam_to_claw_2 = detector.get_claw().to_vector(img2.size, depth2)
+#     cam_to_base_2 = detector.get_base().to_vector(img2.size, depth2)
+#     base_to_claw_2 = cam_to_claw_2 - cam_to_base_2
     
-    first_rot_vector = base_to_claw_1.cross(pos_claw_1)
-    first_rot_rads = base_to_claw_1.angle_between(pos_claw_1)
+#     first_rot_vector = base_to_claw_1.cross(pos_claw_1)
+#     first_rot_rads = base_to_claw_1.angle_between(pos_claw_1)
     
-    second_rot_vector = pos_claw_1
+#     second_rot_vector = pos_claw_1
 
-    base_to_claw_2 = base_to_claw_2.rotate_about_vector(first_rot_vector.unit(), first_rot_rads)
-    pc2_perp = pos_claw_2.perp(second_rot_vector)
-    bc2_perp = base_to_claw_2.perp(second_rot_vector)
-    second_rot_rads = base_to_claw_2.perp(second_rot_vector).angle_between(pc2_perp)
-    if bc2_perp.cross(pc2_perp).dot(second_rot_vector.unit()) < 0:
-        second_rot_rads = -1 * second_rot_rads
+#     base_to_claw_2 = base_to_claw_2.rotate_about_vector(first_rot_vector.unit(), first_rot_rads)
+#     pc2_perp = pos_claw_2.perp(second_rot_vector)
+#     bc2_perp = base_to_claw_2.perp(second_rot_vector)
+#     second_rot_rads = base_to_claw_2.perp(second_rot_vector).angle_between(pc2_perp)
+#     if bc2_perp.cross(pc2_perp).dot(second_rot_vector.unit()) < 0:
+#         second_rot_rads = -1 * second_rot_rads
     
-    rotation = Rotation(first_rot_vector, first_rot_rads, second_rot_vector, second_rot_rads)
+#     rotation = Rotation(first_rot_vector, first_rot_rads, second_rot_vector, second_rot_rads)
     
-    utils.pickle_obj(rotation)
+#     utils.pickle_obj(rotation)
 
-def rs_calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, pos_claw_1, pos_claw_2):
-    
-    detector = ObjectDetector()
+def rs_calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, pos_claw_1, pos_claw_2, 
+        object_detector = None, threshold_claw = 0.5, threshold_base = 0.5, threshold_object = 0.5):
+
+    if (object_detector == None):
+        detector = ObjectDetector(threshold_claw, threshold_base, threshold_object)
+    else:
+        detector = object_detector
 
     detector.run(img1)
     cam_to_claw_1 = detector.get_claw().rs_to_vector(depth1)
@@ -623,9 +638,14 @@ def rs_calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarra
     
     utils.pickle_obj(rotation)
 
-def get_object_position(img, depth):
+def get_object_position(img, depth, object_detector = None, threshold_claw = 0.5, threshold_base = 0.5, threshold_object = 0.5):
     l = Localizer()
-    d = ObjectDetector()
+
+    if (object_detector == None):
+        d = ObjectDetector(threshold_claw, threshold_base, threshold_object)
+    else:
+        d = object_detector
+
     d.run(img)
     target = d.get_object().rs_to_vector(depth) - d.get_base().rs_to_vector(depth)
     real_pos = l.get_real_position(target)
