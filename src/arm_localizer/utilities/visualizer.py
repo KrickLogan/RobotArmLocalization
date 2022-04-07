@@ -115,7 +115,11 @@ def show_img_boxes(img, detections):
 #     maximize_plt()
 #     plt.show()
 
-def show_bar_graph(data_labels, data_values, title="", x_axis_label="", y_axis_label=""):
+    # data_lables, data_values = viz.get_graph_labels_values(no_outliers_arr)
+    # viz.show_bar_graph(data_lables,data_values,"without outlier")
+
+def show_bar_graph(ma_depth, title="", x_axis_label="", y_axis_label=""):
+    data_labels, data_values = get_graph_labels_values(ma_depth)
     label_indices = [i for i, _ in enumerate(data_labels)]
     plt.bar(label_indices, data_values, color="blue")
     plt.xlabel(x_axis_label)
