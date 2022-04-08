@@ -436,24 +436,24 @@ class DetectedObject:
         mx = ma.masked_array(depth_arr, np.invert(bool_mask).long()) 
         return(mx)
 
-    def get_average_depth(self, masked_depth_arr) -> float:
+    def get_average_depth(self, depth_arr) -> float:
         """Calculates the average of values in a masked array. Removes outliers.
 
         This function removes 0's and outliers from a masked array, then calculates the average
 
         Args:
-            masked_depth_arr (np.ma): A masked array of depth values
+            depth_arr (np.ndarray): An array of depth values(mm)
 
         Returns:
             float: returns the average after outliers have been removed
 
         """
-        mx = self.get_masked_array(masked_depth_arr)
+        mx = self.get_masked_array(depth_arr)
         masked_array_no_outliers = self.remove_depth_outliers(mx)
         # data_labels, data_values = visualizer.get_graph_labels_values(masked_array_no_outliers)
         # visualizer.show_bar_graph(data_labels, data_values, "Depth distribution", "Depth Ranges", "count")
-        # return np.ma.MaskedArray.mean(masked_array_no_outliers)
-        depth = np.percentile(masked_array_no_outliers.compressed(), 90)
+        return np.ma.MaskedArray.mean(masked_array_no_outliers)
+        # depth = np.percentile(masked_array_no_outliers.compressed(), 90)
         # print("max: ", masked_array_no_outliers.max())
         # print("min: ", masked_array_no_outliers.min())
         # print(depth)
