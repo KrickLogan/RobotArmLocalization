@@ -15,8 +15,6 @@ def main():
     plt.show()
 
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
-
-
     
     detector = ObjectDetector() # provide image to model
 
