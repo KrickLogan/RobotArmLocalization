@@ -11,8 +11,18 @@ def main():
     img = utils.load_image(frame_prefix + ".png")
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
 
-    detector = ObjectDetector() # provide image to model
-    
+    # Test Invalid thresholds for ObjectDetector
+    print('\nAttempting to initialize ObjectDetector with INVALID threshold values: 0, 1, 2')
+    detector = ObjectDetector(threshold_claw = 0, threshold_base = 1, threshold_object = 2)
+
+    detector.run(img) # Run model on image
+
+    # Test Valid thresholds for ObjectDetector
+    input()
+
+    print('\nAttempting to initialize ObjectDetector with VALID threshold values: 0.123, 0.456, 0.789')
+    detector = ObjectDetector(threshold_claw = 0.123, threshold_base = 0.456, threshold_object = 0.789)
+
     detector.run(img) # Run model on image
 
     # The following get the model outputs for each of the detections
@@ -21,7 +31,30 @@ def main():
     base = detector.get_base()
     obj = detector.get_object()
     
+    # Print Threshold Values of each detection
+    input()
+
+    print('\nThresholds Initialized from ObjectDetector:')
+    print(f'Claw Threshold: {claw.get_threshold()}')
+    print(f'Base Threshold: {base.get_threshold()}')
+    print(f'Object Threshold: {obj.get_threshold()}')
+
+    # Set Thresholds back to default (0.5)
+
+    claw.set_threshold(0.5)
+    base.set_threshold(0.5)
+    obj.set_threshold(0.5)
+
+    # Print Threshold Values of each detection
+    input()
+
+    print('\nSet Thresholds back to default (0.5):')
+    print(f'Claw Threshold: {claw.get_threshold()}')
+    print(f'Base Threshold: {base.get_threshold()}')
+    print(f'Object Threshold: {obj.get_threshold()}')
+    
     # Use the visualizer to show the image, boxes, masks, and the center points
+    input()
 
     viz.show_img(img) # Show the image
 
@@ -29,16 +62,10 @@ def main():
 
     viz.show_mask_overlay(img, claw.get_bool_mask(), f"Claw mask with {claw.get_threshold()} threshold (default)")
 
-    claw.set_threshold(0.10)
-    viz.show_mask_overlay(img, claw.get_bool_mask(), f"Claw mask with {claw.get_threshold()} threshold")
-
     claw.set_threshold(0.25)
     viz.show_mask_overlay(img, claw.get_bool_mask(), f"Claw mask with {claw.get_threshold()} threshold")
 
     claw.set_threshold(0.75)
-    viz.show_mask_overlay(img, claw.get_bool_mask(), f"Claw mask with {claw.get_threshold()} threshold")
-
-    claw.set_threshold(0.90)
     viz.show_mask_overlay(img, claw.get_bool_mask(), f"Claw mask with {claw.get_threshold()} threshold")
 
     # Base Thresholds
@@ -62,9 +89,10 @@ def main():
     viz.show_mask_overlay(img, obj.get_bool_mask(), f"Object mask with {obj.get_threshold()} threshold")
 
     # Invalid Input Tests
+    input()
 
     obj.set_threshold(0.5)
-    print('\nSetting threshold value to: 0.5')
+    print('\nSet Thresholds back to default (0.5):')
 
     print('\nAttempting to set threshold value to: 1')
     obj.set_threshold(1)
