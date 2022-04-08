@@ -7,7 +7,7 @@ def calibrate():
 
     #Each time the camera system is setup in a certain position, this calibration must be run
     # if the camera does not move, you can continuously run detections and get positions
-    # The calibration must be re rean if the camera moves
+    # The calibration must be *run again* if the camera moves
 
     #The positions of the claws relative to the coordinate system you are transforming TO
     pos_claw_1 = arm_localizer.Vector(247, 110, 211)
