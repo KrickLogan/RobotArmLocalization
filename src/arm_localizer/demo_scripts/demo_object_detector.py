@@ -1,31 +1,28 @@
 from arm_localizer import ObjectDetector
 import arm_localizer.utilities.utils as utils
-import arm_localizer.utilities.visualizer as viz
 import matplotlib.pyplot as plt
 
 def main():
     frame_prefix = "frame_20"   
-    img = utils.load_image(frame_prefix + ".png")   #open and load image as img
+    img = utils.load_image(frame_prefix + ".png")
     plt.imshow(img)
     plt.show()
 
-    detector = ObjectDetector() # provide image to model
+    # provide image to model
+    detector = ObjectDetector()
     
-    detector.run(img) # run model on provided image
+    # run model on provided image
+    detector.run(img) 
 
-    # Get output for each of the detections
+    # The following get the output of all detections
+    detections = detector.get_all_detections()
+    for det in detections:
+        print(f"{det.label} Score: {det.score} Box: {det.box} Mask: {det.mask}" )
 
-    detections = detector.get_all_detections() #get all the detections from model as detections
-    obj = detector.get_object()  #get detection for object
-    claw = detector.get_claw()     #get detection for claw
-    base = detector.get_base()   #get detection for base
-
-    # Visualize detections
-
-    viz.show_img_boxes(img, detections) #Show all the detection in a frame
-    viz.show_img_box(img, obj)    #show object detection in a frame
-    viz.show_img_box(img, claw)    #show claw detection in a frame
-    viz.show_img_box(img, base)    #show base detection in a frame
+    # The following prints all model outputs
+    output = detector.get_model_outputs()
+    print (output)
+    
 
 if __name__ == "__main__":
     main()
