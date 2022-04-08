@@ -31,11 +31,7 @@ def main():
 
     viz.show_mask_overlay(img=depth_arr, mask=bmask, title="Depth Values of base", depth_arr=depth_arr, force_contrast=True)
 
-    viz.show_bar_graph(claw.get_masked_array(depth_arr),"with outlier")
-
-    no_outliers_arr = base.remove_depth_outliers(claw.get_masked_array(depth_arr))
-
-    viz.show_bar_graph(no_outliers_arr,"without outlier")
+    viz.show_depth_distribution(claw, depth_arr, "with outlier")
 
     claw_depth = claw.get_average_depth(depth_arr)
     base_depth = base.get_average_depth(depth_arr)

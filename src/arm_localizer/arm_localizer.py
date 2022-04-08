@@ -383,7 +383,7 @@ class DetectedObject:
         bool_mask = np.squeeze(bool_mask)
         return bool_mask
 
-    def get_masked_array(self, depth_arr)->np.ma:
+    def get_masked_depth_array(self, depth_arr)->np.ma:
         """Applies the objects bool mask to the depth_arr argument
 
         Returns a masked array whose values correspond do depth values within the detected object's mask
@@ -414,7 +414,7 @@ class DetectedObject:
             float: returns the average after outliers have been removed
 
         """
-        mx = self.get_masked_array(masked_depth_arr)
+        mx = self.get_masked_depth_array(masked_depth_arr)
         masked_array_no_outliers = self.remove_depth_outliers(mx)
         # data_labels, data_values = visualizer.get_graph_labels_values(masked_array_no_outliers)
         # visualizer.show_bar_graph(data_labels, data_values, "Depth distribution", "Depth Ranges", "count")
@@ -467,7 +467,7 @@ class DetectedObject:
         _intrinsics.coeffs = [0.0, 0.0, 0.0, 0.0, 0.0]
 
         center_point = self.get_center_mass_pixel()
-        average_depth = self.get_average_depth(self.get_masked_array(depth_arr))
+        average_depth = self.get_average_depth(self.get_masked_depth_array(depth_arr))
 
         result = rs.rs2_deproject_pixel_to_point(_intrinsics, center_point, average_depth)
         result_vector = Vector(result[0], result[2], -result[1])

@@ -118,6 +118,10 @@ def show_img_boxes(img, detections):
     # data_lables, data_values = viz.get_graph_labels_values(no_outliers_arr)
     # viz.show_bar_graph(data_lables,data_values,"without outlier")
 
+def show_depth_distribution(detection, depth, title="", x_axis_label="", y_axis_label=""):
+    ma_depth = detection.remove_depth_outliers(detection.get_masked_depth_array(depth))
+    show_bar_graph(ma_depth, title, x_axis_label, y_axis_label)
+
 def show_bar_graph(ma_depth, title="", x_axis_label="", y_axis_label=""):
     data_labels, data_values = get_graph_labels_values(ma_depth)
     label_indices = [i for i, _ in enumerate(data_labels)]
