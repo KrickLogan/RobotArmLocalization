@@ -76,9 +76,9 @@ def main():
 
     #load claw 1
     frame_prefix = 'claw_1'
-    img1 = Image.open(os.path.join("camera_data","images", '3_15_22', camera_position, f"{frame_prefix}.png")).convert("RGB")
+    img1 = Image.open(os.path.join("camera_data", camera_position, "images", f"{frame_prefix}.png")).convert("RGB")
 
-    depth_arr1 = np.load(os.path.join("camera_data", "depths", "3_15_22", camera_position, f"{frame_prefix}_depth.npy"))
+    depth_arr1 = np.load(os.path.join("camera_data",  camera_position, "depths", f"{frame_prefix}_depth.npy"))
     
     detector.run(img1)
     cam_claw1 = detector.get_claw().rs_to_vector(depth_arr1) - detector.get_base().rs_to_vector(depth_arr1)
@@ -90,8 +90,8 @@ def main():
     object_positions = [pos_obj1, pos_obj2, pos_obj3]
     pos_obj = object_positions[obj_position]
 
-    img2 = Image.open(os.path.join("camera_data","images", '3_15_22', camera_position, f"{frame_prefix}.png")).convert("RGB")
-    depth_arr2 = np.load(os.path.join("camera_data", "depths", "3_15_22", camera_position, f"{frame_prefix}_depth.npy"))
+    img2 = Image.open(os.path.join("camera_data", camera_position, "images", f"{frame_prefix}.png")).convert("RGB")
+    depth_arr2 = np.load(os.path.join("camera_data", camera_position, "depths",  f"{frame_prefix}_depth.npy"))
     
     # plt.imshow(img)
     # plt.show()
