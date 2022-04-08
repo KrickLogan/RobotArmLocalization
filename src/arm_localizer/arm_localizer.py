@@ -455,11 +455,29 @@ class ObjectDetector:
     def __init__(self, threshold_claw = 0.5, threshold_base = 0.5, threshold_object = 0.5):
         """Constructor method
         """
-        self.threshold_claw = threshold_claw
-        self.threshold_base = threshold_base
-        self.threshold_object = threshold_object
         self._output = None
         self._detections = None
+
+        # Ensure threshold_claw is between 0 and 1
+        if threshold_claw > 0 and threshold_claw < 1:
+            self.threshold_claw = threshold_claw
+        else:
+            print('\nClaw Threshold value must be between 0 and 1.\nDefaulting to 0.5.')
+            self.threshold_claw = 0.5
+        
+        # Ensure threshold_base is between 0 and 1
+        if threshold_base > 0 and threshold_base < 1:
+            self.threshold_base = threshold_base
+        else:
+            print('\nBase Threshold value must be between 0 and 1.\nDefaulting to 0.5.')
+            self.threshold_base = 0.5
+        
+        # Ensure threshold_object is between 0 and 1
+        if threshold_object > 0 and threshold_object < 1:
+            self.threshold_object = threshold_object
+        else:
+            print('\nObject Threshold value must be between 0 and 1.\nDefaulting to 0.5.\n')
+            self.threshold_object = 0.5
 
     def run(self, img) -> List[DetectedObject]:
         # runs the model on the provided image
