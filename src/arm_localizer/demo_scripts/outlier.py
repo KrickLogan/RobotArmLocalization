@@ -15,8 +15,6 @@ def main():
     plt.show()
 
     depth_arr = utils.load_depth_arr(frame_prefix + "_depth.npy")
-
-
     
     detector = ObjectDetector() # provide image to model
 
@@ -31,13 +29,7 @@ def main():
 
     viz.show_mask_overlay(img=depth_arr, mask=bmask, title="Depth Values of base", depth_arr=depth_arr, force_contrast=True)
 
-    data_lables, data_values = viz.get_graph_labels_values(claw.get_masked_array(depth_arr))
-    viz.show_bar_graph(data_lables,data_values,"with outlier")
-
-    no_outliers_arr = base.remove_depth_outliers(claw.get_masked_array(depth_arr))
-
-    data_lables, data_values = viz.get_graph_labels_values(no_outliers_arr)
-    viz.show_bar_graph(data_lables,data_values,"without outlier")
+    viz.show_depth_distribution(claw, depth_arr, "with outlier")
 
     claw_depth = claw.get_average_depth(depth_arr)
     base_depth = base.get_average_depth(depth_arr)
