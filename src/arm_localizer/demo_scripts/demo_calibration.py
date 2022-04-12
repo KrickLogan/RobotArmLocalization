@@ -5,14 +5,47 @@ from math import radians, degrees
 from PIL import Image
 import os
 
+    
 def get_center_points(detector):
-    points = []
-    for d in detector.get_all_detections():
-        p = d.get_center_mass_pixel()
-        points.append(p)
+    """Gets a list of center points
+
+    This function returns all of the center points from the ObjectDetector in the form of a list.
+    1. Obtain the list of DetectedObjects from the model outputs, instances of classifications
+    2. Initialize p with a value of the untransformed pixel value coordinates representing DetectedObjects calculated center of mass
+    3. Add center of mass point to the list of points    
+
+    Args:
+        detector (ObjectDetector): returns the model detections 
+    
+    returns:
+        points: Returns a list of the points representing the DetectedObjects center of mass
+
+    """
+    points = []    
+    for d in detector.get_all_detections():        
+        p = d.get_center_mass_pixel()        
+        points.append(p)   
     return points
 
 def show_all_detections(img, depth_arr, detector):
+    """Show the model detections and mask overlaid
+
+    This function obtains all classifications and shows the detections with the mask overlays. 
+    Display the claw.
+    Display the base.
+    Display the object.
+    gets bounding boxes
+    gets center points
+
+    Args:
+        img (image): rgb data
+        depth_arr (np.array): depth array, depths in mm
+        detector (ObjectDetector): Provides output from model, classifications
+
+    Returns:
+        none
+
+    """
     # for d in detector.get_all_detections():
     #     viz.show_mask_overlay(img, d.get_bool_mask(), "detection")
     #     viz.show_mask_overlay(depth_arr, d.get_bool_mask(), "detection", force_contrast=True, depth_arr=depth_arr)
@@ -34,6 +67,18 @@ def show_all_detections(img, depth_arr, detector):
     viz.show_points(img, center_points, "Center Points")
 
 def show_all_vectors(cam_claw_1, cam_claw_2, pos_claw_1, pos_claw_2, cam_obj, pos_obj, og, norm=None):
+    """_summary_
+
+    Args:
+        cam_claw_1 (_type_): The position of the claw from the camera 
+        cam_claw_2 (_type_): _description_
+        pos_claw_1 (Vector): The position of the claw from the Robot arm coordinate system which corresponds to the first depth and img
+        pos_claw_2 (Vector): The position of the claw from the Robot arm coordinate system which corresponds to the second depth and img
+        cam_obj (_type_): _description_
+        pos_obj (_type_): _description_
+        og (Vector): The zero vector originating at the origin
+        norm (_type_, optional): _description_. Defaults to None.
+    """
     fig = plt.figure()
     ax = plt.axes(projection='3d')
     x,y,z = og.as_point()
@@ -68,16 +113,32 @@ def show_all_vectors(cam_claw_1, cam_claw_2, pos_claw_1, pos_claw_2, cam_obj, po
     plt.show()
 
 def main():
+    """Carries out the execution of the calibration functions
+
+    The main function steps through the individual steps of the calibration process.
+    1. loads first and second images: each are done individually and are corresponding to a separate claw position
+    2. loads first and second depth arrays: each are done individually and are corresponding to a separate claw position
+    3. get actual claw position from positioning system of the robot arm
+    4. 
+
+    This function 
     
+    """
+
+    # initialize origin with a vector of zero's
     og = Vector(0,0,0)
 
+    # The position of claws initialized with initial vector poisitions (claw to base) in mm
     pos_claw_1 = Vector(247, 110, 211)
     pos_claw_2 = Vector(268, -90, 173)
 
+    # This initializes pos_obj with a vector. Object measured from base in mm.  
     pos_obj = Vector(439, -202, -22)
+    # This initializes pos_obj2 with vector of object
     pos_obj2 = Vector(245, 202, -22)
     pos_obj3 = Vector(459, 78, 205)
 
+    # Camera position is initialized as the first postition, postion 1
     camera_position = "position_1"
     # camera_position = 'position_2'
     # camera_position = 'position_3'
@@ -86,6 +147,7 @@ def main():
     # camera_position = 'position_5'
     # camera_position = 'position_6'
     
+    # create file_names that contains a list with claw and object values
     file_names=['claw_1', 'claw_2', 'obj_2', 'obj_3']
     frame_prefix = file_names[0]
 
