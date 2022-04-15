@@ -31,13 +31,13 @@ setuptools.setup(
     },
 
     install_requires=[
-        "torch==1.9.0",
-        "torchvision==0.10.0",
+        "torch>=1.9.0",
+        "torchvision>=0.10.0",
         "matplotlib>=3.4.3",
         "numpy>=1.21.2",
         "pillow>=8.3.2",
         "scipy>=1.7.3",
-        "pyrealsense2"
+        "pyrealsense2>=2.50.0.3812"
     ],
 
     python_requires=">=3.8.11"
