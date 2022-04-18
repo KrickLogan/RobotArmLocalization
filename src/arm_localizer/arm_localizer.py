@@ -609,6 +609,9 @@ class ObjectDetector:
         """
         self._output = None
         self._detections = None
+        self._claw=None
+        self._base=None
+        self._object=None
 
         # Ensure threshold_claw is between 0 and 1
         if threshold_claw > 0 and threshold_claw < 1:
@@ -646,6 +649,11 @@ class ObjectDetector:
             detections: the model detections. changed in next version
 
         """
+        self._claw=None
+        self._base=None
+        self._object=None
+
+
         img_tens = F.to_tensor(img)
         self._output = utils.load_model()([img_tens])
         boxes = self._output[0]['boxes']
@@ -656,17 +664,29 @@ class ObjectDetector:
         for i in range(len(boxes)):
             label, box, mask, score = labels[i],boxes[i], masks[i], scores[i]
             label_string = utils.get_label_string(label)
-
+            obj = DetectedObject(label_string, box, mask, score)
             if(label_string == utils.CLAW_STRING):
-                obj = DetectedObject(label_string, box, mask, score, threshold = self.threshold_claw)
-            elif(label_string == utils.BASE_STRING):
-                obj = DetectedObject(label_string, box, mask, score, threshold = self.threshold_base)
-            elif(label_string == utils.OBJECT_STRING):
-                obj = DetectedObject(label_string, box, mask, score, threshold = self.threshold_object)
-            else:
-                obj = DetectedObject(label_string, box, mask, score)
-            
-            self._detections.append(obj)
+                obj.set_threshold(self.threshold_claw)
+                if self._claw==None:
+                  self._claw=obj
+                elif score >self._claw.score:
+                  self._claw=obj
+            if(label_string == utils.BASE_STRING):
+                obj.set_threshold(self.threshold_base)
+                if self._base==None:
+                  self._base=obj
+                elif score >self._base.score:
+                  self._base=obj
+            if(label_string == utils.OBJECT_STRING):
+                obj.set_threshold(self.threshold_object)
+                if self._object==None:
+                  self._object=obj
+                elif score >self._object.score:
+                  self._object=obj
+
+        self._detections.append(self._claw)
+        self._detections.append(self._base)
+        self._detections.append(self._object)
 
         return self._detections
 
