@@ -9,8 +9,8 @@ https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
 
 ## Requirements
 
-- torch==1.9.0
-- torchvision==0.10.0
+- torch>=1.9.0
+- torchvision>=0.10.0
 - matplotlib>=3.4.3
 - numpy>=1.21.2
 - pillow>=8.3.2
@@ -21,20 +21,7 @@ https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
 
 This library requires at least Python Version 3.8.11.
 1. Begin by cloning this repository inside your workspace
-2. Download the model from https://drive.google.com/file/d/1LxqDJtm4NniyhlYb1Y9-I51jRiyY5A_o/view?usp=sharing
-3. Place the model.pt file into src/arm-localizer/data/model/
-4. `cd` into the `RobotArmLocalization/src/` directory where the setup.py file is located
-5. Within this directory, execute one of the following commands:
-   1. Run `pip3 install .`
-   2. To install in developer mode run: `pip3 install -e .`  
-        *(Developer mode sets a link to this directory, and allows for a live working copy to be used)*
-6. *Optionally*, create a new conda environment identical to developement environment using this command: `conda create --name robArmLocEnv --file full_requirements.txt`
-
-## Raspberry Pi Installation
-
-This library requires at least Python Version 3.8.11.
-1. Begin by cloning this repository inside your workspace
-2. Download the model from https://drive.google.com/file/d/1LxqDJtm4NniyhlYb1Y9-I51jRiyY5A_o/view?usp=sharing
+2. Train a new model or download our model from https://drive.google.com/file/d/1LxqDJtm4NniyhlYb1Y9-I51jRiyY5A_o/view?usp=sharing
 3. Place the model.pt file into src/arm-localizer/data/model/
 4. `cd` into the `RobotArmLocalization/src/` directory where the setup.py file is located
 5. Within this directory, execute one of the following commands:
