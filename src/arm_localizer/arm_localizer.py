@@ -743,27 +743,15 @@ class LocalizerNotInitializedError(Exception):
 class Localizer:
     
     def __init__(self):
-        
         filename = "./rotation/rotation.pkl"
-        fh = open(filename, "rb")
         try:
+            fh = open(filename, "rb")
             fh_new = pickle.load(fh)
-        except pickle.UnpicklingError as e:
-            print(e)
-            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
-        except pickle.PicklingError as e:
-            print(e)
-            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
-        except (AttributeError,  EOFError, ImportError, IndexError) as e:
-            print(e)
-            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
+            self.rotation = fh_new
+            fh.close()
         except Exception as e:
             print(e)
-            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package{filename}.')
-        else:
-            self.rotation = fh_new
-        finally:
-            fh.close()
+            raise LocalizerNotInitializedError(f"Unable to load rotation. Need to load rotation to initialize package {filename}.")
         
     def get_real_position(self, t_vector: Vector) -> Vector:
         """Applies the relevant saved transformation to the vector that is passed. Returns the converted position vector.
