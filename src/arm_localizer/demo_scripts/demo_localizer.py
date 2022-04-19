@@ -1,10 +1,7 @@
-from arm_localizer import *
-from arm_localizer import visualizer as viz
+import arm_localizer
 from PIL import Image
 import os
 import numpy as np
-import matplotlib.pyplot as plt
-from math import degrees
 
 def main(): 
 
@@ -17,23 +14,11 @@ def main():
     # Load the first image and open as an RGB image, load the first depth array (measured in mm) 
     img = Image.open(os.path.join(img_filename)).convert("RGB") 
 
-    depth_arr = np.load(os.path.join(depth_filename)) 
+    depth_arr = np.load(os.path.join(depth_filename))    
     
-    # initiates detector as the pointer to the detections (output) from the model
-    detector = ObjectDetector()
-
-    # run the second image on the ObjectDetector to get the detections from the model
-    detector.run(img)
-
-    # Initializes the obj_vector that stores the detected objects converted position vector
-    obj_vector = detector.get_object().rs_to_vector(depth_arr) - detector.get_base().rs_to_vector(depth_arr)
-   
-    # initialize l to point to the localizer function
-    l = Localizer()
-
-    # stores the true position of the detected object after conversion. You need to have both saved rotations from the demo_calibration in 
-    # order for get_real_position to return the true position after calculation. The localizer calls this function to get the result that we want.
-    calculated_position = l.get_real_position(obj_vector)  
+    # This function calculates the true position of the detected object after conversion. You need to have both saved rotations from the demo_calibration in 
+    # order for get_object_position to return the true position after calculation. The localizer calls this function to get the result that we want.
+    calculated_position = arm_localizer.get_object_position(img, depth_arr)  
     print (f"calculated position: {calculated_position}")    
 
 if __name__ == "__main__":
