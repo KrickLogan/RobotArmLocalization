@@ -655,9 +655,9 @@ class ObjectDetector:
 
 
         img_tens = F.to_tensor(img)
-        self._output = utils.load_model()([img_tens])
-        boxes = self._output[0]['boxes']
+        self._output = utils.load_model()([img_tens])        
         labels = self._output[0]['labels']
+        boxes = self._output[0]['boxes']
         masks = self._output[0]['masks']
         scores = self._output[0]['scores']
         self._detections = []
