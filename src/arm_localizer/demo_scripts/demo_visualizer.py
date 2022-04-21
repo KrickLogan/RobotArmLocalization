@@ -55,12 +55,8 @@ def main():
 
 
     # Bar graph with and without outliers
-    print("This function has been slightly modified in another branch, but showcases the same thing, a comparison bargraph showing the depth our detections are located at.")
-    data_lables, data_values = viz.get_graph_labels_values(claw.get_masked_array(depth_arr))
-    viz.show_bar_graph(data_lables,data_values,"With Outliers")
-    no_outliers_arr = base.remove_depth_outliers(claw.get_masked_array(depth_arr))
-    data_lables, data_values = viz.get_graph_labels_values(no_outliers_arr)
-    viz.show_bar_graph(data_lables,data_values,"No Outliers")
+    print("This function has showcases a comparison bargraph showing the depth our detections are located at.")
+    viz.show_depth_distribution(claw, depth_arr)
 
 if __name__ == "__main__":
     main()

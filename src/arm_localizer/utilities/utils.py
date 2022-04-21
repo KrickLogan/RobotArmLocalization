@@ -64,43 +64,11 @@ def get_label_string(label): ## Rework to use a dict?
         label_string = ERROR_STRING
     return label_string
 
-# ----- Delete? -----
-def fail(frameinfo):
-    print(frameinfo.filename, frameinfo.lineno)
-    #Should start throwing exceptions instead of this wherever this function is called
-
-# ----- Delete? -----
-# def calibrate(cam_claw_1: Vector, pos_claw_1: Vector, cam_claw_2: Vector, pos_claw_2: Vector):
-#     f_rot_vector = cam_claw_1.cross(pos_claw_1)
-#     f_rot_rads = cam_claw_1.angle_between(pos_claw_1)
-#     s_rot_vector = pos_claw_1
-#     cam_claw_2 = cam_claw_2.rotate_about_vector(f_rot_vector.unit(), f_rot_rads)
-#     s_rot_rads = cam_claw_2.perp(s_rot_vector).angle_between(pos_claw_2.perp(s_rot_vector))
-#     rotation = Rotation(f_rot_vector, f_rot_rads, s_rot_vector, s_rot_rads)
-#     pickle_obj(rotation)
-
-# ----- Delete? -----
-def get_img_size(img):
-    return img.size
-
-def pickle_obj(obj):#, filename): #new pickling function, should be able to pickle any object.
+def pickle_obj(obj):
     create_rotation_folder()
-    filename = "./rotation/rotation.pkl"
-    fh = open(filename, "bw")
+    fh = open("./rotation/rotation.pkl", "bw")
     pickle.dump(obj, fh)
     fh.close()
-
-# ----- Delete? -----
-# def unpickle():#, filename): #new unpickling function, should be able to unpickle any object.
-#     # dirname = "./rotation/"
-#     filename = "./rotation/rotation.pkl"
-#     fh = open(filename, "rb")
-#     try:
-#         fh_new = pickle.load(fh)
-#     except pickle.UnpicklingError as e:
-#         print(e)
-#     fh.close()
-#     return fh_new
 
 def create_rotation_folder():    
     newdir = "./rotation"

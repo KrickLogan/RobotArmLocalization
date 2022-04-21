@@ -10,13 +10,6 @@ def maximize_plt():
         mng = plt.get_current_fig_manager() 
         mng.window.state("zoomed")
 
-# def get_rectangles(boxes):
-#     rectangles = []
-#     for box in boxes:
-#         x, y, w, h = box.detach().numpy()
-#         rectangles.append(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
-#     return rectangles
-
 def get_label_string(label):
     label_string = ''
     if label == 1:
@@ -60,14 +53,14 @@ def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None)
     maximize_plt()
     plt.show() 
 
-def show_all_masks(img, detections, depth= None):
+def show_all_masks(detections, img, depth= None):
     for detection in detections:
         show_mask_overlay(img=img, mask=detection.get_bool_mask(), title=detection.get_label(), force_contrast=False, depth_arr=depth) 
 
-def show_mask(img, detection, depth= None): 
+def show_mask(detection, img, depth= None): 
         show_mask_overlay(img=img, mask=detection.get_bool_mask(), title=detection.get_label(), force_contrast=False, depth_arr=depth)
 
-def show_point(img, point, title, mask = None):
+def show_point(img, point, title = "", mask = None):
     plt.imshow(img)
     if(mask != None):
         plt.imshow(mask, cmap='ocean', alpha=.5)
@@ -76,11 +69,11 @@ def show_point(img, point, title, mask = None):
     maximize_plt()
     plt.show()
 
-def show_center_point (img, detection, title = ""):
+def show_center_point (detection, img, title = ""):
     center_point = detection.get_center_mass_pixel()
     show_point(img, center_point, title)   
 
-def show_points(img, points, title, mask = None):
+def show_points(img, points, title = "", mask = None):
     plt.imshow(img)
     if(mask != None):
         plt.imshow(mask, cmap='ocean', alpha=.5)
@@ -92,7 +85,15 @@ def show_points(img, points, title, mask = None):
     maximize_plt()
     plt.show()
 
-def show_img_boxes(img, detections, title = ""):
+def show_img_box(detection, img, title = ""):
+    plt.imshow(img)
+    x, y, w, h = detection.box.detach().numpy()
+    plt.gca().add_patch(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
+    plt.title(title)
+    maximize_plt()
+    plt.show()
+
+def show_img_boxes(detections, img, title = ""):
     plt.imshow(img)
     for d in detections:
         x, y, w, h = d.box.detach().numpy()
@@ -101,38 +102,12 @@ def show_img_boxes(img, detections, title = ""):
     maximize_plt()
     plt.show()
 
-def show_img_box(img, detection, title = ""):
-    plt.imshow(img)
-    x, y, w, h = detection.box.detach().numpy()
-    plt.gca().add_patch(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
-    plt.title(title)
-    maximize_plt()
-    plt.show()
-
-# def get_rectangles(boxes):
-#     rectangles = []
-#     for box in boxes:
-#         x, y, w, h = box.detach().numpy()
-#         rectangles.append(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
-#     return rectangles
-
-# def show_img_boxes(img, rectangles):
-#     plt.imshow(img)
-#     for rect in rectangles:
-#         plt.gca().add_patch(rect)
-
-#     maximize_plt()
-#     plt.show()
-
-    # data_lables, data_values = viz.get_graph_labels_values(no_outliers_arr)
-    # viz.show_bar_graph(data_lables,data_values,"without outlier")
-
 def show_depth_distribution(detection, depth, title="", x_axis_label="", y_axis_label=""):
     ma_depth = detection.remove_depth_outliers(detection.get_masked_depth_array(depth))
-    show_bar_graph(ma_depth, title, x_axis_label, y_axis_label)
+    _show_bar_graph(ma_depth, title, x_axis_label, y_axis_label)
 
-def show_bar_graph(ma_depth, title="", x_axis_label="", y_axis_label=""):
-    data_labels, data_values = get_graph_labels_values(ma_depth)
+def _show_bar_graph(ma_depth, title="", x_axis_label="", y_axis_label=""):
+    data_labels, data_values = _get_graph_labels_values(ma_depth)
     label_indices = [i for i, _ in enumerate(data_labels)]
     plt.bar(label_indices, data_values, color="blue")
     plt.xlabel(x_axis_label)
@@ -142,7 +117,7 @@ def show_bar_graph(ma_depth, title="", x_axis_label="", y_axis_label=""):
     maximize_plt()
     plt.show()
 
-def get_graph_labels_values(ma_depth):
+def _get_graph_labels_values(ma_depth):
     partitions = 6
     unique_values, frequencies = np.unique(ma_depth, return_counts=True)
     
