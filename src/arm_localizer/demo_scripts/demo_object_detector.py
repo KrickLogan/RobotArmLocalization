@@ -21,16 +21,19 @@ def main():
     for det in detections:
         print(f"{det.label} Score: {det.score} Box: {det.box} Mask: {det.mask}" )
 
-    # The following prints all model outputs
+    # The following prints all the outputs from model
     output = detector.get_model_outputs()
-    print (output)
+    print (f" All output from models: {output}")
 
+    # The following prints the details and average depth of claw that is given by model after detection
     claw = detector.get_claw()
     print (f"label: {claw.label} Score: {claw.score} Box: {claw.box} Mask: {claw.mask} Average depth: {claw.get_average_depth(claw.get_masked_array(depth_arr))}")
 
+    # The following prints the details and average depth of base that is given by model after detection
     base = detector.get_base()
     print (f"label: {base.label} Score: {base.score} Box: {base.box} Mask: {base.mask} Average depth: {base.get_average_depth(base.get_masked_array(depth_arr))}")
 
+    # The following prints the details and average depth of the object that is given by model after detection
     obj = detector.get_object()
     print (f"label: {obj.label} Score: {obj.score} Box: {obj.box} Mask: {obj.mask} Average depth: {obj.get_average_depth(obj.get_masked_array(depth_arr))}")
     
