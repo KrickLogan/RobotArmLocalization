@@ -5,7 +5,7 @@ import numpy.ma as ma
 import numpy as np
 
 def maximize_plt():
-    # if OS is Windows the plot will be maximized :)
+    # if OS is Windows the plot will be maximized
     if os.name == 'nt':
         mng = plt.get_current_fig_manager() 
         mng.window.state("zoomed")
@@ -100,11 +100,20 @@ def show_points(img, points, title, mask = None):
     maximize_plt()
     plt.show()
 
-def show_all_boxes(img, detections):
+def show_all_boxes(img, detections, title = ""):
     plt.imshow(img)
     for d in detections:
         x, y, w, h = d.box.detach().numpy()
         plt.gca().add_patch(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
+    plt.title(title)
+    maximize_plt()
+    plt.show()
+
+def show_box(img, detection, title = ""):
+    plt.imshow(img)
+    x, y, w, h = detection.box.detach().numpy()
+    plt.gca().add_patch(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
+    plt.title(title)
     maximize_plt()
     plt.show()
 
