@@ -4,7 +4,7 @@ Robotic Arm and Object Localization, an SE 490/491 Capstone Project.
 
 ## TrainingSrc/Utilities
 
-Coco utilities for training were obtained from the following tutorial:
+Coco utilities for training the model were obtained from the following tutorial:
 https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
 
 ## Requirements
