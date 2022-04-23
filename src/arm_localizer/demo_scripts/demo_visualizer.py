@@ -33,13 +33,17 @@ def main():
     print("This function showcases the img and one mask overlaid together, in this case, the cotton.\n")
     viz.show_mask(obj, img, depth_arr)
 
-    # The center of the obj in a different function, not requiring line 31
+    # Display the center point of an object
     print("This function showcases the center point of a singular object, in this case, the base.\n")
     viz.show_center_point(base, img)
 
-    # The center of the obj in a different function, not requiring line 31
+    # Display the center point of all three objects
     print("This function showcases the center point of all three objects.\n")
     viz.show_center_points(detector.get_all_detections(), img)
+
+    # One bounding box for a detections
+    print("This function showcases a bounding box around a singular object, in this case, the cotton.\n")
+    viz.show_img_box(obj, img)
 
     # All bounding boxes for our detections
     print("This function showcases the bounding boxes surrounding all 3 detected objects in our img.\n")
