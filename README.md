@@ -8,9 +8,9 @@ Coco utilities for training were obtained from the following tutorial:
 https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
 
 ## Requirements
-
-- torch>=1.9.0
-- torchvision>=0.10.0
+- python>=3.7
+- torch==1.9.0
+- torchvision==0.10.0
 - matplotlib>=3.4.3
 - numpy>=1.21.2
 - pillow>=8.3.2
@@ -19,11 +19,11 @@ https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
 
 ## Windows Installation
 
-This library requires at least Python Version 3.8.11.
+This library requires at least Python Version 3.7.
 1. Begin by cloning this repository inside your workspace
-2. Train a new model or download our model from https://drive.google.com/file/d/1LxqDJtm4NniyhlYb1Y9-I51jRiyY5A_o/view?usp=sharing
-3. Place the model.pt file into src/arm-localizer/data/model/
-4. `cd` into the `RobotArmLocalization/src/` directory where the setup.py file is located
+2. Train a new model or download our pre-trained model from: https://drive.google.com/file/d/1LxqDJtm4NniyhlYb1Y9-I51jRiyY5A_o/view?usp=sharing
+3. Place the `model.pt` file into `src/arm-localizer/data/model/`
+4. `cd` into the `RobotArmLocalization/src/` directory where the `setup.py` file is located
 5. Within this directory, execute one of the following commands:
    1. Run `pip3 install .`
    2. To install in developer mode run: `pip3 install -e .`  
@@ -36,9 +36,9 @@ This library requires at least Python Version 3.8.11.
 
 1. Runs the model on a selected image and provides model outputs in form of bounding boxes, array masks, labels, and scores.
 
-2. Use the depth array from a depth camera to calculate average depth of the detections.
+2. Use the depth array, obtained from a depth camera, to calculate average depth of the detections.
 
-3. Calculates the position vectors for all detected Objects in image.
+3. Calculates the position vectors for all detected objects in image.
 
 4. Calculates the position of the target Object relative to robot arm base and in alignment with the `arm_controller` package's coordinate system.
 
@@ -108,11 +108,25 @@ This library requires at least Python Version 3.8.11.
 
         from arm_localizer import visualizer as viz
         ...
-        viz.show_all_masks(all_detections)
-        viz.show_all_boxes(all_detections)
-        viz.show_all_centerpoints(all_detections)
+        viz.show_all_masks(img, all_detections)
+        viz.show_img_boxes(img, all_detections)
+        viz.show_all_centerpoints(img, all_detections)
   
-13. Get the positions of the detections in millimeters
+13. Get the positions of the detections in millimeters (**not aligned** to `arm_controller`'s coordinate system)
 
         claw_pos = claw.rs_to_vector(depth).as_point()
         base_pos = base.rs_to_vector(depth).as_point()
+
+14. Get the calculated position of the detected object in millimeters (**aligned** to `arm_controller`'s coordinate system)
+
+        # Requires calibration, please refer to demo_calibration.py for further information on calibration
+        
+        calculated_position = arm_localizer.get_object_position(img, depth_arr)  
+        print (f"Calculated Position (mm): {calculated_position}")
+
+
+## References
+
+The `arm_controller` package, as mentioned above, can be found here: https://github.com/jsSwizzle/csci-deere
+
+- Please note, the `arm_controller` package was not developed by our team, and was a different project developed by another team.

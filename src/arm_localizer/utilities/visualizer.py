@@ -67,7 +67,7 @@ def show_all_masks(img, detections, depth= None):
 def show_mask(img, detection, depth= None): 
         show_mask_overlay(img=img, mask=detection.get_bool_mask(), title=detection.get_label(), force_contrast=False, depth_arr=depth)
 
-def show_centerpoint (img, detection, title = ""):
+def show_center_point (img, detection, title = ""):
     center_point = detection.get_center_mass_pixel()
     show_point(img, center_point, title)   
 
@@ -100,7 +100,7 @@ def show_points(img, points, title, mask = None):
     maximize_plt()
     plt.show()
 
-def show_all_boxes(img, detections, title = ""):
+def show_img_boxes(img, detections, title = ""):
     plt.imshow(img)
     for d in detections:
         x, y, w, h = d.box.detach().numpy()

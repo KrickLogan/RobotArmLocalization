@@ -3,7 +3,7 @@
 
 import setuptools
 
-with open("README.md", "r", encoding="utf-8") as fh: long_description = fh.read()
+with open("../README.md", "r", encoding="utf-8") as fh: long_description = fh.read()
 
 setuptools.setup(
     name = "arm_localizer",
@@ -17,7 +17,6 @@ setuptools.setup(
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent"
-
     ],
     
     packages = [
@@ -31,8 +30,8 @@ setuptools.setup(
     },
 
     install_requires=[
-        "torch>=1.9.0",
-        "torchvision>=0.10.0",
+        "torch==1.9.0",
+        "torchvision==0.10.0",
         "matplotlib>=3.4.3",
         "numpy>=1.21.2",
         "pillow>=8.3.2",
@@ -40,6 +39,6 @@ setuptools.setup(
         "pyrealsense2>=2.50.0.3812"
     ],
 
-    python_requires=">=3.8.11"
+    python_requires=">=3.7"
 
 )
