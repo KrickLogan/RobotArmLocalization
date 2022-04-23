@@ -68,29 +68,6 @@ def _show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None
     maximize_plt()
     plt.show() 
 
-# def show_mask_overlays(img, masks, title="", force_contrast=False, depth_arr=None):
-#     if force_contrast:
-#         min = 400
-#         max = 700
-#         for mask in masks:
-#             if depth_arr is not None:
-#                 unique_values = np.unique(ma.masked_array(depth_arr, np.invert(mask).long()))
-            
-#                 # print(unique_values)
-#                 max = unique_values[-2]
-#                 min = unique_values[1]
-
-#             plt.imshow(img, vmin=min, vmax=max)
-
-#     else:
-#         plt.imshow(img)
-#     plt.imshow(mask, cmap='ocean', alpha=.5)
-#     if depth_arr is not None:
-#         plt.imshow(depth_arr, alpha=0)
-#     plt.title(title)
-#     maximize_plt()
-#     plt.show() 
-
 def show_mask(detection, img, depth= None): 
     """Displays one mask on top of an image. 
 
@@ -101,11 +78,17 @@ def show_mask(detection, img, depth= None):
     """
     _show_mask_overlay(img=img, mask=detection.get_bool_mask(), title=detection.get_label(), force_contrast=False, depth_arr=depth)
 
-# def show_all_masks(detections, img, depth= None):
-#     plt.imshow(img)
-#     for detection in detections:
-#         # show_mask_overlay(img=img, mask=detection.get_bool_mask(), title=detection.get_label(), force_contrast=False, depth_arr=depth) 
-#         plt.imshow(detection.mask.detach().numpy()[0], alpha = 0.25)
+def show_all_masks(detections, img, depth=None):
+    plt.imshow(img)
+
+    bool_mask = detections[0].get_bool_mask()
+    composite_mask = np.full_like(bool_mask, False)
+    
+    for detection in detections:
+        bool_mask = detection.get_bool_mask()
+        composite_mask = np.logical_or(bool_mask, composite_mask)
+
+    _show_mask_overlay(img, composite_mask, title="All masks", force_contrast=False, depth_arr=depth)
 
 def show_center_point (detection, img, title = ""):
     """Displays one center point on top of an image
