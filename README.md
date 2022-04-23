@@ -110,7 +110,7 @@ This library requires at least Python Version 3.7.
         ...
         viz.show_all_masks(img, all_detections)
         viz.show_img_boxes(img, all_detections)
-        viz.show_all_centerpoints(img, all_detections)
+        viz.show_center_points(img, all_detections)
   
 13. Get the positions of the detections in millimeters (**not aligned** to `arm_controller`'s coordinate system)
 
