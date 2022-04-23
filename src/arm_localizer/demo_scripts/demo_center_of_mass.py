@@ -36,19 +36,19 @@ def main():
     viz.show_img_boxes(img, rectangles)
 
     print (f"claw center pixel: {claw_center_pixel}")
-    viz.show_point(img, claw_center_pixel, f"Claw Center Point Coordinates (old): {claw_center_pixel}")
+    viz._show_point(img, claw_center_pixel, f"Claw Center Point Coordinates (old): {claw_center_pixel}")
     print (f"claw center mass pixel: {claw_center_mass_pixel}")
-    viz.show_point(img, claw_center_mass_pixel, f"Claw Center of Mass Point Coordinates (new): {claw_center_mass_pixel}")
+    viz._show_point(img, claw_center_mass_pixel, f"Claw Center of Mass Point Coordinates (new): {claw_center_mass_pixel}")
 
     print (f"base center pixel: {base_center_pixel}")
-    viz.show_point(img, base_center_pixel, f"Base Center Point Coordinates (old): {base_center_pixel}")
+    viz._show_point(img, base_center_pixel, f"Base Center Point Coordinates (old): {base_center_pixel}")
     print (f"base center mass pixel: {base_center_mass_pixel}")
-    viz.show_point(img, base_center_mass_pixel, f"Base Center of Mass Point Coordinates (new): {base_center_mass_pixel}")
+    viz._show_point(img, base_center_mass_pixel, f"Base Center of Mass Point Coordinates (new): {base_center_mass_pixel}")
 
     print (f"objcenter pixel: {obj_center_pixel}")
-    viz.show_point(img, obj_center_pixel, f"Object Center Point Coordinates (old): {obj_center_pixel}")
+    viz._show_point(img, obj_center_pixel, f"Object Center Point Coordinates (old): {obj_center_pixel}")
     print (f"obj center mass pixel: {obj_center_mass_pixel}")
-    viz.show_point(img, obj_center_mass_pixel, f"Object Center of Mass Point Coordinates (new): {obj_center_mass_pixel}")
+    viz._show_point(img, obj_center_mass_pixel, f"Object Center of Mass Point Coordinates (new): {obj_center_mass_pixel}")
 
 if __name__ == "__main__":
     main()

@@ -5,17 +5,11 @@ import numpy.ma as ma
 import numpy as np
 
 def maximize_plt():
-    # if OS is Windows the plot will be maximized :)
+    """If the OS is Windows, maximizes the plot
+    """
     if os.name == 'nt':
         mng = plt.get_current_fig_manager() 
         mng.window.state("zoomed")
-
-# def get_rectangles(boxes):
-#     rectangles = []
-#     for box in boxes:
-#         x, y, w, h = box.detach().numpy()
-#         rectangles.append(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
-#     return rectangles
 
 def get_label_string(label):
     label_string = ''
@@ -32,12 +26,26 @@ def get_label_string(label):
     return label_string
 
 def show_img(img):
+    """Displays an image
+
+    Args:
+        img (img): The image to be displayed
+    """
     plt.imshow(img)
     plt.title('Original Image')
     maximize_plt()
     plt.show()
 
-def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None):
+def _show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None):
+    """Displays one mask on top of an image. 
+
+    Args:
+        img (img): The image to be displayed
+        mask (boolmask): The mask to be overlaid with the image
+        title (string): The name of the plot
+        force_contrast (boolean): idk
+        depth_arr (numpy): The array of depth values in millimeters
+    """
     if force_contrast: 
         min = 400
         max = 700
@@ -60,14 +68,53 @@ def show_mask_overlay(img, mask, title="", force_contrast=False, depth_arr=None)
     maximize_plt()
     plt.show() 
 
-def show_all_masks(img, detections, depth= None):
+def show_mask(detection, img, depth= None): 
+    """Displays one mask on top of an image. 
+
+    Args:
+        img (img): The image to be displayed
+        mask (boolmask): The mask to be overlaid with the image
+        depth_arr (numpy): The array of depth values in millimeters
+    """
+    _show_mask_overlay(img=img, mask=detection.get_bool_mask(), title=detection.get_label(), force_contrast=False, depth_arr=depth)
+
+def show_all_masks(detections, img, depth=None):
+    plt.imshow(img)
+
+    bool_mask = detections[0].get_bool_mask()
+    composite_mask = np.full_like(bool_mask, False)
+    
     for detection in detections:
-        show_mask_overlay(img=img, mask=detection.get_bool_mask(), title=detection.get_label(), force_contrast=False, depth_arr=depth) 
+        bool_mask = detection.get_bool_mask()
+        composite_mask = np.logical_or(bool_mask, composite_mask)
 
-def show_mask(img, detection, depth= None): 
-        show_mask_overlay(img=img, mask=detection.get_bool_mask(), title=detection.get_label(), force_contrast=False, depth_arr=depth)
+    _show_mask_overlay(img, composite_mask, title="All masks", force_contrast=False, depth_arr=depth)
 
-def show_point(img, point, title, mask = None):
+def show_center_point (detection, img, title = ""):
+    """Displays one center point on top of an image
+
+    Args:
+        detection (detectedObject): The object for which to display the center point
+        img (img): The image to be displayed
+        title (string): The name of the plot
+    """
+    center_point = detection.get_center_mass_pixel()
+    _show_point(img, center_point, title)   
+
+def show_center_points (detections, img, title=""):
+    """Displays all center points
+
+    Args:
+        detections (detectedObjects): The detections in the image, all of which will have center points displayed.
+        img (img): The image to be displayed
+        title (string): The name of the plot
+    """
+    center_points = []
+    for detection in detections:
+        center_points.append(detection.get_center_mass_pixel())
+    _show_points(img, center_points, title)
+
+def _show_point(img, point, title = "", mask = None):
     plt.imshow(img)
     if(mask != None):
         plt.imshow(mask, cmap='ocean', alpha=.5)
@@ -76,11 +123,7 @@ def show_point(img, point, title, mask = None):
     maximize_plt()
     plt.show()
 
-def show_center_point (img, detection, title = ""):
-    center_point = detection.get_center_mass_pixel()
-    show_point(img, center_point, title)   
-
-def show_points(img, points, title, mask = None):
+def _show_points(img, points, title = "", mask = None):
     plt.imshow(img)
     if(mask != None):
         plt.imshow(mask, cmap='ocean', alpha=.5)
@@ -92,7 +135,29 @@ def show_points(img, points, title, mask = None):
     maximize_plt()
     plt.show()
 
-def show_img_boxes(img, detections, title = ""):
+def show_img_box(detection, img, title = ""):
+    """Displays one bounding box on top of an image
+
+    Args:
+        detection (detectedObject): The object for which to display the bounding box
+        img (img): The image to be displayed
+        title (string): The name of the plot
+    """
+    plt.imshow(img)
+    x, y, w, h = detection.box.detach().numpy()
+    plt.gca().add_patch(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
+    plt.title(title)
+    maximize_plt()
+    plt.show()
+
+def show_img_boxes(detections, img, title = ""):
+    """Displays all bounding boxes
+
+    Args:
+        detections (detectedObjects): The detections in the image, all of which will have bounding boxes displayed.
+        img (img): The image to be displayed
+        title (string): The name of the plot
+    """
     plt.imshow(img)
     for d in detections:
         x, y, w, h = d.box.detach().numpy()
@@ -101,38 +166,21 @@ def show_img_boxes(img, detections, title = ""):
     maximize_plt()
     plt.show()
 
-def show_img_box(img, detection, title = ""):
-    plt.imshow(img)
-    x, y, w, h = detection.box.detach().numpy()
-    plt.gca().add_patch(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
-    plt.title(title)
-    maximize_plt()
-    plt.show()
-
-# def get_rectangles(boxes):
-#     rectangles = []
-#     for box in boxes:
-#         x, y, w, h = box.detach().numpy()
-#         rectangles.append(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
-#     return rectangles
-
-# def show_img_boxes(img, rectangles):
-#     plt.imshow(img)
-#     for rect in rectangles:
-#         plt.gca().add_patch(rect)
-
-#     maximize_plt()
-#     plt.show()
-
-    # data_lables, data_values = viz.get_graph_labels_values(no_outliers_arr)
-    # viz.show_bar_graph(data_lables,data_values,"without outlier")
-
 def show_depth_distribution(detection, depth, title="", x_axis_label="", y_axis_label=""):
-    ma_depth = detection.remove_depth_outliers(detection.get_masked_depth_array(depth))
-    show_bar_graph(ma_depth, title, x_axis_label, y_axis_label)
+    """Displays the outlier distribution of the depth
 
-def show_bar_graph(ma_depth, title="", x_axis_label="", y_axis_label=""):
-    data_labels, data_values = get_graph_labels_values(ma_depth)
+    Args:
+        detection (detectedObject): The object we are analyzing
+        depth (numpy): The array of depth values in millimeters
+        title (string): The name of the plot
+        x_axis_label (string): The label on the x axis
+        y_axis_label (string): The label on the y axis
+    """
+    ma_depth = detection.remove_depth_outliers(detection.get_masked_depth_array(depth))
+    _show_bar_graph(ma_depth, title, x_axis_label, y_axis_label)
+
+def _show_bar_graph(ma_depth, title="", x_axis_label="", y_axis_label=""):
+    data_labels, data_values = _get_graph_labels_values(ma_depth)
     label_indices = [i for i, _ in enumerate(data_labels)]
     plt.bar(label_indices, data_values, color="blue")
     plt.xlabel(x_axis_label)
@@ -142,7 +190,7 @@ def show_bar_graph(ma_depth, title="", x_axis_label="", y_axis_label=""):
     maximize_plt()
     plt.show()
 
-def get_graph_labels_values(ma_depth):
+def _get_graph_labels_values(ma_depth):
     partitions = 6
     unique_values, frequencies = np.unique(ma_depth, return_counts=True)
     
