@@ -109,7 +109,7 @@ def show_img_boxes(img, detections, title = ""):
     maximize_plt()
     plt.show()
 
-def show_box(img, detection, title = ""):
+def show_img_box(img, detection, title = ""):
     plt.imshow(img)
     x, y, w, h = detection.box.detach().numpy()
     plt.gca().add_patch(Rectangle((x,y), w - x, h - y, edgecolor='red', fill=False))
