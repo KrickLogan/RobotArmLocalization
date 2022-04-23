@@ -683,9 +683,12 @@ class ObjectDetector:
                 elif score >self._object.score:
                   self._object=obj
 
-        self._detections.append(self._claw)
-        self._detections.append(self._base)
-        self._detections.append(self._object)
+        if self._claw is not None:
+            self._detections.append(self._claw)
+        if self._claw is not None:
+            self._detections.append(self._base)
+        if self._claw is not None:
+            self._detections.append(self._object)
 
         return self._detections
 
@@ -828,7 +831,7 @@ def get_object_position(img, depth, object_detector = None, threshold_claw = 0.5
     """This function calculates the position of the detected object in the image, relative to the robot arm's positioning system
 
     This function first runs the model on the image, then it gets the vector for the claw detection relative to the camera.
-    then it converts that position to be relative to the robot arm's coordinate system.
+    then it applies the calibrated rotation to convert that position to be relative to the robot arm's coordinate system.
 
     Args:
         img (Image): The image with the object to be located

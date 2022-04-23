@@ -1,13 +1,7 @@
-This folder may contain some files .DS_something which are specific to mac?? 
-not really sure. This is the implementation that works on my mac though
+Sample code was obtained from the TorchVision 0.3 Object Detection Finetuning Tutorial:
+http://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
 
-run using command: python3 tv-training-code.py
-
--THOMAS
-
-
-
-# Object detection reference training scripts
+# Object Detection Reference Training Scripts
 
 This folder contains reference training scripts for object detection.
 They serve as a log of how to train specific models, to provide baseline

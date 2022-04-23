@@ -9,6 +9,7 @@ CLAW_STRING = 'Claw'
 OBJECT_STRING = 'Object'
 BACKGROUND_STRING = 'Background'
 ERROR_STRING = 'ERROR'
+# HFOV and VFOV are no longer used and part of the old system that doesn't use pyrealsense2
 HFOV = 69 #degrees
 VFOV = 42 #degrees
 
@@ -26,25 +27,18 @@ def load_depth_arr(dp_arr_name):
     np_depth = np.load(os.path.join(dirname, dp_arr_name))
     return np_depth
 
+
 def get_vfov():
-    """Gets the Vertical Field of Vision of the camera in degrees
+    """HFOV and VFOV are no longer used and part of the old system that doesn't use pyrealsense2.
+    Gets the Vertical Field of Vision of the camera in degrees
     """
     return VFOV
 
 def get_hfov():
-    """Gets the Horizontal Field of Vision of the camera in degrees
+    """HFOV and VFOV are no longer used and part of the old system that doesn't use pyrealsense2.
+    Gets the Horizontal Field of Vision of the camera in degrees
     """
     return HFOV
-
-def set_vfov(new_vfov):
-    """Sets the Vertical Field of Vision of the camera in degrees
-    """
-    VFOV = new_vfov
-
-def set_hfov(new_hfov):
-    """Sets the Horizontal Field of Vision of the camera in degrees
-    """
-    HFOV = new_hfov
 
 def get_label_string(label): ## Rework to use a dict?
     """Converts the integer label from the model to a human readable string
@@ -74,5 +68,3 @@ def create_rotation_folder():
     newdir = "./rotation"
     if not os.path.exists(newdir):
         os.makedirs(newdir)
-    else:
-        print("folder already exists")
