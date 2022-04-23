@@ -7,9 +7,10 @@ Welcome to Arm Localizer's documentation!
 =========================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 2 
    :caption: Contents:
-
+   
+   intro
    modules
 
 Indices and tables
