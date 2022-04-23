@@ -33,17 +33,17 @@ def main():
     rectangles = viz.get_rectangles([claw.box, base.box, obj.box])
     viz.show_img_boxes(img, rectangles)
 
-    viz.show_mask_overlay(img, claw.get_bool_mask(), "Claw mask")
+    viz._show_mask_overlay(img, claw.get_bool_mask(), "Claw mask")
     claw_center = claw.get_center_pixel()
-    viz.show_point(img, claw_center, f"Claw Center Point Coordinates: {claw_center}")
+    viz._show_point(img, claw_center, f"Claw Center Point Coordinates: {claw_center}")
 
-    viz.show_mask_overlay(img, base.get_bool_mask(), "Base mask")
+    viz._show_mask_overlay(img, base.get_bool_mask(), "Base mask")
     base_center = base.get_center_pixel()
-    viz.show_point(img, base_center, f"Base Center Point Coordinates: {base_center}")
+    viz._show_point(img, base_center, f"Base Center Point Coordinates: {base_center}")
 
-    viz.show_mask_overlay(img, obj.get_bool_mask(), "Object mask")
+    viz._show_mask_overlay(img, obj.get_bool_mask(), "Object mask")
     obj_center = obj.get_center_pixel()
-    viz.show_point(img, obj_center, f"Object Center Point Coordinates: {obj_center}")
+    viz._show_point(img, obj_center, f"Object Center Point Coordinates: {obj_center}")
 
     # print Claw, Base, and Object depths
 

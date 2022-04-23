@@ -60,33 +60,33 @@ def main():
 
     # Claw Thresholds
 
-    viz.show_mask_overlay(img, claw.get_bool_mask(), f"Claw mask with {claw.get_threshold()} threshold (default)")
+    viz._show_mask_overlay(img, claw.get_bool_mask(), f"Claw mask with {claw.get_threshold()} threshold (default)")
 
     claw.set_threshold(0.25)
-    viz.show_mask_overlay(img, claw.get_bool_mask(), f"Claw mask with {claw.get_threshold()} threshold")
+    viz._show_mask_overlay(img, claw.get_bool_mask(), f"Claw mask with {claw.get_threshold()} threshold")
 
     claw.set_threshold(0.75)
-    viz.show_mask_overlay(img, claw.get_bool_mask(), f"Claw mask with {claw.get_threshold()} threshold")
+    viz._show_mask_overlay(img, claw.get_bool_mask(), f"Claw mask with {claw.get_threshold()} threshold")
 
     # Base Thresholds
 
-    viz.show_mask_overlay(img, base.get_bool_mask(), f"Base mask with {base.get_threshold()} threshold (default)")
+    viz._show_mask_overlay(img, base.get_bool_mask(), f"Base mask with {base.get_threshold()} threshold (default)")
     
     base.set_threshold(0.25)
-    viz.show_mask_overlay(img, base.get_bool_mask(), f"Base mask with {base.get_threshold()} threshold")
+    viz._show_mask_overlay(img, base.get_bool_mask(), f"Base mask with {base.get_threshold()} threshold")
     
     base.set_threshold(0.75)
-    viz.show_mask_overlay(img, base.get_bool_mask(), f"Base mask with {base.get_threshold()} threshold")
+    viz._show_mask_overlay(img, base.get_bool_mask(), f"Base mask with {base.get_threshold()} threshold")
 
     # Object Thresholds
 
-    viz.show_mask_overlay(img, obj.get_bool_mask(), f"Object mask with {obj.get_threshold()} threshold (default)")
+    viz._show_mask_overlay(img, obj.get_bool_mask(), f"Object mask with {obj.get_threshold()} threshold (default)")
 
     obj.set_threshold(0.25)
-    viz.show_mask_overlay(img, obj.get_bool_mask(), f"Object mask with {obj.get_threshold()} threshold")
+    viz._show_mask_overlay(img, obj.get_bool_mask(), f"Object mask with {obj.get_threshold()} threshold")
 
     obj.set_threshold(0.75)
-    viz.show_mask_overlay(img, obj.get_bool_mask(), f"Object mask with {obj.get_threshold()} threshold")
+    viz._show_mask_overlay(img, obj.get_bool_mask(), f"Object mask with {obj.get_threshold()} threshold")
 
     # Invalid Input Tests
     input()

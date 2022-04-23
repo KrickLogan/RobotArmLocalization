@@ -58,10 +58,9 @@ def get_label_string(label): ## Rework to use a dict?
         label_string = ERROR_STRING
     return label_string
 
-def pickle_obj(obj):#, filename): #new pickling function, should be able to pickle any object.
+def pickle_obj(obj):
     create_rotation_folder()
-    filename = "./rotation/rotation.pkl"
-    fh = open(filename, "bw")
+    fh = open("./rotation/rotation.pkl", "bw")
     pickle.dump(obj, fh)
     fh.close()
 

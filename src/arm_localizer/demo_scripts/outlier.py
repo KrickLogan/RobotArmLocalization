@@ -27,7 +27,7 @@ def main():
     obj = detector.get_object()
     bmask = claw.get_bool_mask()
 
-    viz.show_mask_overlay(img=depth_arr, mask=bmask, title="Depth Values of base", depth_arr=depth_arr, force_contrast=True)
+    viz._show_mask_overlay(img=depth_arr, mask=bmask, title="Depth Values of base", depth_arr=depth_arr, force_contrast=True)
 
     viz.show_depth_distribution(claw, depth_arr, "with outlier")
 

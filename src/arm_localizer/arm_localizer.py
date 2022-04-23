@@ -609,9 +609,9 @@ class ObjectDetector:
         """
         self._output = None
         self._detections = None
-        self._claw=None
-        self._base=None
-        self._object=None
+        self._claw = None
+        self._base = None
+        self._object = None
 
         # Ensure threshold_claw is between 0 and 1
         if threshold_claw > 0 and threshold_claw < 1:
@@ -649,15 +649,13 @@ class ObjectDetector:
             detections: the model detections. changed in next version
 
         """
-        self._claw=None
-        self._base=None
-        self._object=None
-
-
         img_tens = F.to_tensor(img)
-        self._output = utils.load_model()([img_tens])        
-        labels = self._output[0]['labels']
+        self._output = utils.load_model()([img_tens])
+        self._claw = None
+        self._base = None
+        self._object = None
         boxes = self._output[0]['boxes']
+        labels = self._output[0]['labels']
         masks = self._output[0]['masks']
         scores = self._output[0]['scores']
         self._detections = []
@@ -665,6 +663,7 @@ class ObjectDetector:
             label, box, mask, score = labels[i],boxes[i], masks[i], scores[i]
             label_string = utils.get_label_string(label)
             obj = DetectedObject(label_string, box, mask, score)
+            
             if(label_string == utils.CLAW_STRING):
                 obj.set_threshold(self.threshold_claw)
                 if self._claw==None:
@@ -746,15 +745,15 @@ class LocalizerNotInitializedError(Exception):
 class Localizer:
     
     def __init__(self):
-        filename = "./rotation/rotation.pkl"
+        
         try:
-            fh = open(filename, "rb")
+            fh = open("./rotation/rotation.pkl", "rb")
             fh_new = pickle.load(fh)
             self.rotation = fh_new
             fh.close()
         except Exception as e:
             print(e)
-            raise LocalizerNotInitializedError(f"Unable to load rotation. Need to load rotation to initialize package {filename}.")
+            raise LocalizerNotInitializedError(f'Unable to load rotation. Need to load rotation to initialize package {filename}.')
         
     def get_real_position(self, t_vector: Vector) -> Vector:
         """Applies the relevant saved transformation to the vector that is passed. Returns the converted position vector.
@@ -772,56 +771,6 @@ class Localizer:
         t_vector=t_vector.rotate_about_vector(self.rotation._f_rot_vector, self.rotation._f_rot_rads)
         t_vector=t_vector.rotate_about_vector(self.rotation._s_rot_vector, self.rotation._s_rot_rads)
         return t_vector
-    
-
-# def calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, pos_claw_1, pos_claw_2):
-#     """This function calculates and saves the relevant transformation information for converting positions between the camera coordinate system and the robot arm coordinate system
-
-#     This function accepts two images and two depth arrays, each pair of which corresponds with a different claw position
-#     The function is also passed the actual claw positions as gotten from the positioning system of the robot arm.
-#     This function then uses the ObjectDetector to detect and calculate the position of the claw from the camera's perspective.
-#     Then, we use the actual claw positions to generate relevant transformations to align the coordinate systems.
-#     This is then saved and will be used to convert any other positions to the robot arm coordinate system.
-
-#     Args:
-#         img1 (Image): The first image, rgb data
-#         depth1 (np.ndarray): The first depth array, depths in mm
-#         img2 (Image): The second image
-#         depth2 (np.ndarray): The second depth array
-#         pos_claw_1(Vector): The position of the claw from the Robot arm coordinate system which corresponds to the first depth and img
-#         pos_claw_2(Vector): The position of the claw from the Robot arm coordinate system which corresponds to the second depth and img
-
-#     Returns:
-#         none
-
-#     """
-#     detector = ObjectDetector()
-
-#     detector.run(img1)
-#     cam_to_claw_1 = detector.get_claw().to_vector(img1.size, depth1)
-#     cam_to_base_1 = detector.get_base().to_vector(img1.size, depth1)
-#     base_to_claw_1 = cam_to_claw_1 - cam_to_base_1
-    
-#     detector.run(img2)
-#     cam_to_claw_2 = detector.get_claw().to_vector(img2.size, depth2)
-#     cam_to_base_2 = detector.get_base().to_vector(img2.size, depth2)
-#     base_to_claw_2 = cam_to_claw_2 - cam_to_base_2
-    
-#     first_rot_vector = base_to_claw_1.cross(pos_claw_1)
-#     first_rot_rads = base_to_claw_1.angle_between(pos_claw_1)
-    
-#     second_rot_vector = pos_claw_1
-
-#     base_to_claw_2 = base_to_claw_2.rotate_about_vector(first_rot_vector.unit(), first_rot_rads)
-#     pc2_perp = pos_claw_2.perp(second_rot_vector)
-#     bc2_perp = base_to_claw_2.perp(second_rot_vector)
-#     second_rot_rads = base_to_claw_2.perp(second_rot_vector).angle_between(pc2_perp)
-#     if bc2_perp.cross(pc2_perp).dot(second_rot_vector.unit()) < 0:
-#         second_rot_rads = -1 * second_rot_rads
-    
-#     rotation = Rotation(first_rot_vector, first_rot_rads, second_rot_vector, second_rot_rads)
-    
-#     utils.pickle_obj(rotation)
 
 def rs_calibrate(img1: Image, depth1: np.ndarray, img2: Image, depth2: np.ndarray, pos_claw_1, pos_claw_2, 
         object_detector = None, threshold_claw = 0.5, threshold_base = 0.5, threshold_object = 0.5):

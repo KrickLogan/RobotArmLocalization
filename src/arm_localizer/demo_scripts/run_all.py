@@ -20,20 +20,20 @@ def show_all_detections(img, depth_arr, detector):
     #     viz.show_mask_overlay(img, d.get_bool_mask(), "detection")
     #     viz.show_mask_overlay(depth_arr, d.get_bool_mask(), "detection", force_contrast=True, depth_arr=depth_arr)
     
-    viz.show_mask_overlay(img, detector.get_claw().get_bool_mask(), "claw detection")
-    viz.show_mask_overlay(img, detector.get_base().get_bool_mask(), "Base Detection")
-    viz.show_mask_overlay(img, detector.get_object().get_bool_mask(), "Object Detection")
+    viz._show_mask_overlay(img, detector.get_claw().get_bool_mask(), "claw detection")
+    viz._show_mask_overlay(img, detector.get_base().get_bool_mask(), "Base Detection")
+    viz._show_mask_overlay(img, detector.get_object().get_bool_mask(), "Object Detection")
     
-    viz.show_mask_overlay(depth_arr, detector.get_claw().get_bool_mask(), "claw detection", force_contrast=True, depth_arr=depth_arr)
-    viz.show_mask_overlay(depth_arr, detector.get_base().get_bool_mask(), "Base Detection", force_contrast=True, depth_arr=depth_arr)
-    viz.show_mask_overlay(depth_arr, detector.get_object().get_bool_mask(), "Object Detection", force_contrast=True, depth_arr=depth_arr)
+    viz._show_mask_overlay(depth_arr, detector.get_claw().get_bool_mask(), "claw detection", force_contrast=True, depth_arr=depth_arr)
+    viz._show_mask_overlay(depth_arr, detector.get_base().get_bool_mask(), "Base Detection", force_contrast=True, depth_arr=depth_arr)
+    viz._show_mask_overlay(depth_arr, detector.get_object().get_bool_mask(), "Object Detection", force_contrast=True, depth_arr=depth_arr)
 
     rectangles = viz.get_rectangles([detector.get_claw().box, detector.get_base().box, detector.get_object().box])
     viz.show_img_boxes(img, rectangles)
 
     center_points = get_center_points(detector)
     # print(center_points)
-    viz.show_points(img, center_points, "Center Points")
+    viz._show_points(img, center_points, "Center Points")
 
 def show_all_vectors(cam_claw_1, cam_claw_2, pos_claw_1, pos_claw_2, cam_obj, pos_obj, og, norm=None):
     fig = plt.figure()

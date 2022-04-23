@@ -40,18 +40,18 @@ def main():
     rectangles = viz.get_rectangles([claw.box, base.box, obj.box])
     viz.show_img_boxes(img, rectangles)
     claw_center = claw.get_center_pixel()
-    viz.show_point(img, claw_center, f"Center Point Coordinates: {claw_center}")
+    viz._show_point(img, claw_center, f"Center Point Coordinates: {claw_center}")
     base_center = base.get_center_pixel()
-    viz.show_point(img, base_center, f"Center Point Coordinates: {base_center}")
+    viz._show_point(img, base_center, f"Center Point Coordinates: {base_center}")
     obj_center = obj.get_center_pixel()
-    viz.show_point(img, obj_center, f"Center Point Coordinates: {obj_center}")
+    viz._show_point(img, obj_center, f"Center Point Coordinates: {obj_center}")
 
     # Mask calculations are done by using a boolean array, called bool mask, with
     #  index values correlating to pixels and whether it contains the object or not
 
     bmask = claw.get_bool_mask()
 
-    viz.show_mask_overlay(img=img, mask=bmask, title="Depth Values of claw", depth_arr=depth_arr)
+    viz._show_mask_overlay(img=img, mask=bmask, title="Depth Values of claw", depth_arr=depth_arr)
 
     claw_depth = claw.get_average_depth(depth_arr)
     base_depth = base.get_average_depth(depth_arr)
