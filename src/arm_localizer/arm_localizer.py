@@ -597,12 +597,11 @@ class ObjectDetector:
     from the model, or processed individual detections from the model in the form of :class:`arm_localizer.detected_object.DetectedObject` 's
 
     Attributes:
-        _img (PIL.Image): Will be changed
-        _model (): The trained model
-        _output (): the output of the model as a multi-dimensional array
-        claw : won't be here much longer
-        base: same
-        object: same
+        _output (): The output of the model as a multi-dimensional array
+        _detections (List[DetectedObject]): A list of the detected objects
+        _claw (DetectedObject): The Claw detected object
+        _base (DetectedObject): The Base detected object
+        _object (DetectedObject): The Object detected object
     """
     def __init__(self, threshold_claw = 0.5, threshold_base = 0.5, threshold_object = 0.5):
         """Constructor method
@@ -715,28 +714,52 @@ class ObjectDetector:
             none
 
         Returns:
-            List of DetectedObjects: all of the detections from the model as DetectedObjects
+            List[DetectedObject]: all of the detections from the model as DetectedObjects
 
         """
         return self._detections
     
-    def get_claw(self) -> DetectedObject: # shouldn't return a list, error check at detection level to allow 1 and only 1 of each "type " ie claw, boject, base
-        for obj in self._detections:
-            if obj.get_label() == utils.CLAW_STRING:
-                return obj
-        return False #consider alternative returns?
-        
-    def get_base(self) -> DetectedObject: # shouldn't return a list, error check at detection level to allow 1 and only 1 of each "type " ie claw, boject, base
-        for obj in self._detections:
-            if obj.get_label() == utils.BASE_STRING:
-                return obj
-        return False #consider alternative returns?
+    def get_claw(self) -> DetectedObject:
+        """Returns the detected Claw
 
-    def get_object(self) -> DetectedObject: # shouldn't return a list, error check at detection level to allow 1 and only 1 of each "type " ie claw, boject, base
-        for obj in self._detections:
-            if obj.get_label() == utils.OBJECT_STRING:
-                return obj
-        return False #consider alternative returns?
+        This function returns the best Claw detection as a DetectedObject.
+
+        Args:
+            none
+
+        Returns:
+            DetectedObject: The Claw detection
+
+        """
+        return self._claw
+        
+    def get_base(self) -> DetectedObject:
+        """Returns the detected Base
+
+        This function returns the best Base detection as a DetectedObject.
+
+        Args:
+            none
+
+        Returns:
+            DetectedObject: The Base detection
+
+        """
+        return self._base
+
+    def get_object(self) -> DetectedObject:
+        """Returns the detected Object
+
+        This function returns the best Object detection as a DetectedObject.
+
+        Args:
+            none
+
+        Returns:
+            DetectedObject: The Object detection
+
+        """
+        return self._object
     
 
 class LocalizerNotInitializedError(Exception):
