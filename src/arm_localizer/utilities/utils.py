@@ -78,7 +78,7 @@ def _get_intrinsics_from_stream(cfg):
     print("color intrinsics:\n", color_intr,"\n\nDepth Intr: \n", depth_intr)
     return color_intr, depth_intr
 
-def get_intrinsics():
+def set_intrinsics():
     '''This function is to be used if yu have a real sense camera currently hooked up to your device
 
     This function will save the color intrinsics information for the camera and will use that data
