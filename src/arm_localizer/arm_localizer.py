@@ -9,6 +9,7 @@ import torch
 import numpy.ma as ma
 import pickle
 import pyrealsense2 as rs
+import os
 
 class Vector:
     """This class stores and handles all vector manipulations
@@ -302,7 +303,40 @@ class DetectedObject:
         self.mask = mask
         self.score = score
         self.threshold = threshold
-    
+        self._intrinsics = self._set_intrinsics()
+
+    def _set_intrinsics(self):
+        intr = rs.intrinsics() # Here we will try to load the camera intrinsics from a file
+ 
+        intr_path = './intrinsics/color_intrinsics'
+        if os.path.exists(intr_path):
+            with open(intr_path, 'rb') as file:
+                try:
+                    ci_dict = pickle.load(file)
+                    intr.width = ci_dict['width']
+                    intr.height = ci_dict['height']
+                    intr.ppx = ci_dict['ppx']
+                    intr.ppy = ci_dict['ppy']
+                    intr.fx = ci_dict['fx']
+                    intr.fy = ci_dict['fy']
+                    intr.model  = ci_dict['model'] # This might be changed ro none because that is what we ofund online to work
+                    intr.coeffs = ci_dict['coeffs']
+                    return intr
+                except EOFError:
+                    pass
+        
+        intr.width = 640
+        intr.height = 480
+        intr.ppx = 324.5739440917969
+        intr.ppy = 243.86447143554688
+        intr.fx = 603.4510498046875
+        intr.fy = 603.4326171875
+        intr.model  = rs.distortion.none
+        intr.coeffs = [0.0, 0.0, 0.0, 0.0, 0.0]
+        
+        return intr
+                
+        
     def set_threshold(self, new_threshold):
         """Sets the value of threshold.
 
@@ -490,20 +524,12 @@ class DetectedObject:
             :class:`arm_localizer.vector.Vector`: returns a vector which points to the object from the camera
 
         """
-        _intrinsics = rs.intrinsics()
-        _intrinsics.width = 640
-        _intrinsics.height = 480
-        _intrinsics.ppx = 324.5739440917969
-        _intrinsics.ppy = 243.86447143554688
-        _intrinsics.fx = 603.4510498046875
-        _intrinsics.fy = 603.4326171875
-        _intrinsics.model  = rs.distortion.none
-        _intrinsics.coeffs = [0.0, 0.0, 0.0, 0.0, 0.0]
-
+        
+         
         center_point = self.get_center_mass_pixel()
         average_depth = self.get_average_depth(self.get_masked_depth_array(depth_arr))
 
-        result = rs.rs2_deproject_pixel_to_point(_intrinsics, center_point, average_depth)
+        result = rs.rs2_deproject_pixel_to_point(self._intrinsics, center_point, average_depth)
         result_vector = Vector(result[0], result[2], -result[1])
 
         return result_vector
@@ -766,7 +792,11 @@ class LocalizerNotInitializedError(Exception):
     pass
 
 class Localizer:
-    
+    """This Class loads and applies the saved rotation to the submitted vector
+
+    Attributes:
+        rotation: the rotation object
+    """
     def __init__(self):
         
         try:

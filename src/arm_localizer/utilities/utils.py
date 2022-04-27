@@ -3,6 +3,7 @@ from PIL import Image
 import os
 import numpy as np
 import pickle as pickle
+import pyrealsense2 as rs
 
 BASE_STRING = 'Base'
 CLAW_STRING = 'Claw'
@@ -68,3 +69,68 @@ def create_rotation_folder():
     newdir = "./rotation"
     if not os.path.exists(newdir):
         os.makedirs(newdir)
+
+def _get_intrinsics_from_stream(cfg):
+    depth_profile = cfg.get_stream(rs.stream.depth) # Fetch stream profile for depth stream
+    depth_intr = depth_profile.as_video_stream_profile().get_intrinsics() # Downcast to video_stream_profile and fetch intrinsics
+    color_profile = cfg.get_stream(rs.stream.color)
+    color_intr = color_profile.as_video_stream_profile().get_intrinsics()
+    print("color intrinsics:\n", color_intr,"\n\nDepth Intr: \n", depth_intr)
+    return color_intr, depth_intr
+
+def get_intrinsics():
+    '''This function is to be used if yu have a real sense camera currently hooked up to your device
+
+    This function will save the color intrinsics information for the camera and will use that data
+    when calculating vectors in the object detector
+    
+    '''
+    # Configure depth and color streams
+    pipeline = rs.pipeline()
+    config = rs.config()
+
+    # Get device product line for setting a supporting resolution
+    pipeline_wrapper = rs.pipeline_wrapper(pipeline)
+    pipeline_profile = config.resolve(pipeline_wrapper)
+    device = pipeline_profile.get_device()
+
+    depth_sensor = device.first_depth_sensor()
+    depth_scale = depth_sensor.get_depth_scale()
+
+    device_product_line = str(device.get_info(rs.camera_info.product_line))
+
+    config.enable_stream(rs.stream.depth, 640, 480, rs.format.z16, 30) # was 640 x 480 instead of 1920 x 1080 1280, 720, 640, 480
+
+    if device_product_line == 'L500':
+        config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30) # was 640 x 480 instead of 1920 x 1080
+    else:
+        config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30) # was 640 x 480 instead of 1920 x 1080
+
+    cfg = pipeline.start(config)
+
+    color_intr, depth_intr = _get_intrinsics_from_stream(cfg)
+
+    # print(depth_intr.width, depth_intr.height, depth_intr.fx, depth_intr.fy, depth_intr.ppy, depth_intr.ppx, depth_intr.model, depth_intr.coeffs)
+
+    ci_dict = {
+                'width': color_intr.width, 
+                'height': color_intr.height, 
+                'fx': color_intr.fx, 
+                'fy': color_intr.fy, 
+                'ppy': color_intr.ppy, 
+                'ppx': color_intr.ppx, 
+                'model': color_intr.model, 
+                'coeffs': color_intr.coeffs
+                }
+
+    filename = 'color_intrinsics'
+    new_dir = './intrinsics'
+    if not os.path.exists(new_dir):
+            os.makedirs(new_dir)
+    outfile = open(os.path.join(new_dir, filename),'wb')
+
+    pickle.dump(ci_dict,outfile)
+
+    outfile.close()
+
+    print("Intrinsics located in ./intrinsics/color_intrinsics")
