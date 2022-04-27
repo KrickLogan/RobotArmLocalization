@@ -40,11 +40,11 @@ This library requires at least Python Version 3.7.
 
 3. Calculates the position vectors for all detected objects in image.
 
-4. Calculates the position of the target Object relative to robot arm base and in alignment with the `arm_controller` package's coordinate system.
+4. Calculates the position of the target object relative to the robot arm base and in alignment with the `arm_controller` package's coordinate system.
 
-5. Calculates the position of the Robot Arm Claw relative to Robot Arm Base.
+5. Calculates the position of the target object relative to Robot Arm Base.
 
-6. Visualization Features: depth array, bounding boxes, masks, images, centerpoints, masks overlayed over image, depth data analysis.
+6. Visualization Features: depth array, bounding boxes, masks, images, centerpoints, depth data analysis.
 
 ### Usage
 
