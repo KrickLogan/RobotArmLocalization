@@ -55,4 +55,8 @@ The demo illustrates the capabilities of the system thus far, including
 
 - Calculates positions of target object relative to the robot arm base.
 
+- New feature allows user to set camera intrinsics. If realsense camera is hooked up, run utils.get_intrinsics(). This function will save a color_intrinsics file in a new folder, intrinsics, in the working directory. The Detector will look inside this folder for this file. If it can load it, it will use this data for all calculations requiring intrinsics
+
 The demo also shows many visualization features of the system such as the depth array, the bounding boxes, the masks, the image, the centerpoints, and the masks overlayed over the image and depth data
+
+
