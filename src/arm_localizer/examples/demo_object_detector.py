@@ -37,13 +37,13 @@ def main():
     print (output)
 
     claw = detector.get_claw()
-    print (f"label: {claw.label} Score: {claw.score} Box: {claw.box} Mask: {claw.mask} Average depth: {claw.get_average_depth(claw.get_masked_array(depth_arr))}")
+    print (f"label: {claw.label} Score: {claw.score} Box: {claw.box} Mask: {claw.mask} Average depth: {claw.get_depth(claw.get_masked_array(depth_arr))}")
 
     base = detector.get_base()
-    print (f"label: {base.label} Score: {base.score} Box: {base.box} Mask: {base.mask} Average depth: {base.get_average_depth(base.get_masked_array(depth_arr))}")
+    print (f"label: {base.label} Score: {base.score} Box: {base.box} Mask: {base.mask} Average depth: {base.get_depth(base.get_masked_array(depth_arr))}")
 
     obj = detector.get_object()
-    print (f"label: {obj.label} Score: {obj.score} Box: {obj.box} Mask: {obj.mask} Average depth: {obj.get_average_depth(obj.get_masked_array(depth_arr))}")
+    print (f"label: {obj.label} Score: {obj.score} Box: {obj.box} Mask: {obj.mask} Average depth: {obj.get_depth(obj.get_masked_array(depth_arr))}")
     
 if __name__ == "__main__":
     main()

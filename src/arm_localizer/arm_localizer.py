@@ -1,3 +1,4 @@
+from abc import ABC, abstractclassmethod, abstractmethod
 from typing import List
 from torchvision.transforms import functional as F
 from arm_localizer.utilities import utils, visualizer
@@ -277,7 +278,7 @@ class Rotation:
         return self._s_rot_rads
 
 
-class DetectedObject:
+class DetectedObject(ABC):
     """This is a detection returned from the model
 
     A :class:`arm_localizer.detected_object.DetectedObject` is generated for each
@@ -335,8 +336,7 @@ class DetectedObject:
         intr.coeffs = [0.0, 0.0, 0.0, 0.0, 0.0]
         
         return intr
-                
-        
+                       
     def set_threshold(self, new_threshold):
         """Sets the value of threshold.
 
@@ -470,28 +470,9 @@ class DetectedObject:
         mx = ma.masked_array(depth_arr, np.invert(bool_mask).long()) 
         return(mx)
 
-    def get_average_depth(self, depth_arr) -> float:
-        """Calculates the average of values in a masked array. Removes outliers.
-
-        This function removes 0's and outliers from a masked array, then calculates the average
-
-        Args:
-            depth_arr (np.ndarray): An array of depth values(mm)
-
-        Returns:
-            float: returns the average after outliers have been removed
-
-        """
-        mx = self.get_masked_depth_array(depth_arr)
-        masked_array_no_outliers = self.remove_depth_outliers(mx)
-        # data_labels, data_values = visualizer.get_graph_labels_values(masked_array_no_outliers)
-        # visualizer.show_bar_graph(data_labels, data_values, "Depth distribution", "Depth Ranges", "count")
-        return np.ma.MaskedArray.mean(masked_array_no_outliers)
-        # depth = np.percentile(masked_array_no_outliers.compressed(), 90)
-        # print("max: ", masked_array_no_outliers.max())
-        # print("min: ", masked_array_no_outliers.min())
-        # print(depth)
-        return depth
+    @abstractmethod
+    def get_depth(self, depth_arr) -> float:
+        pass
         
     def remove_depth_outliers(self,masked_depth_arr) -> np.ma:
         """Removes outliers from a masked array.
@@ -527,7 +508,7 @@ class DetectedObject:
         
          
         center_point = self.get_center_mass_pixel()
-        average_depth = self.get_average_depth(self.get_masked_depth_array(depth_arr))
+        average_depth = self.get_depth(self.get_masked_depth_array(depth_arr))
 
         result = rs.rs2_deproject_pixel_to_point(self._intrinsics, center_point, average_depth)
         result_vector = Vector(result[0], result[2], -result[1])
@@ -548,7 +529,7 @@ class DetectedObject:
             :class:`arm_localizer.vector.Vector`: returns a vector which points to the object from the camera
 
         """
-        depth = self.get_average_depth(depth_arr)
+        depth = self.get_depth(depth_arr)
         
         raw_obj_center_pxl = self.get_center_pixel()
         
@@ -615,6 +596,96 @@ class DetectedObject:
         new_obj_center_pxl = (new_obj_x - img_center_pxl[0], new_obj_y - img_center_pxl[1])
         return new_obj_center_pxl
 
+class Claw(DetectedObject):
+    '''Here you can subclass the depth calculation
+    '''
+    def __init__(self, label, box, mask, score, threshold = 0.5):
+        super().__init__(label, box, mask, score, threshold = 0.5)
+    
+    def get_depth(self, depth_arr):
+        """Calculates the average of values in a masked array. Removes outliers.
+
+        This function removes 0's and outliers from a masked array, then calculates the average
+
+        Args:
+            depth_arr (np.ndarray): An array of depth values(mm)
+
+        Returns:
+            float: returns the average after outliers have been removed
+
+        """
+        print("claw get depth method")
+        mx = self.get_masked_depth_array(depth_arr)
+        masked_array_no_outliers = self.remove_depth_outliers(mx)
+        # data_labels, data_values = visualizer.get_graph_labels_values(masked_array_no_outliers)
+        # visualizer.show_bar_graph(data_labels, data_values, "Depth distribution", "Depth Ranges", "count")
+        return np.ma.MaskedArray.mean(masked_array_no_outliers)
+        # depth = np.percentile(masked_array_no_outliers.compressed(), 90)
+        # print("max: ", masked_array_no_outliers.max())
+        # print("min: ", masked_array_no_outliers.min())
+        # print(depth)
+        return depth
+
+class Base(DetectedObject):
+    '''Here you can subclass the depth calculation
+    '''
+    def __init__(self, label, box, mask, score, threshold = 0.5):
+        super().__init__(label, box, mask, score, threshold = 0.5)
+    
+    def get_depth(self, depth_arr):
+        """Calculates the average of values in a masked array. Removes outliers.
+
+        This function removes 0's and outliers from a masked array, then calculates the average
+
+        Args:
+            depth_arr (np.ndarray): An array of depth values(mm)
+
+        Returns:
+            float: returns the average after outliers have been removed
+
+        """
+        print("Base get depth method")
+        mx = self.get_masked_depth_array(depth_arr)
+        masked_array_no_outliers = self.remove_depth_outliers(mx)
+        # data_labels, data_values = visualizer.get_graph_labels_values(masked_array_no_outliers)
+        # visualizer.show_bar_graph(data_labels, data_values, "Depth distribution", "Depth Ranges", "count")
+        return np.ma.MaskedArray.mean(masked_array_no_outliers)
+        # depth = np.percentile(masked_array_no_outliers.compressed(), 90)
+        # print("max: ", masked_array_no_outliers.max())
+        # print("min: ", masked_array_no_outliers.min())
+        # print(depth)
+        return depth
+        
+class Object(DetectedObject):
+    '''Here you can subclass the depth calculation
+    '''
+
+    def __init__(self, label, box, mask, score, threshold = 0.5):
+        super().__init__(label, box, mask, score, threshold = 0.5)
+    
+    def get_depth(self, depth_arr):
+        """Calculates the average of values in a masked array. Removes outliers.
+
+        This function removes 0's and outliers from a masked array, then calculates the average
+
+        Args:
+            depth_arr (np.ndarray): An array of depth values(mm)
+
+        Returns:
+            float: returns the average after outliers have been removed
+
+        """
+        print('Object get_depth method')
+        mx = self.get_masked_depth_array(depth_arr)
+        masked_array_no_outliers = self.remove_depth_outliers(mx)
+        # data_labels, data_values = visualizer.get_graph_labels_values(masked_array_no_outliers)
+        # visualizer.show_bar_graph(data_labels, data_values, "Depth distribution", "Depth Ranges", "count")
+        return np.ma.MaskedArray.mean(masked_array_no_outliers)
+        # depth = np.percentile(masked_array_no_outliers.compressed(), 90)
+        # print("max: ", masked_array_no_outliers.max())
+        # print("min: ", masked_array_no_outliers.min())
+        # print(depth)
+        return depth
 
 class ObjectDetector:
     """This class uses the trained RCNN Model to make detections on an image. It handles the output of the model.
@@ -687,21 +758,24 @@ class ObjectDetector:
         for i in range(len(boxes)):
             label, box, mask, score = labels[i],boxes[i], masks[i], scores[i]
             label_string = utils.get_label_string(label)
-            obj = DetectedObject(label_string, box, mask, score)
+            
             
             if(label_string == utils.CLAW_STRING):
+                obj = Claw(label_string, box, mask, score)
                 obj.set_threshold(self.threshold_claw)
                 if self._claw==None:
                   self._claw=obj
                 elif score >self._claw.score:
                   self._claw=obj
             if(label_string == utils.BASE_STRING):
+                obj = Base(label_string, box, mask, score)
                 obj.set_threshold(self.threshold_base)
                 if self._base==None:
                   self._base=obj
                 elif score >self._base.score:
                   self._base=obj
             if(label_string == utils.OBJECT_STRING):
+                obj = Object(label_string, box, mask, score)
                 obj.set_threshold(self.threshold_object)
                 if self._object==None:
                   self._object=obj
@@ -787,7 +861,6 @@ class ObjectDetector:
         """
         return self._object
     
-
 class LocalizerNotInitializedError(Exception):
     pass
 
