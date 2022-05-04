@@ -36,6 +36,9 @@ setuptools.setup(
         "numpy>=1.21.2",
         "pillow>=8.3.2",
         "scipy>=1.7.3",
+        # For Mac, there is no pip package for pyrealsense2 you have to build from source. 
+        #   Comment out the following line, build from source, then symlink into the conda environment
+        #   if you are using a conda environment
         "pyrealsense2>=2.50.0.3812"
     ],
 
