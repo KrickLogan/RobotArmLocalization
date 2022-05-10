@@ -473,7 +473,26 @@ class DetectedObject(ABC):
     @abstractmethod
     def get_depth(self, depth_arr) -> float:
         pass
+
+    def remove_depth_outliers_IQR(self,masked_depth_arr) -> np.ma:
+        '''Removes outliers from masked array using innerquartile range
+
+        In an attempt to refine the outlier removal step, we have this alternative
+        calculation. We were unable to really test it out. While there are images and depths
+        which were improved by this method, we were not able to consistently create new
+        test sample images and depths from the camera which were improved using this method.
+        We include it here in the case that you are encountering issues with the outlier calculation
+        and are looking for an alternative.
         
+        '''
+        Q1 = np.percentile(masked_depth_arr, 25, interpolation = 'midpoint')
+        Q3 = np.percentile(masked_depth_arr, 75, interpolation = 'midpoint') 
+        IQR = Q3-Q1
+        low_limit = Q1 - 1.5 * IQR
+        upper_limit = Q3 + 1.5 * IQR
+        z = masked_depth_arr[(masked_depth_arr>low_limit) & (masked_depth_arr<upper_limit)]
+        return z 
+
     def remove_depth_outliers(self,masked_depth_arr) -> np.ma:
         """Removes outliers from a masked array.
 
